@@ -1,0 +1,26 @@
+/* rubik-regular - latin_cyrillic */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/style/fonts/rubik-v21-latin_cyrillic-regular.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('/style/fonts/rubik-v21-latin_cyrillic-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('/style/fonts/rubik-v21-latin_cyrillic-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('/style/fonts/rubik-v21-latin_cyrillic-regular.woff') format('woff'), /* Modern Browsers */
+       url('/style/fonts/rubik-v21-latin_cyrillic-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('/style/fonts/rubik-v21-latin_cyrillic-regular.svg#Rubik') format('svg'); /* Legacy iOS */
+}
+/* rubik-600 - latin_cyrillic */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/style/fonts/rubik-v21-latin_cyrillic-600.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('/style/fonts/rubik-v21-latin_cyrillic-600.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('/style/fonts/rubik-v21-latin_cyrillic-600.woff2') format('woff2'), /* Super Modern Browsers */
+       url('/style/fonts/rubik-v21-latin_cyrillic-600.woff') format('woff'), /* Modern Browsers */
+       url('/style/fonts/rubik-v21-latin_cyrillic-600.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('/style/fonts/rubik-v21-latin_cyrillic-600.svg#Rubik') format('svg'); /* Legacy iOS */
+}

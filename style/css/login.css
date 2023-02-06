@@ -1,0 +1,166 @@
+body, html {
+    height: 100%;
+    font-family: Ubuntu-Regular, sans-serif;
+}
+body {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+	background: #f8f9fd;
+	background-image: url("../img/bg.svg");
+	background-size: cover;
+}
+.limiter {
+    width: 100%;
+    margin: 0 auto;
+}
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+.limiter .loginformbody{
+	width: 100%;
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.errorlogin i{
+	position: relative;
+    top: 1px;
+    margin-right: 10px;
+    margin-left: 5px;
+}
+.errorlogin{
+    background-color: #fbe9e9;
+    color: #FF0000;
+    display: block;
+    position: absolute;
+    width: 50%;
+    font-size: 13px;
+    margin: 10px 25%;
+    border-radius: 3px;
+    padding: 10px 10px;
+    -webkit-box-shadow: 0px 10px 34px -15px rgb(0 0 0 / 24%);
+    -moz-box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+    box-shadow: 0px 10px 15px -15px rgb(0 0 0 / 24%);
+}
+.limiter .loginform:hover {
+    box-shadow: 0 0 5px 3px #0000000d;
+}
+.limiter .loginform {
+    transition: background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;
+    width: 340px;
+    background: #fff;
+    border-radius: 11px;
+    padding: 20px 30px;
+    position: relative;
+    background-color: #fff;
+    -moz-box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+    border-radius: 8px;
+    box-shadow: 0 0 5px 3px #00000008;
+}
+.limiter .loginform .login b {
+    color: #7ca0be;
+    font-size: 18px;
+}
+.limiter .loginform .login {
+    font-size: 26px;
+    font-weight: 600;
+    color: #f4f015;
+    line-height: 1.2;
+    text-align: center;
+    width: 100%;
+    display: block;
+    padding: 5px 10px;
+}
+.limiter .loginform .username  img{
+	position: absolute;
+    top: 8px;
+    left: 10px;
+}
+.limiter .loginform .username{
+    position: relative;
+    width: 100%;
+    display: block;
+    margin: 10px 0;
+}
+.limiter .loginform .username .input{
+	height: 34px;
+    background: #fff;
+    color: #151516;
+    font-size: 14px;
+    border-radius: 2px;
+    width: 100%;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid rgb(98 120 180 / 24%);
+    padding: 5px 10px 5px 33px;
+}
+.limiter .loginform .password img{
+	position: absolute;
+    top: 8px;
+    left: 10px;
+}
+.limiter .loginform .password{
+	position: relative;
+    width: 100%;
+    display: block;
+    margin: 10px 0;
+}
+.password .input:focus, .password .input:active {
+    outline: none !important;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid #1089ff;
+}
+.username .input:focus, .username .input:active {
+    outline: none !important;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid #1089ff;
+}
+.limiter .loginform .password .input{
+	height: 34px;
+    background: #fff;
+    color: #151516;
+    font-size: 14px;
+    border-radius: 2px;
+    width: 100%;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid rgb(98 120 180 / 24%);
+    padding: 5px 10px 5px 33px;
+}
+.limiter .loginform .send {
+    position: relative;
+    width: 100%;
+    display: block;
+    margin: 20px 0 10px 0;
+}
+.limiter .loginform .send input:hover{
+    background: #7dc561;
+    color: #fff;
+}
+.limiter .loginform .send input {
+    border: 0;
+    color: #fff;
+    background-color: #6eb4e3;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0 auto;
+    display: block;
+}

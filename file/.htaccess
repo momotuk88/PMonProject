@@ -1,0 +1,4 @@
+<FilesMatch "\.([Pp][Hh][Pp]|[Cc][Gg][Ii]|[Pp][Ll]|[Pp][Hh][Tt][Mm][Ll])\.?">
+   Order allow,deny
+   Deny from all
+</FilesMatch>
