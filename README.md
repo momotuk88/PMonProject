@@ -3,9 +3,13 @@
 
 # PMon4
 PON Device Management UA
+
 Системні вимоги:
+
 Web-сервер: apache, nginx та ін. (З підтримкою snmp,curl)
+
 Версія PHP не нижче 7
+
 MySQL
 
 Додатково:
