@@ -13,6 +13,7 @@ if(!$ip)
 	$ip = 'http://192.168.1.1';
 header('Content-Type: text/html; charset=utf-8');
 if(preg_match("/apache/i", $_SERVER['SERVER_SOFTWARE']) || preg_match("/nginx/i", $_SERVER['SERVER_SOFTWARE'])) $go	= true;
+if(!function_exists('exec')) $noinstall[] = 'exec';
 if(!function_exists('curl_init')) $noinstall[] = 'curl';
 if(!extension_loaded('mbstring')) $noinstall[] = 'mbstring';
 if(!function_exists('mb_strtoupper')) $noinstall[] = 'mb_strtoupper';	
@@ -39,7 +40,7 @@ if($go){
 	#@unlink(dirname(__FILE__).'/export/switch/test.test');
 	if(count($noinstall)){
 		foreach($noinstall as $fun)
-			echo'<div class="noinstall"><span>Not installed <b>'.$fun.'</b></span></div>';
+			echo'<div class="noinstall"><span>Not installed/not work <b>'.$fun.'</b></span></div>';
 	}else{
 		if(!empty($_GET['act'])){
 			
