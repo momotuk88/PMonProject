@@ -201,6 +201,15 @@ HTML;
 			}
 		}
 	}
+}elseif($act=='delmonitor'){
+	$id = isset($_POST['id']) ? Clean::int($_POST['id']): null;	
+	if($id){
+		if(!empty($USER['class']) && $USER['class']>=4){
+		okno_title($lang{'delet_onu_mon'});
+		echo'<form action="/?do=send" method="post" id="formadd"><input name="idonu" type="hidden" value="'.$id.'"><input name="act" type="hidden" value="delmonitor"><div class="redton">Delet device</div></form><div class="polebtn"><button type="submit" form="formadd"  style="background: tomato;" value="submit">'.$lang['delet'].'</button></div>';
+		okno_end();
+		}
+	}
 }elseif($act=='addmonitor'){
 	$id = isset($_POST['id']) ? Clean::int($_POST['id']): null;	
 	if($id){

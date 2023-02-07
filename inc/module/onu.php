@@ -78,7 +78,7 @@ if(!empty($dataONT['sn']))
 	$sn_ont = '<span class="n">SN</span><span class="m">'.$dataONT['sn'].'</span>';
 $checkONU = $db->Fast($PMonTables['mononu'],'*',['idonu'=>$id]);
 if(!empty($checkONU['id'])){
-	$addmonitor = '<span class="delmonitor">Видалити моніторинг</span>';
+	$addmonitor = '<span class="delmonitor" onclick="ajaxcore(\'delmonitor\',\''.$id.'\');">Видалити моніторинг</span>';
 }else{
 	$addmonitor = '<span class="addmonitor" onclick="ajaxcore(\'addmonitor\',\''.$id.'\');">Додати в моніторинг</span>';	
 }

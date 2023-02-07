@@ -7,6 +7,7 @@ if (!defined('LANG')){
 }
 $nova_ukraine = array(
 'btn_olt_' => '',
+'delet_onu_mon' => 'Видалити onu з моніторинга',
 'inserttimemonitor' => 'Встановлено час моніторингу',
 'enable_monitor' => 'Включено моніторинг',
 'disable_monitor' => 'Виключено моніторинг',

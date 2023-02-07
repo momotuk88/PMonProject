@@ -397,6 +397,17 @@ switch($act){
 		}
 		$go->go('/?do=pon&act=allmyft');	
 	break;	
+	case 'delmonitor':		
+		if(!empty($USER['class']) && $USER['class']>=4){
+			if(isset($_POST['idonu']))
+				$getDataSql['idonu'] = Clean::int($_POST['idonu']);
+			if(!empty($getDataSql['idonu'])){
+				$db->SQLdelete($PMonTables['mononu'],['idonu'=>$getDataSql['idonu']]);
+				$go->go('/?do=onu&id='.$getDataSql['idonu']);
+			}
+		}
+		$go->go('/?do=mononu');
+	break;	
 	case 'addmonitor':		
 		if(!empty($USER['class']) && $USER['class']>=4){
 			if(isset($_POST['name']))
