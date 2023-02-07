@@ -20,8 +20,6 @@ if(isset($options["s"]) || isset($options["switch"])) {
 if(isset($options["j"]) || isset($options["jobid"])) {
     $jobid = isset($options["j"]) ? $options["j"] : $options["jobid"];
 }
-$olt = 12;
-$gocheck = true;
 if(!$olt && !$jobid) {
 	die('corect_system_cron');
 }

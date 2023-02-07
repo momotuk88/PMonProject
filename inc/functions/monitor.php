@@ -20,6 +20,7 @@ function PMonStats(){
 function SignalMonitor($newstatus,$newrx,$oldrx,$idonu){
 		global $config, $db, $PMonTables, $time;
 		$insertSignal = false;
+		$old = 0;
 		if(!empty($oldrx)) 
 			$old = signal_onu_minus($oldrx);
 		if(!empty($newrx)) 
