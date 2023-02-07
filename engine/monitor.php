@@ -2,48 +2,46 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
-$olt = 0;
-$jobid = 0;
-$gocheck = false;
+$olt = null;
+$jobid = null;
+$gocheck = null;
+$goport = false;
+$tempdata = null;
+$supportonu = null;
+$starttime = 0;
 set_time_limit(6000);
 $time = date('Y-m-d H:i:s');
 require ROOT_DIR.'/inc/init.monitor.php';
-$optsS = getopt('s:');
-$optsJ = getopt('j:');
-$olt = isset($optsS['s']) ? Clean::int($optsS['s']): null;
-$jobid = isset($optsJ['j']) ? Clean::int($optsJ['j']): null;
-$getolt = isset($_GET['getolt']) ? Clean::int($_GET['getolt']) : null;
-$pmon = isset($_GET['pmon']) ? Clean::int($_GET['pmon']) : null;
-if($getolt && $pmon==7){
-	$getSwitch = $db->Fast('switch','*',['id'=>$getolt]);
-	if(!empty($getSwitch['id'])){
-		$olt = $getSwitch['id'];
-		$gocheck = true;	
-	}else{
-		die('empty_device_id');
-	}
+$long_options = ["switch:","jobid:"];
+$options = getopt("s:j:", $long_options);
+if(isset($options["s"]) || isset($options["switch"])) {
+    $olt = isset($options["s"]) ? $options["s"] : $options["switch"];
 }
-if($olt && $jobid) {
-	$getSwitchCron = $db->Fast('swcron','*',['id'=>$jobid,'oltid'=>$olt]);
+if(isset($options["j"]) || isset($options["jobid"])) {
+    $jobid = isset($options["j"]) ? $options["j"] : $options["jobid"];
+}
+if(!$olt && !$jobid) {
+	die('corect_system_cron');
+}
+if($olt) {
+	$getSwitchCron = $db->Fast($PMonTables['swcron'],'*',['oltid'=>$olt]);
 	if(!empty($getSwitchCron['id'])){
-		$db->SQLdelete('swcron',['id'=>$getSwitchCron['id']]);
+		$db->SQLdelete($PMonTables['swcron'],['oltid'=>$getSwitchCron['oltid']]);
 		$gocheck = true;
 	}
 }
 if(!$gocheck)
 	die('unknown_cmd');
-if(!$olt && !$getSwitchCron['id'])
+if(!$olt && !$getSwitchCron['oltid'])
 	die('unknown_device_id');
-$getSwitch = $db->Fast('switch','*',['id'=>$olt]);
+$getSwitch = $db->Fast($PMonTables['switch'],'*',['id'=>$getSwitchCron['oltid']]);
 if(!$getSwitch['id'])
 	die('empty_device_id');
 $getMonitor = new Monitor($getSwitch['id'],$getSwitch['class']);
-$supportonu = null;
-if(strtotime($getSwitch['updates']) < strtotime($time.' - 1min')){
+if(strtotime($getSwitch['updates']) < strtotime($time.' - 3min')){
 	$supportonu = $getMonitor->getSupportOnu();
-	$tempdata = false;
 	if($supportonu){
-		$db->SQLupdate('switch',['status'=>'go','updates'=>$time,'jobid'=>0],['id' => $olt]);
+		$db->SQLupdate($PMonTables['switch'],['status'=>'go','updates'=>$time,'jobid'=>0],['id' => $olt]);
 		$tempdata = $getMonitor->start();
 	}
 	$starttime = microtime(true);		
@@ -95,7 +93,6 @@ if($supportonu && is_array($tempdata)){
 			}
 		}	
 	}
-	$goport = true;
 }
 sleep(2);
 $supportport = $getMonitor->getSupportPort();
@@ -106,13 +103,13 @@ if($supportport){
 	}
 }
 sleep(2);
-if($supportsaveonu)
+if(is_array($resarray))
 	$getMonitor->UpdateInformationOlt();
 if($starttime){
 	$endTime = microtime(true);
 	$executionTime = (int)$endTime - $starttime;
 	if($executionTime){
-		$db->SQLupdate('switch',['status'=>'no','timecheck'=>$executionTime,'timechecklast'=>(!empty($getSwitch['timecheck'])?$getSwitch['timecheck']:0)],['id'=>$getSwitch['id']]);
+		$db->SQLupdate($PMonTables['switch'],['status'=>'no','timecheck'=>$executionTime,'timechecklast'=>(!empty($getSwitch['timecheck'])?$getSwitch['timecheck']:0)],['id'=>$getSwitch['id']]);
 	}
 }
 ?>

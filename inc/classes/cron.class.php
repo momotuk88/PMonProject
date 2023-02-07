@@ -172,6 +172,7 @@ class Cron{
 	}	
 	public function RunMonitor($params = array()){
 		if(!empty($params['olt']) && !empty($params['jobid'])){
+			print_r('post'.$params['jobid'].'-'.$params['olt']);
 			post_system($params['jobid'],$params['olt']);
 		}
 	}

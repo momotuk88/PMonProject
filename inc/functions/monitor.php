@@ -253,14 +253,16 @@ function fileCacheArray($DataArray,$Filename='test.cache',$Folder='export/switch
 function post_system($jobid,$olt){
 	global $config;
 	if(!empty($config['url']) && $olt && $jobid){
+	global $config;
 		$ch = curl_init($config['url'].'/system.php');
-		curl_setopt($ch,CURLOPT_POST,true);
+		curl_setopt($ch,CURLOPT_POST, true);
 		curl_setopt($ch,CURLOPT_POSTFIELDS,['olt'=>$olt,'jobid'=>$jobid]);
-		curl_setopt($ch,CURLOPT_RETURNTRANSFER,false);
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,0);	
-		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,1);
-		curl_setopt($ch,CURLOPT_TIMEOUT,1);
-		curl_exec($ch);
+		curl_setopt($ch,CURLOPT_HEADER,true); 
+		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 1);
+		curl_setopt($ch,CURLOPT_TIMEOUT,1); 
+		$json = curl_exec($ch);
 		curl_close($ch);
 	}
 }

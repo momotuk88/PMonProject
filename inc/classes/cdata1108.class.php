@@ -458,8 +458,8 @@ class CDATA_1108 {
 		$getPort = $db->Multi($PMonTables['switchpon'],'*',['oltid' => $this->id]);
 		if(count($getPort)){
 			foreach($getPort as $port){
-				$getONUstatusPort = $db->Multi($PMonTables['onus'],'idonu,status',['olt' => $this->id,'zte_idport'=>$port['idportolt']]);
-				$getONUstatusPortOn = $db->Multi($PMonTables['onus'],'idonu,status',['status' => 1,'olt' => $this->id,'zte_idport'=>$port['idportolt']]);
+				$getONUstatusPort = $db->Multi($PMonTables['onus'],'idonu,status',['olt' => $this->id,'portolt'=>$port['sfpid']]);
+				$getONUstatusPortOn = $db->Multi($PMonTables['onus'],'idonu,status',['status' => 1,'olt' => $this->id,'portolt'=>$port['sfpid']]);
 				$arrayPort[$port['id']]['port'] = $port['pon'];
 				$arrayPort[$port['id']]['count'] = count($getONUstatusPort);
 				$arrayPort[$port['id']]['online'] = count($getONUstatusPortOn);
