@@ -23,6 +23,7 @@ if(isset($options["j"]) || isset($options["jobid"])) {
 if(!$olt && !$jobid) {
 	die('corect_system_cron');
 }
+$gocheck = true;
 if($olt) {
 	$getSwitchCron = $db->Fast($PMonTables['swcron'],'*',['oltid'=>$olt]);
 	if(!empty($getSwitchCron['id'])){
@@ -33,22 +34,20 @@ if($olt) {
 }
 if(!$gocheck)
 	die('unknown_cmd');
-if(!$olt && !$getSwitchCron['oltid'])
+if(!$olt && !$olt)
 	die('unknown_device_id');
-$getSwitch = $db->Fast($PMonTables['switch'],'*',['id'=>$getSwitchCron['oltid']]);
+$getSwitch = $db->Fast($PMonTables['switch'],'*',['id'=>$olt]);
 if(!$getSwitch['id'])
 	die('empty_device_id');
 $getMonitor = new Monitor($getSwitch['id'],$getSwitch['class']);
-if(strtotime($getSwitch['updates']) < strtotime($time.' - 3min')){
-	$supportonu = $getMonitor->getSupportOnu();
-	if($supportonu){
-		$db->SQLupdate($PMonTables['switch'],['status'=>'go','updates'=>$time,'jobid'=>0],['id' => $olt]);
-		$tempdata = $getMonitor->start();
-	}
-	$starttime = microtime(true);
-	if($supportonu && !$tempdata){
-		switchLog($getSwitchCron['oltid'],'cron',$lang['emptytemponu']);
-	}
+$supportonu = $getMonitor->getSupportOnu();
+if($supportonu){
+	$db->SQLupdate($PMonTables['switch'],['status'=>'go','updates'=>$time,'jobid'=>0],['id' => $olt]);
+	$tempdata = $getMonitor->start();
+}
+$starttime = microtime(true);
+if($supportonu && !$tempdata){
+	switchLog($getSwitchCron['oltid'],'cron',$lang['emptytemponu']);
 }
 if($supportonu && is_array($tempdata)){
 	foreach($tempdata as $idont => $getdata){
