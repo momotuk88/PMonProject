@@ -10,7 +10,7 @@ Web-сервер: apache, nginx та ін. (З підтримкою snmp,curl)
 MySQL
 
 Підтримує: 
-ZTE c300, c320, c220
+ZTE c300  Firmware V2.0.1, c320 Firmware V2.0.1, c220 
 BDCOM всі моделі включаючи GPON
 C-DATA 1104,1108,1208,1216
 
