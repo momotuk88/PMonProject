@@ -7,7 +7,7 @@ class lang implements arrayaccess {
 	private $lang_system = array();
 	public function __construct() {
 		global $nova_ukraine, $config;
-		require ENGINE_DIR.'/lang/'.(!empty($config['mova']) && $config['mova'] : 'ua').'.php';
+		require ENGINE_DIR.'/lang/ua.php';
 		$this->lang_system = $nova_ukraine;
 	}
     public function offsetSet($offset, $value) {
