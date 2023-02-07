@@ -64,11 +64,11 @@ class BDCOM_Epon {
 				if(is_array($result)){
 					$db->SQLupdate($PMonTables['onus'],['cron' => 2],['olt' => $this->id]);
 				}else{
-					$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'emptyarraydata','added' =>$this->now]);
+					$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'empty array data','added' =>$this->now]);
 				}
 			}
 		}else{
-			$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'emptysnmpwalk','added' =>$this->now]);
+			$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'empty snmpwalk '.$listinface,'added' =>$this->now]);
 		}
 		return (is_array($result) ? $result : null);
 	}
