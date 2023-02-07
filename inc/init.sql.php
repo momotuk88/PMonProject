@@ -26,6 +26,7 @@ $PMonTables = array(
 'switchpon' => 'switch_pon',	
 'swlog' => 'switch_log',	
 'unitbasket' => 'unitbasket',	
+'porterror' => 'switch_port_err',	
 'switch' => 'switch',	
 'sfp' => 'sfp',	
 'gr' => 'groups',	

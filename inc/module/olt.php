@@ -40,6 +40,7 @@ if($dataSwitch['gallery']=='yes' && !empty($USER['class']) && $USER['class']>=6)
 if(!empty($dataSwitch['snmprw']) && $USER['class']>=6 && $dataSwitch['oidid']==1){
 	$panel .='<div id="ajaxonu"><a href="#" onclick="fun_ajax('.$id.','.$dataSwitch['oidid'].',\'rebootall\')"><img src="../style/img/rotate.png">'.$lang['rebootall'].'</a></div>';
 }
+$panel .='<div id="ajaxonu"><a href="/?do=switchlog&id='.$dataSwitch['id'].'" ><img src="../style/img/m3.png">'.$lang['log'].'</a></div>';
 if(strtotime($dataSwitch['updates']) < strtotime(date('Y-m-d H:i:s').' - 1min')){
 	$panel .='<div id="ajaxonu"><a href="#" onclick="ajaxcmd(5,'.$dataSwitch['id'].')"><img src="../style/img/rotate.png">'.$lang['checker'].'</a></div>';
 }

@@ -57,10 +57,7 @@ switch($act){
 					$SQLinsertSwitch['class'] = $SQLgetModel['phpclass'];
 				$db->SQLinsert('switch',$SQLinsertSwitch);
 				$deviceid = $db->getInsertId();
-				#if($deviceid){
-				#	$getCron = array('status'=>'yes','oltid'=>$deviceid,'added'=>$time);
-				#	$db->SQLinsert($PMonTables['swcron'],$getCron);
-				#}
+				switchLog($deviceid,'system',$lang['addnewdevice'].' '. $SQLgetModel['name'].' '.$SQLgetModel['model']);
 			}
 			if(isset($deviceid) && !empty($getDataSql['ip']))
 				saveBaseip($getDataSql['ip'],$deviceid);
@@ -1027,8 +1024,10 @@ switch($act){
 		$getDataSql['groups'] = Clean::int($_POST['group']);
 		if($_POST['monitor']=='yes'){
 			$getDataSql['monitor'] = 'yes';
+			switchLog($getDataSql['id'],'switch',$lang['enable_monitor']);
 		}else{
 			$getDataSql['monitor'] = 'no';
+			switchLog($getDataSql['id'],'switch',$lang['disable_monitor']);
 		}		
 		if($_POST['connect']=='yes'){
 			$getDataSql['connect'] = 'yes';
@@ -1040,8 +1039,10 @@ switch($act){
 		}else{
 			$getDataSql['gallery'] = 'no';
 		}
-		if(isset($_POST['typecheck']))
-			$getDataSql['typecheck'] = Clean::text($_POST['typecheck']);		
+		if(isset($_POST['typecheck'])){
+			$getDataSql['typecheck'] = Clean::text($_POST['typecheck']);
+			switchLog($getDataSql['id'],'switch',$lang['inserttimemonitor'].' '.$getDataSql['typecheck']);			
+		}			
 		if(isset($_POST['netip']))
 			$getDataSql['netip'] = Clean::text($_POST['netip']);
 		if(!empty($dataSwitch['id'])){

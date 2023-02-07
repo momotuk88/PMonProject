@@ -28,6 +28,7 @@ if($olt) {
 	if(!empty($getSwitchCron['id'])){
 		$db->SQLdelete($PMonTables['swcron'],['oltid'=>$getSwitchCron['oltid']]);
 		$gocheck = true;
+		switchLog($getSwitchCron['oltid'],'cron',$lang['gocheckcron']);
 	}
 }
 if(!$gocheck)
@@ -44,7 +45,10 @@ if(strtotime($getSwitch['updates']) < strtotime($time.' - 3min')){
 		$db->SQLupdate($PMonTables['switch'],['status'=>'go','updates'=>$time,'jobid'=>0],['id' => $olt]);
 		$tempdata = $getMonitor->start();
 	}
-	$starttime = microtime(true);		
+	$starttime = microtime(true);
+	if($supportonu && !$tempdata){
+		switchLog($getSwitchCron['oltid'],'cron',$lang['emptytemponu']);
+	}
 }
 if($supportonu && is_array($tempdata)){
 	foreach($tempdata as $idont => $getdata){
@@ -68,6 +72,8 @@ if($supportonu && is_array($tempdata)){
 		}
 		$goont = true;
 		$db->SQLdelete($PMonTables['onus'],['cron' => 2, 'olt' => $olt]);
+	}else{
+		switchLog($getSwitchCron['oltid'],'cron',$lang['checkapisystem']);
 	}
 	$getlistrxcheck = $getMonitor->getListSignal();
 	if($goont && is_array($getlistrxcheck)){

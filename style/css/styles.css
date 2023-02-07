@@ -265,6 +265,34 @@ a.blockminstats:hover {
     margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
 }
 /*page:main.stats*/
+/*page:switch.log*/
+.sw_log:hover{
+    background: #eaffcabf;
+    border-bottom: 1px solid #fff;
+    cursor: pointer;
+}
+.sw_log {
+    display: flex;
+    width: 100%;
+	transition: background 0.5s, border 0.5s, border-radius 0.5s, box-shadow 0.5s;
+    border-bottom: 1px solid #eaf3fa;
+    padding: 3px 5px;
+}
+.sw_log .types_log {
+    width: 7%;
+    text-align: left;
+    padding: 0 4px;
+    color: #7373b9;
+    text-decoration: underline;
+}
+.sw_log .text_log {
+    width: 60%;
+    color: gray;
+}
+.sw_log .added_log{
+	color: gray;
+}
+/*page:switch.log*/
 /*page:switch.telnet*/
 .delmonitor:hover{
     border: 1px solid #2a7ed9;	
@@ -296,27 +324,6 @@ a.blockminstats:hover {
     position: absolute;
     margin-top: -13px;
 }
-.telnet_device {
-    margin-top: 5px;
-}
-.telnet_device span:hover{
-	color: #2727ea;
-    border: 1px solid #2727ea;	
-}
-.telnet_device span {
-	cursor:pointer;
-    display: inline-block;
-    align-items: center;
-    margin: 0 5px 0 0px;
-    padding: 6px 10px;
-    border: 1px solid #b0b0e2;
-    box-sizing: border-box;
-    border-radius: 3px;
-    font-size: 13px;
-    line-height: 1rem;
-    color: #6667a2;
-}
-.telnet_device span img{}
 /*page:switch.telnet*/
 /*page:switch.port*/
 .list_pon_switch {
