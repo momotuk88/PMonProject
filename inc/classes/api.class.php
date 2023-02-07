@@ -157,19 +157,12 @@ class MonitorApi{
 		foreach($array as $type => $value) {
 			if($type && !empty($value['oid'])){
 				$get = @$this->snmp->get($value['netip'],$value['snmpro'],$value['oid']);
-				if(!isset($get)){
-					$result[$type] = ($data[0] ? $data[0] : false);
+				$data = $this->trimSNMPOutput($get,$value['oid']);
+				if(!empty($value['format'])){
+					$result[$type] = $this->getResultFromat($data,$value['format']);	
 				}else{
-					#$data = $get;
-					$data = $this->trimSNMPOutput($get,$value['oid']);
-					if(is_array($data)) 
-						$data = ($data[0] ? $data[0] : false);
-					if(!empty($value['format'])){
-						$result[$type] = $this->getResultFromat($data,$value['format']);	
-					}else{
-						$result[$type] = $data;	
-					}						
-				}
+					$result[$type] = $data;	
+				}						
 			}
 		}
 		return (isset($result) ? $result :  '');
@@ -183,6 +176,8 @@ class MonitorApi{
 		$value = str_replace('Counter32:', '',$value);
 		$value = str_replace('Counter64:', '',$value);
 		$value = str_replace('Timeticks:', '',$value);
+		$value = str_replace($oid, '',$value);
+		$value = str_replace('=', '',$value);
 		$value = str_replace('"', '',$value);
 		$value = str_replace(' ', '',$value);
 		return trim($value);		

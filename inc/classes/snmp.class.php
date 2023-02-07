@@ -179,7 +179,6 @@ class SnmpMonitor {
                     $result .= $oid . ' = ' . $value . "\n\n";
                 }
             }
-            file_put_contents($cacheFile, $result);
         }
         return ($result);
     }    

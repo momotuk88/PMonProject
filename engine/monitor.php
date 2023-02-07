@@ -20,25 +20,25 @@ if(isset($options["s"]) || isset($options["switch"])) {
 if(isset($options["j"]) || isset($options["jobid"])) {
     $jobid = isset($options["j"]) ? $options["j"] : $options["jobid"];
 }
+$olt = 12;
+$gocheck = true;
 if(!$olt && !$jobid) {
 	die('corect_system_cron');
 }
-$gocheck = true;
 if($olt) {
-	$getSwitchCron = $db->Fast($PMonTables['swcron'],'*',['oltid'=>$olt]);
-	if(!empty($getSwitchCron['id'])){
-		$db->SQLdelete($PMonTables['swcron'],['oltid'=>$getSwitchCron['oltid']]);
+	$getSwitch = $db->Fast($PMonTables['switch'],'*',['id'=>$olt]);
+	if(!$getSwitch['id'])
+		die('empty_device_id');
+	if(!empty($getSwitch['id'])){
+		$db->SQLdelete($PMonTables['swcron'],['oltid'=>$getSwitch['id']]);
 		$gocheck = true;
-		switchLog($getSwitchCron['oltid'],'cron',$lang['gocheckcron']);
+		switchLog($getSwitch['id'],'cron',$lang['gocheckcron']);
 	}
+}else{
+	die('unknown_device');
 }
 if(!$gocheck)
 	die('unknown_cmd');
-if(!$olt && !$olt)
-	die('unknown_device_id');
-$getSwitch = $db->Fast($PMonTables['switch'],'*',['id'=>$olt]);
-if(!$getSwitch['id'])
-	die('empty_device_id');
 $getMonitor = new Monitor($getSwitch['id'],$getSwitch['class']);
 $supportonu = $getMonitor->getSupportOnu();
 if($supportonu){
@@ -47,7 +47,7 @@ if($supportonu){
 }
 $starttime = microtime(true);
 if($supportonu && !$tempdata){
-	switchLog($getSwitchCron['oltid'],'cron',$lang['emptytemponu']);
+	switchLog($getSwitch['id'],'cron',$lang['emptytemponu']);
 }
 if($supportonu && is_array($tempdata)){
 	foreach($tempdata as $idont => $getdata){
@@ -72,7 +72,7 @@ if($supportonu && is_array($tempdata)){
 		$goont = true;
 		$db->SQLdelete($PMonTables['onus'],['cron' => 2, 'olt' => $olt]);
 	}else{
-		switchLog($getSwitchCron['oltid'],'cron',$lang['checkapisystem']);
+		switchLog($getSwitch['id'],'cron',$lang['checkapisystem']);
 	}
 	$getlistrxcheck = $getMonitor->getListSignal();
 	if($goont && is_array($getlistrxcheck)){

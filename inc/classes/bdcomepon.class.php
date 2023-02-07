@@ -44,14 +44,12 @@ class BDCOM_Epon {
 	}
 	public function Load(){
 		global $db, $PMonTables;		
-		$listonu = '';
 		$listinface = $this->deviceoid[$this->id]['onu']['listname']['epon']['oid'];
-		if(isset($listinface))		
-			$listonu = $this->snmp->walk($this->ip,$this->community,$listinface,true);		
+		$listonu = $this->snmp->walk($this->ip,$this->community,$listinface,false);	
 		if($listonu){
 			$this->indexdevice = $listonu;
 			$indexOnu = explodeRows(str_replace('.'.$listinface.'.','',$listonu));
-			if(is_array($indexOnu)){
+			if($indexOnu){
 				foreach($indexOnu as $io => $eachsig) {
 					$line = explode('=', $eachsig);
 					if(isset($line[0]) && isset($line[1])) {
@@ -67,7 +65,8 @@ class BDCOM_Epon {
 					$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'empty array data','added' =>$this->now]);
 				}
 			}
-		}else{
+		}
+		if(!$listonu){
 			$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'empty snmpwalk '.$listinface,'added' =>$this->now]);
 		}
 		return (is_array($result) ? $result : null);
@@ -282,7 +281,9 @@ class BDCOM_Epon {
 		global $db, $PMonTables;
 		if(!empty($data['id'])){	
 			$row = $db->Fast($PMonTables['switchport'],'*',['deviceid' => $this->id, 'llid' => $data['id']]);
-			if(!$row['id']){
+			if(!empty($row['id'])){
+				
+			}else{
 				$db->SQLinsert($PMonTables['switchport'],['deviceid' => $this->id,'llid' => $data['id'],'nameport' => $data['name'],'typeport' => $data['typeport'],'operstatus' => 'none','added' => $this->now]);
 			}
 		}
