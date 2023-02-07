@@ -12,6 +12,7 @@ if(count($getAllSwitch)){
 }else{
 	die('add_new_switch');
 }
+/*
 $getMonitorONU = $db->Multi($PMonTables['mononu']);
 if(count($getMonitorONU)){
 	foreach ($getMonitorONU as $onu) {
@@ -30,13 +31,14 @@ if(count($getMonitorONU)){
 			}
 		}
 	}
-	if(count($onuarray)){
+	if(is_array($onuarray)){
 		foreach ($onuarray as $onuid => $onuget) {
 			$dataAPI = array('do' => 'oid','oidid' => $onuget['idoid'],'oid' => $onuget['oid'],'id' => $onuget['olt']);
 			$resultMon[$onuid] = get_curl_api($dataAPI,true,10);
 		}
 	}
 }
+*/
 $getAllPort = $db->Multi('switch_port','*',['monitor' => 'yes']);
 if(count($getAllPort)){
 	$arrayport = array();
