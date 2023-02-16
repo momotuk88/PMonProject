@@ -2,6 +2,46 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+function portstatusHuawei($value){
+	if(preg_match('/1/i',$value) || preg_match('/4/i',$value)){
+		return 'up';	
+	}else{
+		return 'down';	
+	}
+}
+function MacHuawei($type) {
+		if (preg_match("/Hex/i", $type)) {
+			$re_z_z = explode('Hex-STRING: ', $type);
+			$re_z = end($re_z_z);
+			$re_z = str_replace('"', '',$re_z);
+			$re_z = trim($re_z);
+			$onu = preg_replace("/\s+/","",mb_strtolower($re_z));
+		}elseif(preg_match("/STRING/i", $type)) {
+			$re_ze_mac = explode('STRING: ', $type);
+			$re_mac = end($re_ze_mac);
+			$re_mac = str_replace('"', '',$re_mac);
+			$re_mac = trim($re_mac);
+			$onu = bin2hex($re_mac);
+		}
+		$onu = preg_replace('/(.{2})/','\1:',$onu,5);
+		return $onu;
+}
+function SnHuawei($type) {
+		if (preg_match("/Hex/i", $type)) {
+			$re_z_z = explode('Hex-STRING: ', $type);
+			$re_z = end($re_z_z);
+			$re_z = str_replace('"', '',$re_z);
+			$re_z = trim($re_z);
+			$onu = preg_replace("/\s+/","",mb_strtolower($re_z));
+		}elseif(preg_match("/STRING/i", $type)) {
+			$re_ze_mac = explode('STRING: ', $type);
+			$re_mac = end($re_ze_mac);
+			$re_mac = str_replace('"', '',$re_mac);
+			$re_mac = trim($re_mac);
+			$onu = bin2hex($re_mac);
+		}
+		return $onu;
+}
 function explodeRowsTwo($data) {
 	$result = explode("\n\n", $data);
 	return $result;
@@ -12,10 +52,11 @@ function explodeRows($data) {
 }
 function PMonStats(){
 	global $config, $db, $PMonTables;	
+	$SQLbadonu = $db->SimpleWhile("SELECT idonu FROM onus WHERE rx BETWEEN '-".$config['badsignalstart']."' AND '-".$config['badsignalend']."'");
 	$getOnline = $db->Multi($PMonTables['onus'],'idonu',['status'=>1]);
 	$getAll = $db->Multi($PMonTables['onus']);
 	$getOffline = (int)count($getAll) - count($getOnline);
-	$db->SQLinsert($PMonTables['pmonstats'],['datetime'=>date('Y-m-d H:i:s'),'online'=>count($getOnline),'offline'=>$getOffline]);
+	$db->SQLinsert($PMonTables['pmonstats'],['datetime'=>date('Y-m-d H:i:s'),'countonu'=>count($getAll),'badsignal'=>count($SQLbadonu),'online'=>count($getOnline),'offline'=>$getOffline]);
 }
 function SignalMonitor($newstatus,$newrx,$oldrx,$idonu){
 		global $config, $db, $PMonTables, $time;
@@ -82,7 +123,7 @@ function telegram_port($type) {
 		file_get_contents('https://api.telegram.org/bot'.$config['telegramtoken'].'/sendmessage?'.http_build_query($content));	
 	}
 }
-function savePortMonitor($place,$name,$descr,$status,$laststatus,$portid,$deviceid){
+function savePortMonitor($place,$name,$descr,$status,$laststatus,$portid,$deviceid,$sms){
 	global $db, $lang;
 	$time = date('Y-m-d H:i:s');
 	$send = false;
@@ -115,7 +156,7 @@ function savePortMonitor($place,$name,$descr,$status,$laststatus,$portid,$device
 		$dataInsert['deviceid'] = $deviceid;
 		$dataInsert['portid'] = $portid;
 		$dataInsert['added'] = $time;
-		if($deviceid && $portid && !empty($SQLupd['operstatus'])){
+		if($deviceid && $portid && !empty($SQLupd['operstatus']) && $sms=='yes'){
 			$db->SQLinsert('swlogport',$dataInsert);
 			telegram_port($text);
 		}
@@ -123,6 +164,7 @@ function savePortMonitor($place,$name,$descr,$status,$laststatus,$portid,$device
 }
 function saveErrPort($deviceid,$llid,$result,$nameport,$place){
 	global $db, $lang;
+	$result['in'] = str_replace('4294967295', 0,$result['in']);
 	$dataLastPortError = $db->Simple("SELECT * FROM `switch_port_err` WHERE `llid` = '".(int)$llid."' AND `deviceid` = '".(int)$deviceid."' ORDER BY `added` DESC LIMIT 1");	
 	if(!empty($result['in'])){
 		if(!empty($dataLastPortError['inerror']) && $dataLastPortError['inerror']<$result['in']){
@@ -137,7 +179,7 @@ function saveErrPort($deviceid,$llid,$result,$nameport,$place){
 	$SQLInsert['llid'] = $llid;	
 	$SQLInsert['inerror'] = ($result['in']?$result['in']:0);
 	$SQLInsert['added'] = date('Y-m-d H:i:s');	
-	if(!empty($SQLInsert['status_inerror']) && $SQLInsert['status_inerror']=='up')
+	if(!empty($SQLInsert['status_inerror']))
 		$db->SQLinsert('switch_port_err',$SQLInsert);
 }
 function getFormatSNMP($dataSNMP,$format){
@@ -172,11 +214,23 @@ function getNameBdcomport($result){
 	$result = str_replace('t0', 't 0/',$result); 
 	return $result;	
 }
+function getNameHuaweiport($result){
+	$result = getFormatSNMP($result,'string'); 
+	$result = str_replace('N0', 'N 0',$result); 
+	$result = str_replace('t0', 't 0',$result); 
+	return $result;	
+}
 function getNameZteport($result){
 	$result = getFormatSNMP($result,'string'); 
 	$result = str_replace('gpon_', 'GPON ',$result); 
 	$result = str_replace('i_1', 'i 1',$result); 
 	return $result;	
+}
+function getNameCdataport($result){
+	$result = str_replace('e', 'e ',$result); 
+	$result = str_replace('pon', 'gpon ',$result); 
+	$result = str_replace('i_1', 'i 1',$result); 
+	return mb_strtoupper($result);	
 }
 function getNameDlink1106($result){
 	$result = getFormatSNMP($result,'string'); 
@@ -217,9 +271,36 @@ function getTypePort($value){
 		return 'mng1'; // gei (интерфейс 1000M Ethernet)	
 	}
 }
+function getTypePortHuawei($value){
+	$value = strtolower($value);
+	if(preg_match('/xgei/i',$value)){
+		return 'xgei'; 
+	}elseif(preg_match('/xge/i',$value)){
+		return 'xge'; 
+	}elseif(preg_match('/gei/i',$value)){
+		return 'gei'; 
+	}elseif(preg_match('/ge/i',$value)){
+		return 'ge'; 
+	}elseif(preg_match('/gpon/i',$value)){
+		return 'gpon';
+	}elseif(preg_match('/epon/i',$value)){
+		return 'epon';
+	}elseif(preg_match('/rxolt/i',$value)){
+		return '';	
+	}elseif(preg_match('/ethernet/i',$value)){
+		return 'sfp'; // gei (интерфейс 1000M Ethernet)	
+	}elseif(preg_match('/GigaEthernet/i',$value)){
+		return 'sfp'; // gei (интерфейс 1000M Ethernet)	
+	}elseif(preg_match('/FastEthernet/i',$value)){
+		return 'eth100'; // gei (интерфейс 1000M Ethernet)	
+	}elseif(preg_match('/Mng1/i',$value)){
+		return 'mng1'; // gei (интерфейс 1000M Ethernet)	
+	}
+}
 function clearDataMacRe($value){
 	$value = str_replace('Hex-STRING:', '',$value);
 	$value = str_replace('STRING:', '',$value);
+	$value = str_replace('INTEGER:', '',$value);
 	$value = str_replace('"', '',$value);
 	$value = str_replace(' ', '',$value);
 	$value = trim($value);	

@@ -6,10 +6,9 @@ if($USER){
 	$m_device = '<li class="nav-item "><a class="nav-link dropdown-toggle" href="#">';
 	$m_device .= '<div class="i"><i class="fi fi-rr-screen"></i></div><span class="m">'.$lang['btn_menu_device'].'</span></a>';
 	$m_device .= '<ul class="nav-dropdown-items dropdown">';
-	$m_device .= '<li class="nav-item"><a class="nav-link" href="/?do=device"><div class="i"><i class="fi fi-rr-database"></i></div>';
-	$m_device .= '<span class="m">'.$lang['btn_menu_list'].'</span>'.(count($checkLicenseSwitch)?'<span class="btn_mon_switch">'.count($checkLicenseSwitch).'</span>':'').'</a></li>';				
-	$m_device .= '<li class="nav-item"><a class="nav-link" href="/?do=pondog"><div class="i"><i class="fi fi-rr-refresh"></i></div>';
-	$m_device .= '<span class="m">'.$lang['btn_menu_cron'].'</span></a>';
+	$m_device .= '<li class="nav-item"><a class="nav-link" href="/?do=device"><div class="i"><i class="fi fi-rr-database"></i></div><span class="m">'.$lang['btn_menu_list'].'</span>'.(count($checkLicenseSwitch)?'<span class="btn_mon_switch">'.count($checkLicenseSwitch).'</span>':'').'</a></li>';				
+	$m_device .= '<li class="nav-item"><a class="nav-link" href="/?do=porterror"><div class="i"><i class="fi fi-rr-stats"></i></div><span class="m">Помилки на портах</span></a></li>';				
+	$m_device .= '<li class="nav-item"><a class="nav-link" href="/?do=pondog"><div class="i"><i class="fi fi-rr-refresh"></i></div><span class="m">'.$lang['btn_menu_cron'].'</span></a>';
 	$m_device .= '</li>';
 	$m_device .= '</ul></li>';
 }

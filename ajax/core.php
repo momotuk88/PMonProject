@@ -204,8 +204,8 @@ HTML;
 }elseif($act=='delmonitor'){
 	$id = isset($_POST['id']) ? Clean::int($_POST['id']): null;	
 	if($id){
-		if(!empty($USER['class']) && $USER['class']>=4){
-		okno_title($lang{'delet_onu_mon'});
+		if(!empty($USER['class']) && $USER['class']){
+		okno_title($lang['delet_onu_mon']);
 		echo'<form action="/?do=send" method="post" id="formadd"><input name="idonu" type="hidden" value="'.$id.'"><input name="act" type="hidden" value="delmonitor"><div class="redton">Delet device</div></form><div class="polebtn"><button type="submit" form="formadd"  style="background: tomato;" value="submit">'.$lang['delet'].'</button></div>';
 		okno_end();
 		}
@@ -297,7 +297,7 @@ HTML;
 		foreach($SQLDevice as $Device){
 			$dev[$Device['id']]['id'] = $Device['id'];
 			$dev[$Device['id']]['place'] = $Device['place'];
-			$dev[$Device['id']]['netip'] = $Device['netip'];
+			$dev[$Device['id']]['netip'] = ($USER['class']>=4?($config['viewipswitch']=='on'?$Device['netip']:''):'');
 		}
 		$selectdevice = '<select class="select" name="deviceid" id="deviceid">';
 		foreach($dev as $row){
@@ -320,7 +320,7 @@ HTML;
 	$id = isset($_POST['id']) ? Clean::int($_POST['id']): null;	
 	if($id){
 		$device = $db->Fast($PMonTables['switch'],'*',['id'=>$id]);
-		okno_title($lang['addssl'].' '.$device{'place'});
+		okno_title($lang['addssl'].' '.$device['place']);
 		echo'<form action="/?do=send" method="post" id="formadd"><input name="act" type="hidden" value="saveaccess"><input name="id" type="hidden" value="'.$device['id'].'">';
 		echo form(['name'=>'IP','descr'=>'','pole'=>'<input required name="netip" class="input1" type="text" value="'.$device['netip'].'">']);
 		echo'<div class="subpole">SNMP connection</div>';
@@ -336,7 +336,7 @@ HTML;
 	$id = isset($_POST['id']) ? Clean::int($_POST['id']): null;	
 	if($id){
 		$device = $db->Fast($PMonTables['switch'],'*',['id'=>$id]);
-		okno_title($device{'place'});
+		okno_title($device['place']);
 		echo'<form action="/?do=send" method="post" id="formadd"><input name="id" type="hidden" value="'.$device['id'].'"><input name="act" type="hidden" value="deletdevice"><div class="redton">Delet device</div></form><div class="polebtn"><button type="submit" form="formadd"  style="background: tomato;" value="submit">'.$lang['delet'].'</button></div>';
 		okno_end();
 	}

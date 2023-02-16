@@ -105,7 +105,7 @@ $tpl->set('{supportcountonu}',$lang['supportcountonu']);
 $tpl->set('{model}',$lang['model']);
 $tpl->set('{port}',$lang['port']);
 $tpl->set('{uptimeolt}',$lang['uptimeolt']);
-$tpl->set('{olt_ip}',($USER['class']>=4?$dataOLT['netip']:'255.255.255.255'));
+$tpl->set('{netip}',($USER['class']>=4?($config['viewipswitch']=='on'?'<div class="olt-data"><span class="name">IP:</span><span class="data">'.$dataOLT['netip'].'</span></div>':''):''));
 $tpl->set('{olt_model}',trim($dataOLT['inf']).' '.$dataOLT['model']);
 $tpl->set('{olt_port_ont}',mb_strtoupper($dataONT['type'].' '.cl_inface($dataONT['inface'])));
 $tpl->set('{olt_uptime}',($dataOLT['uptime']?$dataOLT['uptime']:'---'));

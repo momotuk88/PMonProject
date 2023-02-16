@@ -10,8 +10,11 @@ class Monitor{
 	}
 	protected function initclass($id='',$optionClass,$OidDevice) {
         switch ($optionClass) {
-			case 'huawei5600':
-				return new Huawei5600($id,$OidDevice);				
+			case 'cdataf1616sn':
+				return new CDATA_1616sn($id,$OidDevice);				
+            break;			
+			case 'huawei5608t':
+				return new HUAWEI_5608t($id,$OidDevice);				
             break;            
 			case 'zte320_2':
 				return new ZTE_c320_2($id,$OidDevice);					

@@ -5,13 +5,10 @@
 	<div class="block-olt-content">
 		<h1>{place}</h1>
 		<div class="listcheck">
-			<span><img src="../style/img/netip.png">IP<b>{netip}</b></span>
-			{sn}{mac}{countonu}{countport}
+		{blockstatsonu}
+		{netip}
 		</div>		
-		{blockonline}	
-		{blockoffline}
 		<div class="listcheck">
-		{interval}
 		{updates}
 		</div>
 		<!---
@@ -33,3 +30,4 @@
 	</div>
 </div>
 {panel}
+{monitorstatus}

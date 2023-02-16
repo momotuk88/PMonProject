@@ -26,7 +26,7 @@ if(count($SQLDevice)){
 		$tpl->set('{id}',$Device['id']);
 		$getDevice = $db->Fast('switch','place,model,inf,netip,typecheck',['id'=>$Device['oltid']]);	
 		$tpl->set('{place}',$getDevice['place']);
-		$tpl->set('{netip}',$getDevice['netip']);
+		$tpl->set('{netip}',($USER['class']>=4?($config['viewipswitch']=='on'?$getDevice['netip']:''):''));
 		$tpl->set('{priority}',priority($Device['priority']));
 		$tpl->set('{model}',$getDevice['model']);
 		$tpl->set('{interval}',tim_check($getDevice['typecheck']));

@@ -53,25 +53,22 @@ switch($act){
 				$keyonu = isset($_POST['data']['keyonu']) ? Clean::int($_POST['data']['keyonu']) : null;
 				$zteslot = ZTEllid2PortMatch($keyport);
 				$tcountprofile = ZTEgetTcontProfileTable($dataSwitch['netip'],$dataSwitch['snmpro']);
-				echo'<div class="formregonu"><div class="pole">';
+				echo'<form id="goregonu-'.$keyport.$keyonu.'"><input type="hidden" id="type" name="zteolt" value="'.$zteolt.'"><input type="hidden" id="type" name="type" value="gpon">';
+				echo'<div class="formregonu" id="goregonu-'.$keyport.$keyonu.'"><div class="pole">';
 				echo'<div><b>SN/Серійний</b><input class="forminput" name="sn" value="'.$sn.'" style="width:200px;"></div><div><b>Vlan</b><input class="forminput" name="vlan" value="'.$vlan.'" style="width:100px;"></div></div><div class="pole">';
 				$tcountprofile = ZTEgetProfile($dataSwitch['netip'],$dataSwitch['snmpro']);
 				if(is_array($tcountprofile)){
 					$selectprofile = '<select class="inputonuselect" name="profile" id="profile">';
 					foreach($tcountprofile as $key => $profile){
-						$selectprofile .= '<option value="'.$key.'"> '.$profile['profile'].'</option>';
+						$selectprofile .= '<option value="'.$profile['profile'].'"> '.$profile['profile'].'</option>';
 					}
 					$selectprofile .='</select>';
+				}else{
+					$selectprofile .='<input required class="forminput" name="profile">';
 				}				
 				echo'<div><b>Профіль</b>'.$selectprofile.'</div><div><b>Switch port mode</b><select name="swmode" class="inputonuselect"><option value="access">access</option><option value="hybrid">hybrid</option><option value="transparent">transparent</option><option value="trunk" selected>trunk</option></select></div>';
-				echo'</div><div class="pole">';
-				echo'<div><b>GPON</b></div>';
-				echo'<div><b>_</b><input class="forminput" name="slotnm" value="'.$zteslot['shlef'].'"></div>';
-				echo'<div><b>/</b><input class="forminput" name="cardnm" value="'.$zteslot['slot'].'"></div>';
-				echo'<div><b>/</b><input class="forminput" name="portnm" value="'.$zteslot['port'].'"></div>';
-				echo'<div><b>:</b><input class="forminput" name="onunm" value="'.$keyonu.'"></div>';				
-				echo'</div><div class="pole"><button type="submit" class="btnregonu">Реєстрація</button></div>';
-				echo'</div>';
+				echo'</div><div class="pole"><div><b>GPON</b></div><div><b>_</b><input required class="forminput" name="slotnm" value="'.$zteslot['shlef'].'"></div><div><b>/</b><input required class="forminput" name="cardnm" value="'.$zteslot['slot'].'"></div><div><b>/</b><input required class="forminput" name="portnm" value="'.$zteslot['port'].'"></div><div><b>:</b><input required class="forminput" name="onunm" value="'.$keyonu.'"></div>';				
+				echo'</div><div class="pole"><span onclick="regonuzte('.$keyport.$keyonu.')" class="btnregonu">Реєстрація</span></div></div></form>';
 			}			
 			if($type=='epon'){
 				
@@ -80,36 +77,44 @@ switch($act){
 	break;	
 	case 'regonuzte': 	
 		$type = isset($_POST['data']['type']) ? Clean::text($_POST['data']['type']) : null;
-		$sn = isset($_POST['data']['sn']) ? Clean::text($_POST['data']['sn']) : null;
-		$keyport = isset($_POST['data']['keyport']) ? Clean::int($_POST['data']['keyport']) : null;
-		$keyonu = isset($_POST['data']['keyonu']) ? Clean::int($_POST['data']['keyonu']) : null;
+		$swmode = isset($_POST['data']['swmode']) ? Clean::text($_POST['data']['swmode']) : null;
+		$profile = isset($_POST['data']['profile']) ? strtoupper(Clean::text($_POST['data']['profile'])) : null;
+		$sn = isset($_POST['data']['sn']) ? strtoupper(Clean::text($_POST['data']['sn'])) : null;
+		$slotnm = isset($_POST['data']['slotnm']) ? Clean::int($_POST['data']['slotnm']) : null;
+		$cardnm = isset($_POST['data']['cardnm']) ? Clean::int($_POST['data']['cardnm']) : null;
+		$portnm = isset($_POST['data']['portnm']) ? Clean::int($_POST['data']['portnm']) : null;
+		$onunm = isset($_POST['data']['onunm']) ? Clean::int($_POST['data']['onunm']) : null;
 		$zteolt = isset($_POST['data']['zteolt']) ? Clean::int($_POST['data']['zteolt']) : null;
-		$vlan = isset($_POST['data']['vlan']) ? Clean::int($_POST['data']['vlan']) : null;
+		$vlan = isset($_POST['data']['vlan']) ? Clean::text($_POST['data']['vlan']) : null;
 		$dataSwitch = $db->Fast('switch','*',['id'=>$zteolt]);
-		if(!empty($dataSwitch['username']) && !empty($dataSwitch['password']) && $vlan){		
+		if(!empty($dataSwitch['username']) && !empty($dataSwitch['password']) && $vlan){
 			if($type=='gpon'){		
-				$onu = ZTEllid2PortMatch($keyport);
 				$phptelnet = new PHPTelnet();
 				$result = $phptelnet->Connect($dataSwitch['netip'],$dataSwitch['username'],$dataSwitch['password']);
-				$phptelnet->DoCommand("conf t\n", $result);
-				$phptelnet->DoCommand("interface gpon-olt_1/".$onu['slot']."/".$onu['port']."\n", $result);
-				$phptelnet->DoCommand("onu ".$keyonu." type ONU_1G sn ".$sn."\n", $result);
-				$phptelnet->DoCommand("onu ".$keyonu." profile line 1000mb remote standart\n", $result);
-				$phptelnet->DoCommand("exit\n", $result);
-				sleep(1);
-				$phptelnet->DoCommand("interface gpon-onu_1/".$onu['slot']."/".$onu['port'].":".$keyonu."\n", $result);
-				sleep(1);
-				$phptelnet->DoCommand("switchport mode trunk vport 1\n", $result);
-				sleep(1);
-				$phptelnet->DoCommand("switchport vlan ".$vlan." tag vport 1\n", $result);
-				sleep(1);
-				$phptelnet->DoCommand("pon-onu-mng gpon-onu_1/".$onu['slot']."/".$onu['port'].":".$keyonu."\n", $result);
-				$phptelnet->DoCommand("vlan port eth_0/1 mode tag vlan ".$vlan."\n", $result);
-				sleep(1);
-				$phptelnet->DoCommand("exit\n", $result);
-				$phptelnet->DoCommand("write\n", $result);
-				sleep(2);
-				$phptelnet->DoCommand("exit\n", $result);
+				$phptelnet->DoCommand("conf t\n",$result);
+				$phptelnet->DoCommand("interface gpon-olt_$slotnm/$cardnm/$portnm\n",$result);
+				$phptelnet->DoCommand("onu $onunm type $profile sn $sn\n",$result);
+				// ....[Successful]
+				if(preg_match("/Successful/i",$result)){
+					sleep(1);
+					$phptelnet->DoCommand("onu $onunm profile line 1000mb remote standart\n",$result);
+					sleep(1);
+					$phptelnet->DoCommand("exit\n",$result2);
+					sleep(1);
+					$phptelnet->DoCommand("interface gpon-onu_$slotnm/$cardnm/$portnm:$onunm\n", $result);
+					$phptelnet->DoCommand("switchport mode $swmode vport 1\n", $result);
+					$phptelnet->DoCommand("switchport vlan $vlan tag vport 1\n", $result);
+					sleep(1);
+					$phptelnet->DoCommand("exit\n",$result2);
+					sleep(1);
+					$phptelnet->DoCommand("pon-onu-mng gpon-onu_$slotnm/$cardnm/$portnm:$onunm\n", $result);
+					$phptelnet->DoCommand("vlan port eth_0/1 mode tag vlan $vlan\n", $result);
+					sleep(1);
+					$phptelnet->DoCommand("exit\n", $result);
+					$phptelnet->DoCommand("write\n", $result);
+					sleep(2);
+					$phptelnet->DoCommand("exit\n", $result);
+				}
 			}
 		}
 	break;	

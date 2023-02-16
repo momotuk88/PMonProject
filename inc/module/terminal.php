@@ -2,7 +2,10 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+$column = '';
 $url_terminal = '';
+$oldlinks = '';
+$$ORDERBY = '';
 $id = isset($_GET['id']) ? Clean::int($_GET['id']) : null;
 $port = isset($_GET['port']) ? Clean::int($_GET['port']) : null;
 $sort = isset($_GET['sort']) ? Clean::int($_GET['sort']) : null;
@@ -60,6 +63,7 @@ if(!$id)
 $whereOlTandPON = array();
 
 // SORT
+$link1 = '';$link2 = '';$link3 = '';$link4 = '';$link5 = '';$link6 = '';$link7 = '';$link8 = '';$sortbtn = '';
 $count_get = 0;
 	$oldlink = null;
 	foreach ($_GET as $get_name => $get_value) {
@@ -211,7 +215,6 @@ if(count($SQLTerminal)){
 	foreach($SQLTerminal as $Terminal){
 		$tpl->load_template('terminal/list.tpl');
 		$status = statusTermianl($Terminal['status']);
-		$tpl->set('{info}',($Terminal['info'] ? statusInfo($Terminal['info']) : ''));
 		$tpl->set('{status}',$status['img']);
 		$tpl->set('{statuscss}',$status['css']);
 		$tpl->set('{signal}',signalTerminal($Terminal['rx']).($Terminal['rxstatus']=='up' || $Terminal['rxstatus']=='down' ? '<span class="signaldown"><i class="fi fi-rr-angle-small-'.$Terminal['rxstatus'].'"></i></span>':''));

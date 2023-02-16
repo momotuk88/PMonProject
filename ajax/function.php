@@ -64,12 +64,21 @@ switch($act){
 			LogOnu($SQLonus['idonu'],$SQLswitch['id'],$lang['edit_vlan'].''.$vlan,$USER['id']);
 		}			
 	break;	
+	case 'savenamehuawei': 
+		$name = isset($_POST['name']) ? Clean::text($_POST['name']): null;
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$id]);
+		$SQLswitch = $db->Fast('switch','*',['id'=>$SQLonus['olt']]);
+		if($name && $USER['class']>=5 && $SQLswitch['oidid']==7 && !empty($SQLonus['idonu'])){ 
+			@$result = snmp2_set($SQLswitch['netip'],$SQLswitch['snmprw'], "1.3.6.1.4.1.2011.6.128.1.1.2.43.1.9.".$SQLonus['zte_idport'].".".$SQLonus['keyonu'],'s',$name);
+			echo $name;
+		}		
+	break;
 	case 'savenamezte': 
 		$name = isset($_POST['name']) ? Clean::text($_POST['name']): null;
 		$SQLonus = $db->Fast('onus','*',['idonu'=>$id]);
 		$SQLswitch = $db->Fast('switch','*',['id'=>$SQLonus['olt']]);
 		if($name && $USER['class']>=5 && $SQLswitch['oidid']==7 && !empty($SQLonus['idonu'])){ 
-			$result = snmp2_set($SQLswitch['netip'],$SQLswitch['snmprw'], "1.3.6.1.4.1.3902.1012.3.28.1.1.2.".$SQLonus['zte_idport'].".".$SQLonus['keyonu'],'s',$name);
+			@$result = snmp2_set($SQLswitch['netip'],$SQLswitch['snmprw'], "1.3.6.1.4.1.3902.1012.3.28.1.1.2.".$SQLonus['zte_idport'].".".$SQLonus['keyonu'],'s',$name);
 			echo $name;
 		}		
 	break;	
@@ -78,10 +87,110 @@ switch($act){
 		$SQLonus = $db->Fast('onus','*',['idonu'=>$id]);
 		$SQLswitch = $db->Fast('switch','*',['id'=>$SQLonus['olt']]);
 		if($name && $USER['class']>=5 && $SQLswitch['oidid']==7 && !empty($SQLonus['idonu'])){ 
-			$result = snmp2_set($SQLswitch['netip'],$SQLswitch['snmprw'], "1.3.6.1.4.1.3902.1012.3.28.1.1.3.".$SQLonus['zte_idport'].".".$SQLonus['keyonu'],'s',$name);
+			@$result = snmp2_set($SQLswitch['netip'],$SQLswitch['snmprw'], "1.3.6.1.4.1.3902.1012.3.28.1.1.3.".$SQLonus['zte_idport'].".".$SQLonus['keyonu'],'s',$name);
 			echo $name;
 		}		
 	break;	
+	case 'zte3reboot': 	// ztec3xxx reboot
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);
+		$SQLswitch = $db->Fast('switch','*',['id'=>$SQLonus['olt']]);
+		if(!empty($SQLswitch['snmprw']) && $USER['class']>=5 && $SQLswitch['oidid']==7 && !empty($SQLonus['idonu'])){ 
+			@$result = snmp2_set($SQLswitch['netip'],$SQLswitch['snmprw'], '1.3.6.1.4.1.3902.1012.3.50.11.3.1.1.'.$SQLonus['zte_idport'].'.'.$SQLonus['keyonu'],'i','1');
+		}
+	break;	
+	case 'huaweireboot':		
+		$SQLswitch = $db->Fast('switch','*',['id'=>$id]);
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);
+		if($USER['class']>=4 && !empty($SQLswitch['id']) && !empty($SQLswitch['snmprw'])){ 
+			@$result = snmp2_set($SQLswitch['netip'],$SQLswitch['snmprw'], '1.3.6.1.4.1.2011.6.128.1.1.4.23.1.20.'.$SQLonus['zte_idport'].'.'.$SQLonus['keyonu'],'i','1');
+		}
+	break;	
+	case 'huaweidelonu':		
+		$SQLswitch = $db->Fast('switch','*',['id'=>$id]);
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);
+		if($USER['class']>=4 && !empty($SQLswitch['id']) && !empty($SQLswitch['snmprw'])){ 
+			@$result = snmp2_set($SQLswitch['netip'],$SQLswitch['snmprw'], '1.3.6.1.4.1.2011.6.128.1.1.2.43.1.10.'.$SQLonus['zte_idport'].'.'.$SQLonus['keyonu'],'i','6');
+			delete_onu($idonu);
+		}
+	break;	
+	case 'zte3delonu':	
+		$SQLswitch = $db->Fast('switch','*',['id'=>$id]);
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);
+		if($USER['class']>=4 && !empty($SQLswitch['id']) && !empty($SQLswitch['username']) && !empty($SQLswitch['password'])){ 
+			$onu = ZTEllid2PortMatch($SQLonus['zte_idport']);
+			$phptelnet = new PHPTelnet();
+			$result = $phptelnet->Connect($SQLswitch['netip'],$SQLswitch['username'],$SQLswitch['password']);
+			sleep(1);
+			$phptelnet->DoCommand("conf t\n", $result);
+			$phptelnet->DoCommand("interface gpon-olt_".$onu['shlef']."/".$onu['slot']."/".$onu['port']."\n", $result);
+			$phptelnet->DoCommand("no onu ".$SQLonus['keyonu']."\n", $result);
+			$phptelnet->DoCommand("yes\n", $result);
+			delete_onu($idonu);
+			sleep(2);
+			$phptelnet->DoCommand("exit\n", $result);
+			$phptelnet->DoCommand("exit\n", $result);
+			sleep(1);
+			$phptelnet->DoCommand("write\n", $result);
+			sleep(1);
+		}
+	break;		
+	case 'zte3configonu':	
+		$SQLswitch = $db->Fast('switch','*',['id'=>$id]);
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);
+		if($USER['class']>=4 && !empty($SQLswitch['id']) && !empty($SQLswitch['username']) && !empty($SQLswitch['password'])){ 
+			$onu = ZTEllid2PortMatch($SQLonus['zte_idport']);
+			$phptelnet = new PHPTelnet();
+			$result = $phptelnet->Connect($SQLswitch['netip'],$SQLswitch['username'],$SQLswitch['password']);
+			sleep(1);
+			$command = "show gpon onu detail-info gpon-onu_".$onu['shlef']."/".$onu['slot']."/".$onu['port'].":".$SQLonus['keyonu'];
+			$phptelnet->DoCommand($command."\n", $result);
+			$result = str_replace('  ',' ',str_replace($command,'',$result));
+			$result = str_replace('--More--','',$result);
+			$result = str_replace('','',$result);
+			$arr_out = explode("\n",$result);	
+			foreach($arr_out as $conf){
+				if(trim($conf)){
+					$onucfg .= ''.trim(preg_replace('/[\s]{2,}/', ' ', $conf)).'<br>';
+				}
+			}
+			echo'<div id="ajaxablock"><pre>'.$onucfg.'</pre></div>';				
+		}
+	break;	
+	case 'zte3mac': 	
+		$SQLswitch = $db->Fast('switch','*',['id'=>$id]);
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);
+		if($USER['class']>=4 && !empty($SQLswitch['id']) && !empty($SQLswitch['username']) && !empty($SQLswitch['password'])){ 
+			$onu = ZTEllid2PortMatch($SQLonus['zte_idport']);
+			$phptelnet = new PHPTelnet();
+			$result = $phptelnet->Connect($SQLswitch['netip'],$SQLswitch['username'],$SQLswitch['password']);
+			sleep(1);
+			$command = "show mac gpon onu gpon-onu_".$onu['shlef']."/".$onu['slot']."/".$onu['port'].":".$SQLonus['keyonu'];
+			$phptelnet->DoCommand($command."\n", $result);
+			if(preg_match("/Vlan/i",$result)) {
+				$out = explode('-----', $result);
+				$out = end($out);
+				$arr_out = explode("\n", $out);
+				foreach ($arr_out as $out_mac){
+					if(preg_match("/#/i",$out_mac) || preg_match("/--/i",$out_mac)) {
+
+					}else{
+						$listmac .='<div class="block-for-mac">';
+						$temponu = explode("  ",$out_mac);
+						foreach($temponu as $on){
+							$check = trim(str_replace(' ','',$on));
+							if($check){
+								$listmac .='<div class="block-for-mac-bl">'.$check.'</div>';
+							}
+						}
+						$listmac .='</div>';
+					}
+				}
+			}else{
+				$listmac = 'missing mac';
+			}
+			echo'<div id="ajaxablock"><div class="blockmac">'.$listmac.'</div></div>';				
+		}
+	break;
 	case 'offtvzteport1': 
 		$SQLonus = $db->Fast('onus','*',['idonu'=>$id]);
 		$SQLswitch = $db->Fast('switch','*',['id'=>$SQLonus['olt']]);
@@ -137,7 +246,7 @@ switch($act){
 		}
 	break;	
 	case 'hideonu': 
-		if(!empty($USER['id']) && !empty($USER['hideonu'])){
+		if(!empty($USER['id'])){
 			if($USER['hideonu']=='yes'){
 				$hideonu = 'no';
 			}else{

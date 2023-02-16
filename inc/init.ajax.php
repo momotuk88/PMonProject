@@ -16,16 +16,16 @@ require ENGINE_DIR.'classes/clean.class.php';
 require ENGINE_DIR.'classes/users.class.php';
 require ENGINE_DIR.'classes/telnet.class.php';
 if(!empty($USER['id'])){
-if(defined('ONT')){
-require ENGINE_DIR.'classes/equipment.class.php';
-require ENGINE_DIR.'classes/snmp.class.php';
-require ENGINE_DIR.'init.olt.php';
-require ENGINE_DIR.'classes/ont.class.php';
-}
-require ENGINE_DIR.'functions/monitor.php';
-require ROOT_DIR.'/inc/init.config.php';
-require ENGINE_DIR.'functions/core.php';
+	if(defined('ONT')){
+		require ENGINE_DIR.'classes/equipment.class.php';
+		require ENGINE_DIR.'classes/snmp.class.php';
+		require ENGINE_DIR.'init.olt.php';
+		require ENGINE_DIR.'classes/ont.class.php';
+	}
+	require ENGINE_DIR.'functions/monitor.php';
+	require ROOT_DIR.'/inc/init.config.php';
+	require ENGINE_DIR.'functions/core.php';
 }else{
-die('ajax');
+	die('Authentication failed');
 }
 ?>

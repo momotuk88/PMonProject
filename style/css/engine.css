@@ -13,7 +13,7 @@ background-color: #ea6f45; color: #fff; font-size: 16px; font-weight: 400;}
 .pagi-load a:hover, .usp-btn a:hover,
 button:not(.color-btn):hover, html input[type="button"]:hover, input[type="reset"]:hover, 
 input[type="submit"]:hover, .meta-fav a:hover 
-{background-color: #d35930; color: #fff;}
+{background-color: #557da7; color: #fff;}
 button:active, input[type="button"]:active, input[type="submit"]:active {box-shadow: inset 0 1px 4px 0 rgba(0,0,0,0.1);}
 input[type="text"], input[type="password"] {display: block; width: 100%; height: 40px; line-height: 40px; padding: 0 15px;
 background-color: #ededed; color: #000;  border-radius: 4px; box-shadow: none; border: 0;}

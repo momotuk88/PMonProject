@@ -33,11 +33,20 @@ function nextregonuzte(id) {
 	$("#nextreg-" + id).html(response);
 	}, "html");
 }
+function regonuzte(id) {
+	$("#nextreg-" + id).hide();
+	$("#load_info").show();
+	const json = convertFormToJSON("#goregonu-" + id);
+	$.post(root+"ajax/olt.php",{act:'regonuzte',data:json},function(response){ 
+	$("#load_info").hide();
+	$("#nextreg-" + id).html(response);
+	}, "html");
+}
 function ajaxont(id) {
 	$.post(root+"ajax/ont.php",{id:id},function(response){ 
 	$("#ont").html(response);
 	}, "html");
-	setTimeout('ajaxont('+id+');',500000);	
+	setTimeout('ajaxont('+id+');',5000000);	
 }
 function ajaxzte320(id) {
 	$.post(root+"ajax/ontzte320.php",{id:id},function(response){ 
@@ -45,11 +54,17 @@ function ajaxzte320(id) {
 	}, "html");
 	setTimeout('ajaxzte320('+id+');',500000);	
 }
+function ajaxhuawei5608(id) {
+	$.post(root+"ajax/onthuawei5608.php",{id:id},function(response){ 
+	$("#onthuawei5608").html(response);
+	}, "html");
+	setTimeout('onthuawei5608('+id+');',500000);	
+}
 function ajaxpanel(id) {
 	$.post(root+"ajax/panel.php",{id:id},function(response){ 
 	$("#panel-ont").html(response);
 	}, "html");
-	setTimeout('ajaxpanel('+id+');',50000);	
+	setTimeout('ajaxpanel('+id+');',5000000);	
 }
 function ajaxcmdpanel(act,onu) {
 	$("#loading").show();
@@ -69,6 +84,12 @@ function ajaxdevicestatus(id) {
 	}, "html");
 	setTimeout('ajaxdevicestatus('+id+');',50000);	
 }
+function ajaxchecknewonu(id) {
+	$.post(root+"ajax/checknewonu.php",{id:id},function(response){ 
+	$("#noregonu").html(response);
+	}, "html");
+	setTimeout('ajaxchecknewonu('+id+');',100000);	
+}
 function ajaxviewphoto(id) {
 	$.post(root+"ajax/photo.php",{act:'view',id:id},function(response){ 
 	$("#ajax").html(response);
@@ -84,6 +105,10 @@ function ajaxcmd(act,olt,onu) {
 	$("#ajax").html(response);
 	}, "html");
 }
+function getolt(id) {
+	$.post("system.php",{jobid:'3',olt:id});
+	$("#ajaxolt").hide();
+}
 function bdcommaconu_ajax(id,idonu,act) {
 	$("#loading").show();
 	$.post(root+"ajax/function.php",{act:act,id:id,idonu:idonu},function(response){ 
@@ -91,18 +116,11 @@ function bdcommaconu_ajax(id,idonu,act) {
 	}, "html");
 	$("#loading").hide();
 }
-function savezteonuname(id){
+function snmpsetsave(id,act){
 	var name = jQuery('#nameonu').val();
 	$("#form_rename").hide();
-	$.post(root+"ajax/function.php",{act:'savenamezte',id:id,name:name},function(response){ 
+	$.post(root+"ajax/function.php",{act:act,id:id,name:name},function(response){ 
 	$("#resname").html(response);
-		}, "html");
-}
-function savezteonudescr(id){
-	var name = jQuery('#noteonu').val();
-	$("#form_renote").hide();
-	$.post(root+"ajax/function.php",{act:'savedescrzte',id:id,name:name},function(response){ 
-	$("#resnote").html(response);
 		}, "html");
 }
 function showblockform1(){
@@ -130,6 +148,20 @@ function rebootonu_ajax(id,idonu,act) {
 	$.post(root+"ajax/function.php",{act:act,id:id,idonu:idonu});
 	$(location).attr('href');
 	location.reload(); 
+}
+function zteonufunreload(id,idonu,act) {
+	$("#loading").show();
+	$.post(root+"ajax/function.php",{act:act,id:id,idonu:idonu});
+	setTimeout(sayHi,4000);
+}
+function zteonufunpage(id,idonu,act) {
+	$("#loading").show();
+	$("#block-ont-" + id).hide();
+	$.post(root+"ajax/function.php",{act:act,id:id,idonu:idonu},
+	function(response){ 
+		$("#block-ont-"+ idonu).html(response);
+	}, "html");
+	$("#loading").hide(); 
 }
 function sayHi() {
 	$(location).attr('href');
@@ -166,7 +198,7 @@ function ajaxhideonu() {
 	location.reload(); 
 }
 function getolt(id) {
-	$.post("monitor.php",{priority:'3',id:id});
+	$.post("system.php",{jobid:'3',olt:id});
 	$("#ajaxolt").hide();
 }
 function ajaxponboxonu(act,ponboxid,onuid) {

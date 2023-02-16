@@ -85,6 +85,8 @@ switch($act){
 				$getDataSql['telegramtoken'] = Clean::str($_POST['telegramtoken']);	
 			if(isset($_POST['telegramchatid']))
 				$getDataSql['telegramchatid'] = Clean::str($_POST['telegramchatid']);	
+			if(isset($_POST['viewipswitch']))
+				$getDataSql['viewipswitch'] = Clean::str($_POST['viewipswitch']);				
 			if(isset($_POST['marker']))
 				$getDataSql['marker'] = Clean::str($_POST['marker']);	
 			if(isset($_POST['map']))
@@ -105,6 +107,16 @@ switch($act){
 				$getDataSql['root'] = Clean::str($_POST['root']);		
 			if(isset($_POST['url']))
 				$getDataSql['url'] = Clean::str($_POST['url']);			
+			if(isset($_POST['badsignalstart']) && isset($_POST['badsignalend'])){
+				$badsignalstart = (intval($_POST['badsignalstart']) ? Clean::int($_POST['badsignalstart']) : 28 );
+				$badsignalend = (intval($_POST['badsignalend']) ? Clean::int($_POST['badsignalend']) : 40 );
+				if($badsignalstart>=$badsignalend){
+
+				}else{
+					$getDataSql['badsignalstart'] = (int)$badsignalstart;
+					$getDataSql['badsignalend'] = (int)$badsignalend;
+				}
+			}
 			if(isset($_POST['countviewpageonu']))
 				$getDataSql['countviewpageonu'] = Clean::int($_POST['countviewpageonu']);
 			foreach($config as $val => $data_config){
@@ -1066,13 +1078,13 @@ switch($act){
 	case 'saveaccess':	
 		if(!empty($USER['class']) && $USER['class']>=6){
 			if(isset($_POST['id']))
-				$getDataSql['id'] = Clean::int($_POST['id']);
-			$dataSwitch = $db->Fast('switch','*',['id'=>$getDataSql['id']]);
+				$getWhere['id'] = Clean::int($_POST['id']);
+			$dataSwitch = $db->Fast('switch','*',['id'=>$getWhere['id']]);
 			if(!empty($dataSwitch['id'])){
 				if(isset($_POST['netip']))
 					$getDataSql['netip'] = Clean::text($_POST['netip']);				
-				if(isset($_POST['snmpro']))
-					$getDataSql['snmpro'] = Clean::text($_POST['snmpro']);			
+				if(isset($_POST['public']))
+					$getDataSql['snmpro'] = Clean::text($_POST['public']);			
 				if(isset($_POST['private']))
 					$getDataSql['snmprw'] = Clean::text($_POST['private']);			
 				if(isset($_POST['username']))
@@ -1080,7 +1092,7 @@ switch($act){
 				if(isset($_POST['password']))
 					$getDataSql['password'] = Clean::text($_POST['password']);
 				if(is_array($getDataSql))
-					$db->SQLupdate($PMonTables['switch'],$getDataSql,['id'=>$getDataSql['id']]);
+					$db->SQLupdate($PMonTables['switch'],$getDataSql,['id'=>$dataSwitch['id']]);
 				$go->go('/?do=detail&act='.$dataSwitch['device'].'&id='.$dataSwitch['id']);
 			}
 		}			

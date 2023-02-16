@@ -108,12 +108,12 @@ if($select_olt_list){
 		</div>
 	</div>
 	<div class="block">
-		<h3>Сигнал ONT</h3>
+		<h3>Сигнал RX</h3>
 		<div>
 			<select name="selectsignal" class="sort icon-arowDown open" > 
 				<option value="all" '.($select_signal=='all'?'selected':'').'>Як буде</option>
-				<option value="big" '.($select_signal=='big'?'selected':'').'>Поганий</option>
-				<option value="small" '.($select_signal=='small'?'selected':'').'>Хороший</option>
+				<option value="big" '.($select_signal=='big'?'selected':'').'>Хороший</option>
+				<option value="small" '.($select_signal=='small'?'selected':'').'>Поганий</option>
 			</select>
 		</div>
 	</div>
@@ -157,9 +157,9 @@ if($SQL_Zaput){
 				// olt
 				$searchform_result .= '<td class="device_icon '.($ont['status']==1?'green':'red').'"><div class="site-nav-dropdown-icon-container">';
 				if($ont['status']==1){
-					$searchform_result .= $svg_work;
+					$searchform_result .= '<img src="../style/img/online.png">';
 				}else{
-					$searchform_result .= $svg_cof;
+					$searchform_result .= '<img src="../style/img/offline.png">';
 				}
 				$searchform_result .= '</div></td>';
 				$searchform_result .= '<td width="15%" class="device_olt" align="left">';
@@ -180,17 +180,17 @@ if($SQL_Zaput){
 				// статус
 				$searchform_result .= '<td width="15%" class="device_active '.($ont['status']==1?'geton':'getoff').'" align="left">';
 				if($ont['status']==1 && !empty($ont['online']))
-					$searchform_result .= '<span class="ont-online-serach"><i class="fi fi-rr-clock"></i>онлайн з<br>'.$ont['online'].'</span>';				
+					$searchform_result .= '<span class="ont-online-serach"><img src="../style/img/uptime.png">онлайн з<br>'.$ont['online'].'</span>';				
 				if($ont['status']==2 && !empty($ont['offline']))
-					$searchform_result .= '<span class="ont-offline-serach"><i class="fi fi-rr-info"></i>оффлайн з<br>'.$ont['offline'].'</span>';
+					$searchform_result .= '<span class="ont-offline-serach"><img src="../style/img/uptime.png">оффлайн з<br>'.$ont['offline'].'</span>';
 				$searchform_result .= '</td>';				
 				$searchform_result .= '<td class="bl-all">';
 					if(!empty($ont['name']))
 						$searchform_result .= '<div class="search-tag">'.$ont['name'].'</div>';
 					if(!empty($ont['tag']))
-						$searchform_result .= '<div class="search-tag"><i class="fi fi-rr-label"></i>'.$ont['tag'].'</div>';					
+						$searchform_result .= '<div class="search-tag">'.$ont['tag'].'</div>';					
 					if(!empty($ont['uid']))
-						$searchform_result .= '<div class="search-uid"><i class="fi fi-rr-user"></i>'.$ont['uid'].'</div>';
+						$searchform_result .= '<div class="search-uid">'.$ont['uid'].'</div>';
 				$searchform_result .= '</td>';
 				#$searchform_result .= '<td class="function" width="2%">';
 					#$searchform_result .= '<input type="checkbox" name="" value=""/>';

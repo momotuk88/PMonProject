@@ -2,6 +2,108 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+function HuaweiReasonGpon($data){
+	switch ($data) {
+		case '1':						
+			return 'err6'; // LOS
+		break;				
+		case '2':						
+			return 'err36'; // LOSi(Loss of signal for ONUi) or LOBi (Loss of burst for ONUi)
+		break;				
+		case '3':						
+			return 'err37'; // LOFI(Loss of frame of ONUi)
+		break;			
+		case '4':						
+			return 'err38'; // SFI(Signal fail of ONUi)
+		break;	
+		case '5':						
+			return 'err39'; //  LOAI(Loss of acknowledge with ONUi)
+		break;	
+		case '6':						
+			return 'err40'; // LOAMI(Loss of PLOAM for ONUi)
+		break;	
+		case '7':						
+			return 'err41'; // deactive ONT fails
+		break;	
+		case '8':						
+			return 'err42'; // deactive ONT success
+		break;	
+		case '9':						
+			return 'err43'; // reset ONT
+		break;	
+		case '10':						
+			return 'err44'; // re-register ONT
+		break;	
+		case '11':						
+			return 'err45'; // pop up fail 
+		break;	
+		case '13':						
+			return 'err1';							
+		break;		
+		case '255':						
+			return 'err1';							
+		break;				
+		case '15':						
+			return 'err46'; // LOKI(Loss of key synch with ONUi) 
+		break;				
+		case '18':						
+			return 'err47'; // deactived ONT due to the ring 
+		break;				
+		case '30':						
+			return 'err48'; // shut down ONT optical module
+		break;				
+		case '31':						
+			return 'err49'; // reset ONT by ONT command
+		break;				
+		case '32':						
+			return 'err50'; // reset ONT by ONT reset button
+		break;				
+		case '33':						
+			return 'err51'; // reset ONT by ONT software
+		break;				
+		case '34':						
+			return 'err52'; // deactived ONT due to broadcast attack
+		break;				
+		case '35':						
+			return 'err53'; // operator check fail
+		break;				
+		case '37':						
+			return 'err54'; // a rogue ONT detected by itself
+		break;	
+		case '-1':						
+			return 'err6';	
+		break;
+		default:	
+			return 'err20';						
+	}
+}
+function descr_huawei_laser_bias($bias){
+	if(!$bias){
+		$data['img'] = 'laser_0';
+		$data['alarm'] = 'Кінець';
+	}	
+	if($bias>1 AND $bias<=4){
+		$data['img'] = 'laser_1';
+		$data['alarm'] = 'Критичний';
+	}
+	if($bias>=5 AND $bias<=7){
+		$data['img'] = 'laser_2';
+		$data['alarm'] = 'Поганий';
+	}
+	if($bias>=8 AND $bias<=10){
+		$data['img'] = 'laser_3';
+		$data['alarm'] = 'Увага';
+	}
+	if($bias>=11 AND $bias<=25){
+		$data['img'] = 'laser_4';
+		$data['alarm'] = 'Хороший';
+	}
+	if($bias>=26 AND $bias<=30){
+		$data['img'] = 'laser_4';
+		$data['alarm'] = 'Голівуд';
+	}
+	return $data;
+}
 function ZTEAllVlan($netip,$snmpro) {
 if($netip && $snmpro){@$getAllVlanList = snmp2_real_walk($netip,$snmpro,'1.3.6.1.4.1.3902.3.102.1.1.1.1');if($getAllVlanList){
 	foreach($getAllVlanList as $key => $vlan){
@@ -64,14 +166,14 @@ function getAllVlanFromula($temp){
 	if($out){
 		foreach($out as $key => $tem){
 			if (preg_match('/-/i',$tem)){
-				#preg_match('/(\d+)-(\d+)/',$tem,$mat);
-				#for ($i = $mat[1]; $i <= $mat[2]; $i++) {
-				#	$vlan[$i]['vlan'] = $i;
-				#}
+				preg_match('/(\d+)-(\d+)/',$tem,$mat);
+				for ($i = $mat[1]; $i <= $mat[2]; $i++) {
+					$vlan[$i]['vlan'] = $i;
+				}
 			}else{
-				#$vlan[$tem]['vlan'] = $tem;
+				$vlan[$tem]['vlan'] = $tem;
 			}
-			$vlan[$tem]['vlan'] = $tem;
+			#$vlan[$tem]['vlan'] = $tem;
 		}
 	}
 	return isset($vlan) ? $vlan : null;
@@ -214,8 +316,8 @@ function typeOnuztePort($snmptype){
 			case 1: 
 				$result1['img']='zte0.png';	
 				$result1['txt']='Offline';
-				$result1['st']='disable';	
-				$result1['status']='disable';					
+				$result1['st']='down';	
+				$result1['status']='down';					
 			break;
 			case 0: 
 				$result1['img']='zte0.png';	
@@ -247,6 +349,43 @@ function telegram_sms($type) {
 	if($config['telegram']=='on' && $type){
 		$content = array('chat_id' => $config['telegramchatid'],'text' => $type,'parse_mode'=>'HTML','disable_notification'=>false);
 		file_get_contents('https://api.telegram.org/bot'.$config['telegramtoken'].'/sendmessage?'.http_build_query($content));	
+	}
+}
+function blockStatsONU($olt){
+	global $config, $db, $PMonTables, $lang;
+	$getONU = $db->Multi($PMonTables['onus'],'status',['olt'=>$olt]);
+	if($getONU){
+		$off = 1; $on = 1;
+		$data['count'] = count($getONU);
+		foreach($getONU as $value){
+			if($value['status']==1){
+				$data['online'] = $on;
+				$on ++;
+			}			
+			if($value['status']==2){
+				$data['offline'] = $off;
+				$off ++;	
+			}
+		}
+	$widht1 = (100/$data['count'])*$data['online'];
+	$widht2 = (100/$data['count'])*$data['offline'];
+	$style ='<div class="blockstats">';
+	$style .='<div class="bl_online"><header class="col1"><b>'.$lang['online'].'</b><b>'.(int)$data['online'].'</b></header><div class="bars1"><div class="percent1" style="width:'.$widht1.'%;"></div></div></div>';			
+	$style .='<div class="bl_online"><header class="col2"><b>'.$lang['offline'].'</b><b>'.(int)$data['offline'].'</b></header><div class="bars1"><div class="percent2" style="width:'.$widht2.'%;"></div></div></div>';
+	$style .='</div>';
+	}
+	return $style;
+}
+function delete_onu($idonu){
+	global $config, $db, $PMonTables;
+	$getONU = $db->Fast($PMonTables['onus'],'*',['idonu'=>$idonu]);
+	if(!empty($getONU['idonu'])){
+		$db->query('DELETE FROM monitoronu WHERE idonu = '.$getONU['idonu']);
+		$db->query('DELETE FROM onus WHERE idonu = '.$getONU['idonu']);
+		$db->query('DELETE FROM onus_comm WHERE idonu = '.$getONU['idonu']);
+		$db->query('DELETE FROM onus_log WHERE onuid = '.$getONU['idonu']);
+		$db->query('DELETE FROM unitponboxont WHERE onuid = '.$getONU['idonu']);
+		$db->query('DELETE FROM historysignal WHERE onu = '.$getONU['idonu']);
 	}
 }
 function ListSwitchMonitor(){
@@ -843,6 +982,7 @@ function geterrorPonTpl($llid,$deviceid){
 }
 function getlistPonTpl($data){
 	global $db;
+	$tpl = '';
 	$SQLport = $db->Multi('switch_pon','*',['oltid'=>$data['deviceid']],['sort'=>'asc']);
 	if(count($SQLport)){
 		foreach($SQLport as $Port){
@@ -909,6 +1049,10 @@ function nameport_pon($value) {
 	$value = mb_strtolower($value);
 	if(preg_match('/xgei/i',$value)){
 		return 'sfp'; // xgei (интерфейс 10G Ethernet).
+	}elseif(preg_match('/xge/i',$value)){
+		return 'xge'; // xgei (интерфейс 10G Ethernet).
+	}elseif(preg_match('/ge/i',$value)){
+		return 'ge'; // xgei (интерфейс 10G Ethernet).
 	}elseif(preg_match('/gei/i',$value)){
 		return 'eth1000'; // gei (интерфейс 1000M Ethernet)	
 	}elseif(preg_match('/gpon/i',$value)){
@@ -917,14 +1061,16 @@ function nameport_pon($value) {
 		return 'epon';
 	}elseif(preg_match('/rxolt/i',$value)){
 		return '';	
-	}elseif(preg_match('/TGigaEthernet/i',$value)){
+	}elseif(preg_match('/tgigaethernet/i',$value)){
 		return 'sfp'; // gei (интерфейс 1000M Ethernet)	
-	}elseif(preg_match('/GigaEthernet/i',$value)){
+	}elseif(preg_match('/gigaethernet/i',$value)){
 		return 'sfp'; // gei (интерфейс 1000M Ethernet)	
-	}elseif(preg_match('/FastEthernet/i',$value)){
+	}elseif(preg_match('/fastethernet/i',$value)){
 		return 'eth100'; // gei (интерфейс 1000M Ethernet)	
 	}elseif(preg_match('/Mng1/i',$value)){
 		return 'mng1'; // gei (интерфейс 1000M Ethernet)	
+	}elseif(preg_match('/ethernet/i',$value)){
+		return 'ethernet';	
 	}
 }
 function idport_switch($string) {
@@ -1296,6 +1442,10 @@ function grpahPon($count,$support){
 	return $html;
 }
 function pager($rpp, $count, $href, $opts = array()) {
+	$bregs = '';
+	$pager2 = '';
+	$pager = '';
+	$pagerbottom = '';
 	$pages = ceil($count / $rpp);
 	$pagedefault = 0;
 	if (!empty($opts['lastpagedefault']))

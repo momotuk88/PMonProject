@@ -10,8 +10,14 @@ class Ont{
 	}
 	protected function initclass($id='',$optionClass,$OidDevice) {
         switch ($optionClass) {
-			case 'zte220_2':
-				return new ZTE_c220_2($id,$OidDevice);					
+			case 'cdataf1616sn':
+				return new CDATA_1616sn($id,$OidDevice);				
+            break;			
+			case 'huawei5608t':
+				return new HUAWEI_5608t($id,$OidDevice);				
+            break;            
+			case 'zte320_2':
+				return new ZTE_c320_2($id,$OidDevice);					
             break;				
 			case 'zte300_2':
 				return new ZTE_c300_2($id,$OidDevice);					

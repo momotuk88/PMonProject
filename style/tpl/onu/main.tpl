@@ -21,7 +21,7 @@
 				<div class="olt-data"><span class="name">{olt}:</span><span class="data">{olt_place}</span></div>						
 				<div class="olt-data"><span class="name">{model}:</span><span class="data">{olt_model}</span></div>	
 				<div class="olt-data"><span class="name">{uptimeolt}:</span><span class="data">{olt_updates}</span></div>			
-				<div class="olt-data"><span class="name">IP:</span><span class="data">{olt_ip}</span></div>					
+				{netip}					
 				<div class="olt-data"><span class="name">{port}:</span><span class="data">{olt_port_ont}</span></div>					
 				<div class="olt-data"><span class="name">{supportcountonu}:</span><span class="data">1:{supportonuport}</span></div>					
 				<div class="olt-data"><span class="name">{langcountonu}:</span><span class="data">{countonuport}</span></div>					
@@ -30,7 +30,6 @@
 		<div class="ont-base">{billing}{tag}{logonu}</div>
 	</div>
 </div>	
-
 <div id="ont-{id}"></div>
 </div>
 <script type="text/javascript">

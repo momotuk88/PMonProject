@@ -11,7 +11,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div id="loading" style="display:none"><div class="loading"> LOAD... </div></div>
 {var}
 <div class="wrap">
 <div class="wrap-center wrap-container">
@@ -26,6 +25,7 @@
 </div>
 </div>
 <div id="ajax"></div>
+<div id="loading" style="display:none"><div class="loading"> LOAD... </div></div>
 </body>
 </html>
 {debug}

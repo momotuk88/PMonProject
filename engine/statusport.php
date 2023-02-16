@@ -58,11 +58,10 @@ if(count($getAllPort)){
 			$arrayport[$port['id']]['monitor'] = $port['monitor'];
 			if(!empty($port['sms']))
 				$arrayport[$port['id']]['sms'] = $port['sms'];
-			if(!empty($port['log']))
-				$arrayport[$port['id']]['log'] = $port['log'];
 			$arrayport[$port['id']]['place'] = $switcharray[$port['deviceid']]['place'];
 			if(!empty($switcharray[$port['deviceid']]['netip']))
 				$arrayport[$port['id']]['ip'] = $switcharray[$port['deviceid']]['netip'];
+			$arrayport[$port['id']]['oidid'] = $switcharray[$port['deviceid']]['oid'];
 			$arrayport[$port['id']]['status'] = $port['operstatus'];
 			$arrayport[$port['id']]['result'] = unserialize($getOID['result']);
 			$arrayport[$port['id']]['oid'] = str_replace('keyport',$port['llid'],$getOID['oid']);
@@ -73,9 +72,15 @@ if(count($getAllPort)){
 			$result_port[$portid] = get_curl_api(array('do' => 'oid', 'oid' => $data['oid'], 'id' => $data['id']), true, 10);
 		}
 	}
-	if(is_array($result_port)){
+	if(is_array($result_port) && is_array($arrayport)){
 		foreach ($result_port as $id => $val){
-			savePortMonitor($arrayport[$id]['place'],$arrayport[$id]['name'],(!empty($arrayport[$id]['descr'])?$arrayport[$id]['descr']:''),$val['result'],$arrayport[$id]['status'],$arrayport[$id]['portid'],$arrayport[$id]['id']);
+			// HUAWEI EPON+GPON+ETH
+			if($arrayport[$id]['oidid']==14) {
+				$status = portstatusHuawei($val['result']);
+			}else{
+				$status = $val['result'];
+			}
+			savePortMonitor($arrayport[$id]['place'],$arrayport[$id]['name'],(!empty($arrayport[$id]['descr'])?$arrayport[$id]['descr']:''),$status,$arrayport[$id]['status'],$arrayport[$id]['portid'],$arrayport[$id]['id'],$arrayport[$id]['sms']);
 		}
 	}
 }
@@ -88,7 +93,6 @@ if(count($getAllPortErr)){
 		$listPon[$port['id']]['deviceid'] = $port['deviceid'];
 		$listPon[$port['id']]['place'] = $switcharray[$port['deviceid']]['place'];
 		$listPon[$port['id']]['sms'] = $port['sms'];
-		$listPon[$port['id']]['log'] = $port['log'];
 		$listPon[$port['id']]['llid'] = $port['llid'];
 		$listPon[$port['id']]['descrport'] = $port['nameport'].($port['descrport']?' ('.$port['descrport'].')':'').' ';
 	}
@@ -104,8 +108,4 @@ if(count($getAllPortErr)){
 	}
 }
 PMonStats();
-// видаляємо статистику по системі 
-$db->query('DELETE FROM '.$PMonTables['pmonstats'].' WHERE datetime < curdate() - interval 7 day');
-// видаляємо сигнали по ону старші ніж 
-$db->query('DELETE FROM '.$PMonTables['historyrx'].' WHERE datetime < curdate() - interval 60 day');
 ?>

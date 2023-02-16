@@ -2,6 +2,9 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+$blockonline = null;
+$blockoffline = null;
+$tplRes ='';
 $page = isset($_GET['page']) ? Clean::str($_GET['page']) : null;
 $id = isset($_GET['id']) ? Clean::int($_GET['id']) : null;
 if(!$id){
@@ -11,8 +14,8 @@ $dataSwitch = $db->Fast('switch','*',['id'=>$id]);
 if(!$dataSwitch['id']){
 	$go->redirect('main');	
 }
-$$SQLPortDevice = null;
-$SQLPon = null;
+$$SQLPortDevice = false;
+$SQLPon = false;
 if($dataSwitch['device']=='olt')
 	$SQLPon = $db->Multi('switch_pon','*',['oltid'=>$id]);
 if($dataSwitch['device']=='switch')
@@ -32,7 +35,7 @@ if(!empty($USER['class']) && $USER['class']>=6){
 	if($dataSwitch['device']=='olt' && $dataSwitch['monitor']=='yes'){
 		$panel .='<a href="'.$config['url'].'/?do=detail&act='.$dataSwitch['device'].'&page=monitoring&id='.$id.'"><img src="../style/img/uptime.png">'.$lang['edit_monitor'].'</a>';
 	}
-	$panel .='<a href="'.$config['url'].'/?do=setup&id='.$id.'"><img src="'.$config['url'].'/style/img/accept.png">'.$lang['setup'].'</a>';
+	$panel .='<a href="'.$config['url'].'/?do=setup&id='.$id.'"><img src="../style/img/setting.png">'.$lang['setup'].'</a>';
 }
 if($dataSwitch['gallery']=='yes' && !empty($USER['class']) && $USER['class']>=6){
 	$panel .='<a href="'.$config['url'].'/?do=detail&act=olt&id='.$id.'&page=photo"><img src="../style/img/photo-gallery.png">'.$lang['photo'].'</a>';
@@ -40,10 +43,13 @@ if($dataSwitch['gallery']=='yes' && !empty($USER['class']) && $USER['class']>=6)
 if(!empty($dataSwitch['snmprw']) && $USER['class']>=6 && $dataSwitch['oidid']==1){
 	$panel .='<div id="ajaxonu"><a href="#" onclick="fun_ajax('.$id.','.$dataSwitch['oidid'].',\'rebootall\')"><img src="../style/img/rotate.png">'.$lang['rebootall'].'</a></div>';
 }
-$panel .='<div id="ajaxonu"><a href="/?do=switchlog&id='.$dataSwitch['id'].'" ><img src="../style/img/m3.png">'.$lang['log'].'</a></div>';
-if(strtotime($dataSwitch['updates']) < strtotime(date('Y-m-d H:i:s').' - 1min')){
-	$panel .='<div id="ajaxonu"><a href="#" onclick="ajaxcmd(5,'.$dataSwitch['id'].')"><img src="../style/img/rotate.png">'.$lang['checker'].'</a></div>';
+if($USER['class']>=6){
+	$panel .='<div id="ajaxonu"><a href="/?do=switchlog&id='.$dataSwitch['id'].'" ><img src="../style/img/m3.png">'.$lang['log'].'</a></div>';
 }
+if($USER['class']>=6 && strtotime($dataSwitch['updates']) < strtotime(date('Y-m-d H:i:s').' - 1min')){
+	$panel .='<div id="ajaxonu"><a href="#" onclick="getolt('.$dataSwitch['id'].')"><img src="../style/img/rotate.png">'.$lang['checker'].'</a></div>';
+}
+$panel .='<div id="noregonu"></div>';
 $panel .='</div>';
 if(!empty($dataSwitch['username']) && $USER['class']>=6 && $dataSwitch['oidid']==1){
 #$panel .='<div class="telnet_device">';
@@ -73,6 +79,7 @@ if(!$page){
 	$SQLPortDevice = $db->Multi('switch_port','*',['deviceid'=>$id]);
 	$NextArray = array();
 	if(count($SQLPortDevice)){
+		$port_this_device = false;
 		foreach($SQLPortDevice as $PortDevice => $PortData){
 			if(!empty($PortData['monitor']) && $PortData['monitor']=='yes')
 				$SQLonusCount = $db->Simple('SELECT SUM(newin) as countin, deviceid FROM `switch_port_err` WHERE deviceid = '.$id.' AND llid = '.$PortData['llid'].' AND added  >= curdate()');
@@ -106,7 +113,7 @@ if(!$page){
 			});
 			$tplRes .='<div class="connect-list-head"><h2>PON</h2></div><div class="list_pon">';
 			foreach($SQLPon as $PortData => $Pon){
-				$SQLbadonu = $db->SimpleWhile("SELECT idonu FROM onus WHERE rx BETWEEN '-28' AND '-40' AND olt = ".$id." AND portolt = ".$Pon['sfpid']."");
+				$SQLbadonu = $db->SimpleWhile("SELECT idonu FROM onus WHERE rx BETWEEN '-".$config['badsignalstart']."' AND '-".$config['badsignalend']."' AND olt = ".$id." AND portolt = ".$Pon['sfpid']);
 				$SQLbadonu = count($SQLbadonu);
 				$tplRes .='<div class="style_pon"><a href="'.$config['url'].'/?do=terminal&id='.$id.'&port='.$Pon['id'].'" class="sc-psedN fLDHlO"></a>';			
 				$tplRes .='<div class="sc-qQWDO frpbEt"><img src="../style/img/pon.png" style="max-width: 36px;">';
@@ -119,7 +126,6 @@ if(!$page){
 				$css_load_bar = loadbarpon($Pon['support'],$Pon['count']);
 				$tplRes .='<div class="loadpon"><div class="load '.$css_load_bar['css'].'" style="width: '.$css_load_bar['width'].'%;"></div><span></span></div>';
 				$tplRes .='<div class="dropdown-content">';
-				#$tplRes .='<div class="poptech"><span class="lang">Технологія</span><span class="types">EPON</span></div>';
 				$tplRes .='<div class="poptech"><span class="lang">'.$lang['dilen'].'</span><span class="types">1:'.$Pon['support'].'</span></div>';
 				$tplRes .='<div class="poptech"><span class="lang">'.$lang['sfpconn'].'</span><span class="types"> '.$Pon['count'].'</span></div>';
 				if($SQLbadonu)
@@ -146,7 +152,7 @@ if($page=='photo' && $dataSwitch['gallery']=='yes'){
 		$tplRes .='<div class="gallery">';
 		foreach($SQLSwPhoto as $PhotoData){
 			$tplRes .='<div class="photo" onclick="ajaxviewphoto('.$PhotoData['id'].')">';			
-				$tplRes .='<div class="img"><img src="'.$config['url'].'/file/photo/'.$PhotoData['photo'].'"></div>';
+				$tplRes .='<div class="img"><img src="../file/photo/'.$PhotoData['photo'].'"></div>';
 				$tplRes .='<div class="name"><div class="date">'.$PhotoData['added'].'</div><h2>'.$PhotoData['name'].'</h2></div>';
 			$tplRes .='</div>';			
 		}
@@ -167,11 +173,15 @@ if($page=='monitoring' && $dataSwitch['monitor']=='yes'){
 		foreach($dataPortSwitch as $PortData){
 			$tplRes .='<div class="port '.($PortData['error']=='yes'?'selectport':'').'"><input class="checkcss" name="monitorerr[]" value="'.$PortData['id'].'" type="checkbox" '.($PortData['error']=='yes'?'checked':'').'><b>'.$PortData['nameport'].'</b></div>';
 		}
-		$tplRes .='</div><div class="monitor-port-name portimg3">'.$lang['sennametg'].'<p>'.$lang['sennametgdescr'].'</p></div><div class="monitor-port-input">';
-		foreach($dataPortSwitch as $PortData){
-			$tplRes .='<div class="port '.($PortData['sms']=='yes'?'selectport':'').'"><input class="checkcss" name="monitortelegram[]" value="'.$PortData['id'].'" type="checkbox" '.($PortData['sms']=='yes'?'checked':'').'><b>'.$PortData['nameport'].'</b></div>';
+		$tplRes .='</div>';
+		if($config['telegram']=='on'){
+			$tplRes .='<div class="monitor-port-name portimg3">'.$lang['sennametg'].'<p>'.$lang['sennametgdescr'].'</p></div><div class="monitor-port-input">';
+			foreach($dataPortSwitch as $PortData){
+				$tplRes .='<div class="port '.($PortData['sms']=='yes'?'selectport':'').'"><input class="checkcss" name="monitortelegram[]" value="'.$PortData['id'].'" type="checkbox" '.($PortData['sms']=='yes'?'checked':'').'><b>'.$PortData['nameport'].'</b></div>';
+			}
+			$tplRes .='</div>';
 		}
-		$tplRes .='</div></div><button type="submit" form="formadd" class="monitorsave" value="submit">'.$lang['save'].'</button></form>';
+		$tplRes .='</div><button type="submit" form="formadd" class="monitorsave" value="submit">'.$lang['save'].'</button></form>';
 	}
 }
 if($page=='connect' && $dataSwitch['connect']=='yes'){
@@ -189,7 +199,7 @@ if($page=='connect' && $dataSwitch['connect']=='yes'){
 				$connect = true;
 				$tplRes .='<tr class="hover"><td class="td0 status-'.$port['operstatus'].' '.($port['operstatus']=='up'?'blink_status':'').'">'.$port['operstatus'].'<div class="pmon_new"></div></td>';
 				$tplRes .='<td class="td1 name">';
-				if($port['typeport']=='epon' || $port['typeport']=='gpon' && !empty($PonInf['sfpid'])){
+				if (preg_match("/PON/i",$port['typeport']) || preg_match("/pon/i",$port['typeport'])) {
 					$PonInf = getPonPortOLt($id,$port['llid']);
 					$tplRes .='<a href="/?do=terminal&id='.$id.'&port='.$PonInf['id'].'">';
 				}
@@ -203,7 +213,7 @@ if($page=='connect' && $dataSwitch['connect']=='yes'){
 				#if($port['monitor']=='yes')
 				#	$tplRes .='<div class="m4_inf"><i class="fi fi-rr-clock"></i>'.$port['updates'].'</div>';
 				$tplRes .='</h2>';
-				if($port['typeport']=='epon' || $port['typeport']=='gpon' && !empty($PonInf['sfpid'])){
+				if (preg_match("/PON/i",$port['typeport']) || preg_match("/pon/i",$port['typeport'])) {
 					$tplRes .='</a>';
 				}
 				$tplRes .='<div class="descr">';
@@ -217,26 +227,22 @@ if($page=='connect' && $dataSwitch['connect']=='yes'){
 					if($USER['class']>=5)
 						$tplRes .='	<span class="add" onclick="port(\'descr\','.$port['id'].')">'.$lang['add_descr'].'</span>';
 				}
-				$tplRes .='</div></td>';
-				// PON статистика
-				$tplRes .='<td class="td2">';
-				if($port['typeport']=='gepon' || $port['typeport']=='gpon' || $port['typeport']=='epon'){
+				$tplRes .='</div></td><td class="td2">';
+				if (preg_match("/PON/i",$port['typeport']) || preg_match("/pon/i",$port['typeport'])) {
 					if(!empty($PonInf['support']))
 						$tplRes .= statsPonPort($PonInf,$port['typeport']);
 				}
 				$tplRes .='</td>';
-				// помилки на портах
 				$tplRes .='<td class="td3">';
 				if($port['error']=='yes')
 					$tplRes .= tplErrorPort($port['deviceid'],$port['llid']);
 				$tplRes .='</td>';
-				// список ону
 				$tplRes .='<td class="tdempty">';
 					if(!empty($Connection[$port['id']]['id'])){
 						$tplRes .= getPortConnect($Connection,$port['id']);
 						$connect = false;
 					}else{
-						if($port['typeport']!=='epon' || $port['typeport']!=='gpon' && !$PonInf['sfpid'] && $USER['class']>=5){
+						if(!preg_match("/PON/i",$port['typeport']) || !preg_match("/pon/i",$port['typeport'])  && $USER['class']>=5){
 							$tplRes .= '<span class="connect-btn" onclick="ajaxconnect(\'add\','.$port['id'].');"><img src="../style/img/no-internet.png">'.$lang['connect'].'</span>';
 						}
 					}
@@ -261,6 +267,7 @@ if($page=='connect' && $dataSwitch['connect']=='yes'){
 /// OLT + SWITCH
 if(!$page){
 	if(is_array($NextArray)){
+		$StatsPort = null;
 		foreach($NextArray as $IDMonitorPort => $MonitorPortData){
 			if($MonitorPortData['status']=='down' && $MonitorPortData['monitor']=='yes'){
 				$StatsPort[$IDMonitorPort]['status'] = $MonitorPortData['status'];
@@ -292,15 +299,15 @@ if($getpage=='pon' && ($USER['class']>=4)){
 	$SQLSfp = $db->Multi('connect_port','*',['curd'=>$dataSwitch['id']]);
 	if(count($SQLSfp)){
 		if(count($SQLPon) && $dataSwitch['connect']=='yes'){
-			$tplRes .='<div class="connect-list-head"><h2>'.$lang['connects'].'</h2></div><div class="connect-list">';
-			$tplRes .= getPortConnectSFP($dataSwitch['id']);
-			$tplRes .='</div>';
+			$tplRes .='<div class="connect-list-head"><h2>'.$lang['connects'].'</h2></div><div class="connect-list">'.getPortConnectSFP($dataSwitch['id']).'</div>';
 		}
 	}
 }
 $tpl->load_template('olt/block.tpl');
 $tpl->set('{id}',$dataSwitch['id']);
-$tpl->set('{script_device_ajax}','<script>ajaxdevicestatus('.$id.');</script>');
+$tpl->set('{monitorstatus}',($dataSwitch['status']=='go'?'<div class="prcy-1l4rpax"></div>':''));
+$tpl->set('{script_device_ajax}','<script>ajaxdevicestatus('.$id.');ajaxchecknewonu('.$id.');</script>');
+$tpl->set('{blockstatsonu}',blockStatsONU($id));
 $tpl->set('{panel}',$panel);
 $tpl->set('{countonu}',($dataSwitch['allonu']?'<span><img src="../style/img/online.png" style="height: 16px;">'.$lang['count_port'].'<b>'.$dataSwitch['allonu'].'</b></span>':''));
 $tpl->set('{countport}',($SQLPon?'<span><img src="../style/img/port.png" style="height: 16px;">'.$lang['count_port_pon'].'<b>'.count($SQLPon).'</b></span>':''));
@@ -312,10 +319,10 @@ $tpl->set('{updates_port}',($dataSwitch['updates_port']?'<span><img src="../styl
 $tpl->set('{updates_rx}',($dataSwitch['updates_rx']?'<span><img src="../style/img/on-time.png">'.$lang['timecheckrx'].':<b>'.$dataSwitch['updates_rx'].'</b></span>':''));
 $tpl->set('{timecheck}',($dataSwitch['timecheck']?'<span><img src="../style/img/on-time.png">'.$lang['timework'].':<b>'.$dataSwitch['timecheck'].'</b> '.$lang['sec'].'</span>':''));
 $tpl->set('{timechecklast}',($dataSwitch['timechecklast']?'<span><img src="../style/img/on-time.png">'.$lang['timeworklast'].':<b>'.$dataSwitch['timechecklast'].'</b> '.$lang['sec'].'</span>':''));
-$tpl->set('{update}',$dataSwitch['update']);
-$tpl->set('{updaterx}',$dataSwitch['update_rx']);
+$tpl->set('{update}',(!empty($dataSwitch['update'])?$dataSwitch['update']:''));
+$tpl->set('{updaterx}',(!empty($dataSwitch['update_rx'])?$dataSwitch['update_rx']:''));
 $tpl->set('{place}',$dataSwitch['place']);
-$tpl->set('{netip}',($USER['class']>=4?$dataSwitch['netip']:'255.255.255.255'));
+$tpl->set('{netip}',($USER['class']>=4?($config['viewipswitch']=='on'?'<span><img src="../style/img/netip.png">IP<b>'.$dataSwitch['netip'].'</b></span>':''):''));
 $tpl->set('{typesdevice}',$dataSwitch['device']);
 $tpl->set('{photomodel}',$dataSwitch['img']);
 $tpl->set('{firmware}',$dataSwitch['firmware']);

@@ -254,7 +254,7 @@ class ZTE_c320_2 {
 			case 1: 
 				$result1['img']='eth_na';	
 				$result1['txt']='Down';
-				$result1['st']='na';	
+				$result1['st']='down';	
 				$result1['st_tx']='Down';	
 				$result1['status']='down';					
 			break;

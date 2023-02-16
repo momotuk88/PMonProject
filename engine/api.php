@@ -33,6 +33,8 @@ if(isset($_POST['pon'])){
 }
 if(isset($_POST['keyonu']) && is_numeric($_POST['keyonu']) && intval($_POST['keyonu']) > 0){
 	$keyonu = (int)intval($_POST['keyonu']);
+}else{
+	$keyonu = 0;
 }
 if(isset($_POST['keyport']) && is_numeric($_POST['keyport']) && intval($_POST['keyport']) > 0){
 	$keyport = (int)intval($_POST['keyport']);
@@ -66,7 +68,7 @@ if($api && $checkapikey){
 	$zaputapi['snmpro'] = $switch['snmpro'];
 	switch($do){
 		case 'onu': // запити по ону
-			if(isset($keyonu,$pon,$types)){
+			if(isset($pon,$types)){
 				$zaputapi['types'] = $types;
 				if(isset($keyport))
 					$zaputapi['keyport'] = $keyport;
