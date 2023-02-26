@@ -171,8 +171,8 @@ class SnmpMonitor {
             }
         }else{
             snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
-            $session = new SNMP(SNMP::VERSION_2C, $ip, $community, $this->snmptimeout, $this->snmpretries);
-            $raw = $session->walk($oid);
+            $session = @new SNMP(SNMP::VERSION_2C, $ip, $community, $this->snmptimeout, $this->snmpretries);
+            $raw = @$session->walk($oid);
             $session->close();
             if (!empty($raw)) {
                 foreach ($raw as $oid => $value) {

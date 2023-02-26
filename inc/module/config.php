@@ -3,8 +3,22 @@ if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
 if(!checkAccess(6)) $go->redirect('main');
-$metatags['title'] = $lang['setup_pon'];
-$metatags['description'] = $lang['setup'];
+$sel11 = $sel11 ?? null;
+$sel0 = $sel0 ?? null;
+$sel1 = $sel1 ?? null;
+$sel2 = $sel2 ?? null;
+$sel3 = $sel3 ?? null;
+$sel4 = $sel4 ?? null;
+$sel5 = $sel5 ?? null;
+$sel6 = $sel6 ?? null;
+$sel7 = $sel7 ?? null;
+$sel8 = $sel8 ?? null;
+$sel9 = $sel9 ?? null;
+$sel10 = $sel10 ?? null;
+$sel12 = $sel12 ?? null;
+$selrx = $selrx ?? null;
+$metatags = array('title'=>$lang['setup'],'description'=>$lang['setup'],'page'=>'config');
+$setup ='';
 $setup .= formpage(['img'=>'addconnect.png','name'=>$lang['cfg_root'],'descr'=>$lang['cfg_root_descr'],'pole'=>'<input style="width:200px;" name="root" class="input1" type="text" value="'.$config['root'].'">']);
 $setup .= formpage(['img'=>'www.png','name'=>'URL','descr'=>$lang['cfg_url_descr'],'pole'=>'<input style="width:200px;" name="url" class="input1" type="text" value="'.$config['url'].'">']);
 $setup .= formpage(['img'=>'number-20.png','name'=>$lang['cfg_count'],'descr'=>$lang['cfg_count_descr'],'pole'=>'<input style="width:200px;" name="countviewpageonu" class="input1" type="text" value="'.$config['countviewpageonu'].'">']);
@@ -41,6 +55,9 @@ $setup .= formpage(['img'=>'tag.png','name'=>'Marker','descr'=>$lang['marker_cfg
 $sel9 .= '<option value="on" '.($config['map']=='on'?'selected="selected"':'').'>'.($config['map']=='on'?$lang['ons']:$lang['on']).'</option><option value="off" '.($config['map']=='off'?'selected="selected"':'').'>'.($config['map']=='off'?$lang['offs']:$lang['off']).'</option>';
 $setup .= formpage(['img'=>'m6.png','name'=>$lang['map'],'descr'=>$lang['map_cfg'],'pole'=>'<select class="select" name="map">'.$sel9.'</select>']);
 $setup .= formpage(['img'=>'laser_2.png','name'=>$lang['cfg_bad_rx'],'descr'=>$lang['cfg_bad_rx_descr'],'pole'=>$lang['vid'].' -<input style="width:50px;display:inline-block;" name="badsignalstart" class="input1" type="text" value="'.(!empty($config['badsignalstart'])?$config['badsignalstart']:28).'"> '.$lang['do'].' -<input style="width:50px;display:inline-block;" name="badsignalend" class="input1" type="text" value="'.(!empty($config['badsignalend']) ? $config['badsignalend'] : 40).'">']);
+$setup .= formpage(['img'=>'laser_3.png','name'=>$lang['cfg_bad_rx_log'],'descr'=>$lang['cfg_bad_rx_log_descr'],'pole'=>'<input style="width:50px;display:inline-block;" name="criticsignal" class="input1" type="text" value="'.(!empty($config['criticsignal'])?$config['criticsignal']:2).'"> dBm']);
+$sel12 .= '<option value="on" '.($config['logsignal']=='on'?'selected="selected"':'').'>'.($config['logsignal']=='on'?$lang['rxlog3']:$lang['rxlog3']).'</option><option value="off" '.($config['logsignal']=='off'?'selected="selected"':'').'>'.($config['logsignal']=='off'?$lang['rxlog1']:$lang['rxlog2']).'</option>';
+$setup .= formpage(['img'=>'laser_4.png','name'=>$lang['cfglogsignal'],'descr'=>$lang['cfglogsignaldescr'],'pole'=>'<select class="select" name="logsignal">'.$sel12.'</select>']);
 $tpl->load_template('setup/config.tpl');
 $tpl->set('{config}',$lang['setup_pon']);
 $tpl->set('{result}','<form action="/?do=send" method="post" id="formadd"><input name="act" type="hidden" value="saveconfig">'.$setup.'<div class="polebtn"><button type="submit" form="formadd" value="submit">'.$lang['save'].'</button></form>');

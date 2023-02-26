@@ -28,10 +28,19 @@ if($support){
 			$status = ($resultONT['status']==1?'<div class="ajax_ont_status_on">'.$lang['online'].'</div>':'<div class="ajax_ont_status_off">'.$lang['offline'].'</div>');
 			echo ont_label('Статус',$status.$btn_update_info);
 		}	
+		if(!empty($getONT['added'])){
+			echo ont_label('Зареєсстрована ',$getONT['added']);
+		}			
+		if($resultONT['status']==1){
+			echo ont_label('Онлайн ',aftertime($getONT['online']));
+		}			
+		if($resultONT['status']==2){
+			echo ont_label('Оффлайн ',aftertime($getONT['offline']));
+		}	
 		if(!empty($resultONT['reason']))
 			echo ont_label(($resultONT['status']==1?$lang['rereason']:$lang['reason']),tplreason($lang[$resultONT['reason']],$resultONT['reason']));		
 		// ZTE C3xx		
-		if(!empty($resultONT['wan']) && $resultONT['status']==1 && $getOLT['oidid']!=7){
+		if(!empty($resultONT['wan']) && $resultONT['status']==1 && $getOLT['oidid']==7){
 			echo ont_label($lang['wanport'],'<img src="../style/img/'.(!empty($resultONT['wanportzte']['txt']) ? $resultONT['wanportzte']['img'] : 'eth'.$resultONT['wan']).'.png" class="onueth">');
 			if(is_array($resultONT['wanportzte']) && !empty($resultONT['wanportzte']['txt']))
 				echo ont_label('Тип порта',$resultONT['wanportzte']['txt']);
@@ -44,9 +53,11 @@ if($support){
 				echo ont_label('inner-vlan',$resultONT['linervlan']);
 			if(!empty($resultONT['uservlan'])){
 				echo ont_label('user-vlan',$resultONT['uservlan']);
-				$test = snmp2_get($getOLT['netip'],$getOLT['snmpro'],'1.3.6.1.4.1.2011.5.14.5.5.1.7.'.$getONT['zte_idport'].'.4.'.$getONT['keyonu'].'.4294967295.4294967295.1.'.$resultONT['uservlan']);
-				$srvport = clearDataMacRe($test)-1;
-				echo ont_label('Service-port',$srvport);
+				$Sport = @snmp2_get($getOLT['netip'],$getOLT['snmpro'],'1.3.6.1.4.1.2011.5.14.5.5.1.7.'.$getONT['zte_idport'].'.4.'.$getONT['keyonu'].'.4294967295.4294967295.1.'.$resultONT['uservlan']);
+				if($Sport){
+					$srvport = clearDataMacRe($Sport)-1;
+					echo ont_label('Service-port',$srvport);
+				}
 			}
 			if(!empty($resultONT['countmacport']) && $resultONT['status']==1)
 				echo ont_label('MAC`ів за ону','<span style="color:#1e9cd9;text-decoration:underline;">'.$resultONT['countmacport'].' (пристроїв)</span>');			
@@ -118,14 +129,15 @@ if($support){
 		}
 		if(!empty($resultONT['lastrx']))
 			echo ont_label($lang['lastrx'],signalTerminal($resultONT['lastrx']));
-		if($resultONT['tx'] && $resultONT['status']==1)
+		if(!empty($resultONT['tx']) && $resultONT['status']==1)
 			echo ont_label('TX ',signalTerminal($resultONT['tx']));		
-		if($resultONT['temp'] && $resultONT['status']==1)
+		if(!empty($resultONT['temp']) && $resultONT['status']==1)
 			echo ont_label('Temp ',$resultONT['temp'].' °C');
-		if($resultONT['rxolt'] && $resultONT['status']==1)
+		if(!empty($resultONT['rxolt']) && $resultONT['status']==1)
 			echo ont_label('RX OLT ',signalTerminal($resultONT['rxolt']));
-		if($resultONT['model'] || $resultONT['vendor'])
+		if(!empty($resultONT['model']) || !empty($resultONT['vendor']))
 			echo ont_label($lang['model'],$resultONT['vendor'].' '.$resultONT['model']);
+	
 		// BDCOM EPON - зміна влан
 		if($getOLT['oidid']==1){
 			if(!empty($resultONT['pvid']))

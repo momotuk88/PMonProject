@@ -10,7 +10,6 @@
  This code is protected by copyright
 =====================================================
 */
-date_default_timezone_set('Europe/Kiev');
 define('PONMONITOR',true);
 require ENGINE_DIR.'/init.ajax.php';
 ?>

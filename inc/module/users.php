@@ -2,9 +2,10 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
-$SQLUsers = $db->Multi('users');
-if(count($SQLUsers)){
-	foreach($SQLUsers as $user){
+$metatags = array('title'=>$lang['add_new_users'],'description'=>$lang['add_new_users'],'page'=>'users');
+$selectallusers = $db->Multi('users');
+if(count($selectallusers)){
+	foreach($selectallusers as $user){
 		$tpl->load_template('users/list.tpl');
 		$tpl->set('{id}',$user['id']);
 		$tpl->set('{username}',$user['username']);

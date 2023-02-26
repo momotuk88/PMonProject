@@ -4,6 +4,7 @@ if (!defined('PONMONITOR')){
 }
 $metatags = array('title'=>$lang['page_title_stats'],'description'=>$lang['page_title_descr'],'page'=>'porterror');
 $id = (isset($_GET['id']) ? Clean::int($_GET['id']) : null);
+$urlswitch ='';
 if(count($checkLicenseSwitch)){
 	if($id){
 		$selectswitch = $id;	
@@ -39,6 +40,7 @@ if($selectswitch){
 	}
 }
 if(is_array($ap)){
+	$page_error = '';
 	foreach($ap as $dataport => $datavalue){
 		$page_error .='<div class="port-sfp">Група '.$dataport.'</div>';
 		if(is_array($datavalue['data'])){			
@@ -54,7 +56,7 @@ if(is_array($ap)){
 					$datacurrenterror = $db->Simple("SELECT sum(newin) as counterror FROM `switch_port_err` WHERE `llid` = '".$vport['llid']."' AND `deviceid` = '".$selectswitch."' AND added > DATE_ADD(NOW(), INTERVAL -1 DAY)");
 					$page_error .='<span class="error-all">Всього:<span>'.$dataerror['inerror'].'</span></span>';
 					if(!empty($datacurrenterror['counterror']))
-						$page_error .='<span class="error-current">За сьогодні:<span>'.$datacurrenterror['counterror'].'</span></span>';
+						$page_error .='<span class="error-current">'.$lang['day_curent'].':<span>'.$datacurrenterror['counterror'].'</span></span>';
 					if(!empty($dataerror['newin']))
 						$page_error .='<span class="error-last"><span>+'.$dataerror['newin'].'</span></span>';
 					}
@@ -64,7 +66,7 @@ if(is_array($ap)){
 		}
 	}
 }
-$result .='<div id="onu-speedbar"><a class="brmhref" href="/?do=device"><i class="fi fi-rr-apps"></i>'.$lang['alldevice'].'</a><span class="brmspan"><i class="fi fi-rr-angle-left"></i>'.$lang['statspage'].'</span></div><div class="card" style="margin: 0;"><div class="main-stats-tab">'.$urlswitch.'</div><div class="page-error">'.$page_error.'</div>';
+$result ='<div id="onu-speedbar"><a class="brmhref" href="/?do=device"><i class="fi fi-rr-apps"></i>'.$lang['alldevice'].'</a><span class="brmspan"><i class="fi fi-rr-angle-left"></i>'.$lang['statspage'].'</span></div><div class="card" style="margin: 0;"><div class="main-stats-tab">'.$urlswitch.'</div><div class="page-error">'.$page_error.'</div>';
 $tpl->load_template('main/main.tpl');
 $tpl->set('{block-main}','<div class="mainadmin">'.$result.'</div>');
 $tpl->compile('content');

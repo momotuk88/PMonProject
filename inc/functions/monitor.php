@@ -2,6 +2,117 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+function getONU($data){
+	global $db, $config, $PMonTables;
+	$super = $db->Simple('SELECT idonu, added FROM `'.$PMonTables['onus'].'` WHERE olt = '.$data['id'].'
+	AND type = "'.($data['pon']=='gpon'?'gpon':'epon').'"
+	AND keyonu = "'.$data['keyonu'].'" '.(!empty($data['keyport'])?'AND zte_idport = "'.$data['keyport'].'"':'').'
+	ORDER BY added ASC LIMIT 1');	
+	if(!empty($super['idonu']))
+		$db->SQLupdate($PMonTables['onus'],['cron' => 1],['idonu' => $super['idonu']]);
+}
+function getDeletOnu($data){
+	global $db, $config, $PMonTables, $lang;
+	foreach($data as $io => $eachsig) {
+		if(!empty($eachsig['idonu'])){
+			$db->query('DELETE FROM monitoronu WHERE idonu = '.$eachsig['idonu']);
+			$db->query('DELETE FROM onus WHERE idonu = '.$eachsig['idonu']);
+			$db->query('DELETE FROM onus_comm WHERE idonu = '.$eachsig['idonu']);
+			$db->query('DELETE FROM onus_log WHERE onuid = '.$eachsig['idonu']);
+			$db->query('DELETE FROM unitponboxont WHERE onuid = '.$eachsig['idonu']);
+			$db->query('DELETE FROM historysignal WHERE onu = '.$eachsig['idonu']);
+			$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$eachsig['olt'],'types' =>'deletonu','message' =>$lang['deletonu'].$eachsig['type'].$eachsig['inface'],'added' =>date('Y-m-d H:i:s')]);
+		}
+	}
+}
+function checkerONU($data,$olt){
+	global $db, $config, $PMonTables, $lang;
+	foreach($data as $io => $eachsig) {
+		getONU($eachsig);
+	}
+	sleep(1);
+	if(is_array($data)){
+		$getdeletonu = $db->Multi($PMonTables['onus'],'olt,idonu,status,type,inface,added',['olt' => $olt,'cron' => 2]);
+		if(count($getdeletonu)){
+			getDeletOnu($getdeletonu);
+		}
+	}
+}
+function reasonGponHuawei($data){
+	switch ($data) {
+		case '1':						
+			return 'err6'; // LOS
+		break;				
+		case '2':						
+			return 'err36'; // LOSi(Loss of signal for ONUi) or LOBi (Loss of burst for ONUi)
+		break;				
+		case '3':						
+			return 'err37'; // LOFI(Loss of frame of ONUi)
+		break;			
+		case '4':						
+			return 'err38'; // SFI(Signal fail of ONUi)
+		break;	
+		case '5':						
+			return 'err39'; //  LOAI(Loss of acknowledge with ONUi)
+		break;	
+		case '6':						
+			return 'err40'; // LOAMI(Loss of PLOAM for ONUi)
+		break;	
+		case '7':						
+			return 'err41'; // deactive ONT fails
+		break;	
+		case '8':						
+			return 'err42'; // deactive ONT success
+		break;	
+		case '9':						
+			return 'err43'; // reset ONT
+		break;	
+		case '10':						
+			return 'err44'; // re-register ONT
+		break;	
+		case '11':						
+			return 'err45'; // pop up fail 
+		break;	
+		case '13':						
+			return 'err1';							
+		break;				
+		case '15':						
+			return 'err46'; // LOKI(Loss of key synch with ONUi) 
+		break;				
+		case '18':						
+			return 'err47'; // deactived ONT due to the ring 
+		break;				
+		case '30':						
+			return 'err48'; // shut down ONT optical module
+		break;				
+		case '31':						
+			return 'err49'; // reset ONT by ONT command
+		break;				
+		case '32':						
+			return 'err50'; // reset ONT by ONT reset button
+		break;				
+		case '33':						
+			return 'err51'; // reset ONT by ONT software
+		break;				
+		case '34':						
+			return 'err52'; // deactived ONT due to broadcast attack
+		break;				
+		case '35':						
+			return 'err53'; // operator check fail
+		break;				
+		case '37':						
+			return 'err54'; // a rogue ONT detected by itself
+		break;	
+		case '-1':						
+			return 'err6';	
+		break;			
+		case '255':						
+			return 'err1';	
+		break;
+		default:	
+			return 'err20';						
+	}
+}
 function portstatusHuawei($value){
 	if(preg_match('/1/i',$value) || preg_match('/4/i',$value)){
 		return 'up';	
@@ -332,10 +443,24 @@ function fileCacheArray($DataArray,$Filename='test.cache',$Folder='export/switch
 	$Result = file_get_contents($filename);
 	return unserialize($Result);
 }
+function post_system_health($jobid){
+	global $config;
+	if(!empty($config['url']) && $jobid){
+		$ch = curl_init($config['url'].'/port.php');
+		curl_setopt($ch,CURLOPT_POST, true);
+		curl_setopt($ch,CURLOPT_POSTFIELDS,['jobid'=>$jobid]);
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,0);	
+		curl_setopt($ch,CURLOPT_HEADER,true); 
+		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 1);
+		curl_setopt($ch,CURLOPT_TIMEOUT,1); 
+		$json = curl_exec($ch);
+		curl_close($ch);
+	}
+}
 function post_system($jobid,$olt){
 	global $config;
 	if(!empty($config['url']) && $olt && $jobid){
-	global $config;
 		$ch = curl_init($config['url'].'/system.php');
 		curl_setopt($ch,CURLOPT_POST, true);
 		curl_setopt($ch,CURLOPT_POSTFIELDS,['olt'=>$olt,'jobid'=>$jobid]);
@@ -367,3 +492,4 @@ function get_curl_api($post_array, $decode = false, $time = 3){
 	}
 	return $res_api;
 }
+?>

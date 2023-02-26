@@ -14,14 +14,16 @@ class BDCOM_Gpon {
 		'/Gauge32: /','/INTEGER: /i','/Counter32: /i',
 		'/SNMPv2-SMI::enterprises\./i','/iso\.3\.6\.1\.4\.1\./i'
 	];
-    public function __construct($id = '', $AllConfig) {
-		$this->initsnmp();
-		$this->now = date('Y-m-d H:i:s');
-		$this->filter = true;
-		$this->id = $id;
-		$this->ip = $AllConfig->switchIp[$id];
-		$this->community = $AllConfig->switchCommunity[$id];
-		$this->deviceoid = $AllConfig->SwitchOid;
+    public function __construct($swid,$allcfg){
+		if(is_numeric($swid)){
+			$this->snmp= new SnmpMonitor();
+			$this->now = date('Y-m-d H:i:s');
+			$this->filter = true;
+			$this->id = $swid;
+			$this->ip = $allcfg->switchIp[$swid];
+			$this->community = $allcfg->switchCommunity[$swid];
+			$this->deviceoid = $allcfg->SwitchOid;
+		}
 	}  
 	public function Support($check){
 		switch ($check) {
@@ -44,14 +46,14 @@ class BDCOM_Gpon {
 	}
 	public function Load(){	
 		global $db, $PMonTables;
-		$result = array();
-		$ListIndex = false;
 		if(is_array($this->deviceoid)){
 			$LintNameOID = $this->deviceoid[$this->id]['onu']['listname']['gpon']['oid'];	
 			if($LintNameOID){
 				$ListIndex = $this->snmp->walk($this->ip,$this->community,$LintNameOID,true);
 				$this->indexdevice = $ListIndex;
 				$LintNameOID = str_replace('.'.$LintNameOID.'.','',$ListIndex);
+			}else{
+				$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'err1 empty snmpwalk <b>'.$LintNameOID.'</b>','added' =>$this->now]);
 			}
 			if($ListIndex){
 				$Index = explodeRows($LintNameOID);	
@@ -61,17 +63,17 @@ class BDCOM_Gpon {
 						if (isset($line[0]) && isset($line[1])) {
 							$TempName['name'] = $line[1];
 							$NameIndex = $this->prepareResult($TempName);
-							if (preg_match('/(GPON[0-9]{1,2}\/[0-9]{1,2}:)[0-9]{1,2}/',$NameIndex['name'],$RexNam))
+							if(preg_match('/(GPON[0-9]{1,2}\/[0-9]{1,2}:)[0-9]{1,2}/',$NameIndex['name'],$RexNam))
 								$result[$io] = array('do' => 'onu','id'=>$this->id,'pon'=>'gpon','inface'=>str_replace('gpon','', strtolower(str_replace(' ', '',trim($RexNam[0])))),'types'=>$this->primary,'keyonu'=> trim($line[0]));
 						}	
 					}
-					if(is_array($result)){
+					if(is_array($result))
 						$db->SQLupdate($PMonTables['onus'],['cron' => 2],['olt' => $this->id]);
-					}else{
-						$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'emptyarraydata','added' =>$this->now]);
-					}
 				}
 			}
+		}
+		if(is_array($result)){
+			checkerONU($result,$this->id);
 		}
 		return (is_array($result) ? $result : null);
 	}
@@ -291,11 +293,6 @@ class BDCOM_Gpon {
 				$db->SQLinsert($PMonTables['switchport'],['deviceid' => $this->id,'llid' => $data['id'],'nameport' => $data['name'],'typeport' => $data['typeport'],'operstatus' => 'none','added' => $this->now]);
 		}
 	}
-    protected function initsnmp() {
-        $this->snmp = new SnmpMonitor();
-		if(!$this->snmp)
-			die('snmp&');
-    }  
     private function prepareResult(array $data): array {
         if($this->filter){
             $result = array_map(
@@ -313,15 +310,22 @@ class BDCOM_Gpon {
 	}
 	public function tempSaveSignalSaveOnuGpon($dataOnu){	
 		global $db, $PMonTables, $config;
-		$savehistor = false;
+		$savehistor = $savehistor ?? null;
 		$onu = $db->Fast($PMonTables['onus'],'status,rx,idonu',['olt' => $this->id,'keyonu' => $dataOnu['keyonu']]);
 		if(!empty($onu['idonu'])){
+			$rx = $rx ?? null;
 			if(!empty($dataOnu['rx'])){
 				$rx = $this->clear_rx($dataOnu['rx']);
+				if($rx){
+					$db->SQLupdate($PMonTables['onus'],['rx' => $rx,'rating' => 1],['idonu' => $onu['idonu']]);
+				}
 			}
-			if($rx){
-				$db->SQLupdate($PMonTables['onus'],['rx' => $rx,'rating' => 1],['idonu' => $onu['idonu']]);
-				$savehistor = SignalMonitor($onu['status'], $rx, $onu['rx'], $onu['idonu']);
+			if($config['logsignal']=='on'){
+				if($rx){
+					$savehistor = SignalMonitor($onu['status'], $rx, $onu['rx'], $onu['idonu']);
+				}
+			}else{
+				$savehistor = true;
 			}
 			if(!empty($config['onugraph']) && $config['onugraph']=='on' && $savehistor){
 				$db->SQLInsert($PMonTables['historyrx'],['device' => $this->id,'onu' => $onu['idonu'],'signal' => $rx,'datetime' => $this->now]);
@@ -361,8 +365,8 @@ class BDCOM_Gpon {
 			$dataOnu['sn'] = $dataOnu['sn'];
 		$dataOnu['status'] = (!empty($dataOnu['status']) ? $dataOnu['status'] : (!empty($dataOnu['dist']) ? 1 : 2));
 		if(!empty($dataOnu['keyonu'])){
-			$arr = $db->Fast($PMonTables['onus'],'*',['zte_idport' =>$indexPortOlt,'keyonu' =>$dataOnu['keyonu'],'olt' => $dataOnu['id']]); 
-			if(!empty($arr['id'])){
+			$arr = $db->Fast($PMonTables['onus'],'*',['keyonu' =>$dataOnu['keyonu'],'olt' => $this->id]); 
+			if(!empty($arr['idonu'])){
 				if($dataOnu['status']==1 && $arr['status']==2){
 					$SQLset['rating'] = 7;
 				}else{
@@ -374,8 +378,6 @@ class BDCOM_Gpon {
 					$SQLset['online'] = $this->now;
 				}elseif($dataOnu['status']==2 && $arr['status']==1){
 					$SQLset['offline'] = $this->now;
-				}else{
-					
 				}
 				$SQLset['status'] = $dataOnu['status'];
 				$SQLset['type'] = $dataOnu['pon'];
@@ -390,7 +392,7 @@ class BDCOM_Gpon {
 					$SQLset['zte_idport'] = $indexPortOlt;
 				}
 				$db->SQLupdate($PMonTables['onus'],$SQLset,['idonu' => $arr['idonu']]);
-			}else{				
+			}else{	
 				$SQLinsert = array(
 					'olt' => $dataOnu['id'],($dataOnu['status']==1?'online':'offline') => $this->now,'added' => $this->now,'updates' => $this->now,'rating' => 1,
 					'keyonu' => $dataOnu['keyonu'],'status' => $dataOnu['status'],'sn' => $dataOnu['sn'],'inface' => $dataOnu['inface'],

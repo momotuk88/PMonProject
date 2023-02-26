@@ -14,23 +14,23 @@ if(!$dataOLT['id'])
 	$go->redirect('main');	
 $tpl->load_template('onu/mainsignal.tpl');
 $tpl->set('{id}',$id);
-$select = $db->Multi($PMonTables['historyrx'],'*',['onu' => $id]);
+$select = $db->SimpleWhile('SELECT * FROM `'.$PMonTables['historyrx'].'` WHERE onu = '.$id.' ORDER BY datetime ASC');
 if(count($select)){
 	foreach($select as $arr){
-		$onudata = date_parse_from_format('Y-m-d h:i:s',$arr['datetime']);
-		$js_array .= '[Date.UTC('.$onudata['year'].','.$onudata['month'].','.$onudata['day'].','.$onudata['hour'].','.$onudata['minute'].','.$onudata['second'].'),'.$arr['signal'].'],';
+		$js_array .= '['.(strtotime($arr['datetime'])*1000).','.$arr['signal'].'],';
 	}
 	$js_array_full = trim($js_array, ',');
 }
 $graph = <<<HTML
 <script>
+var signalarray = [$js_array_full];
 $(function() {
 	$('#container').highcharts('StockChart',{
 	    chart: {plotBorderWidth: 1 },
 	    rangeSelector: {selected: 1 },
 		navigator: {series: {type: 'line'}},	    
 	    yAxis: {startOnTick: true,endOnTick: false},
-	    series: [{name: 'Signal',data: [{$js_array_full}]}]
+	    series: [{name: 'Signal',data: signalarray}]
 	});
 });
 </script>

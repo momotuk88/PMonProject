@@ -2,14 +2,8 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
-$insert = null;
-$getDataSql = array();
-$allowed_types = array(
-	'image/pjpeg' => 'jpg',
-	'image/jpeg' => 'jpg',
-	'image/jpg' => 'jpg',
-	'image/png' => 'png'
-);
+$insert = $insert ?? null;
+$getDataSql = $getDataSql ?? null;
 switch($act){
 	case 'savedevice': 
 		if(!empty($USER['class']) && $USER['class']>=6){	
@@ -83,12 +77,15 @@ switch($act){
 				$getDataSql['telegram'] = Clean::str($_POST['telegram']);	
 			if(isset($_POST['telegramtoken']))
 				$getDataSql['telegramtoken'] = Clean::str($_POST['telegramtoken']);	
+			$getDataSql['criticsignal'] = (isset($_POST['criticsignal']) ? Clean::int($_POST['criticsignal']):1);	
 			if(isset($_POST['telegramchatid']))
 				$getDataSql['telegramchatid'] = Clean::str($_POST['telegramchatid']);	
 			if(isset($_POST['viewipswitch']))
 				$getDataSql['viewipswitch'] = Clean::str($_POST['viewipswitch']);				
 			if(isset($_POST['marker']))
-				$getDataSql['marker'] = Clean::str($_POST['marker']);	
+				$getDataSql['marker'] = Clean::str($_POST['marker']);			
+			if(isset($_POST['logsignal']))
+				$getDataSql['logsignal'] = Clean::str($_POST['logsignal']);	
 			if(isset($_POST['map']))
 				$getDataSql['map'] = Clean::str($_POST['map']);			
 			if(isset($_POST['geo_lon']))
@@ -146,6 +143,29 @@ switch($act){
 			}	
 		}
 		$go->redirect('pondog');	
+	break;	
+	case 'saveoid':	
+		if(!empty($USER['class']) && $USER['class']>=4){
+			if(isset($_POST['sqlid']))
+				$whereoidid['id'] = Clean::int($_POST['sqlid']);		
+			if(isset($_POST['oidid']))
+				$updateoidid['oidid'] = Clean::int($_POST['oidid']);		
+			if(isset($_POST['descr']))
+				$updateoidid['descr'] = Clean::str($_POST['descr']);		
+			if(isset($_POST['pon']))
+				$updateoidid['pon'] = Clean::str($_POST['pon']);		
+			if(isset($_POST['types']))
+				$updateoidid['types'] = Clean::str($_POST['types']);		
+			if(isset($_POST['inf']))
+				$updateoidid['inf'] = Clean::str($_POST['inf']);		
+			if(isset($_POST['oid']))
+				$updateoidid['oid'] = Clean::str($_POST['oid']);
+			if(!empty($whereoidid['id']) && is_array($updateoidid)){
+				$db->SQLupdate('oid',$updateoidid,['id'=>$whereoidid['id']]);
+			}
+			$go->go('/?do=oid&oidid='.$updateoidid['oidid']);
+		}
+		$go->redirect('oid');
 	break;	
 	case 'newoid':	// додаємо в базу новий оід
 		if(isset($_POST['oidid']))
@@ -221,6 +241,7 @@ switch($act){
 				$db->SQLdelete('switch_port',['deviceid' => $getDev['id']]);
 				$db->SQLdelete('switch_photo',['deviceid' => $getDev['id']]);
 				$db->SQLdelete('switch_pon',['oltid' => $getDev['id']]);				
+				$db->SQLdelete($PMonTables['monitoring'],['deviceid' => $getDev['id']]);				
 			}
 			$go->redirect('main');		
 		}

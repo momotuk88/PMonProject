@@ -8,6 +8,7 @@ if(count($getAllSwitch)){
 	foreach ($getAllSwitch as $switch) {
 		$switcharray[$switch['id']]['place'] = $switch['place'];
 		$switcharray[$switch['id']]['oid'] = $switch['oidid'];
+		$switcharray[$switch['id']]['monitor'] = $switch['monitor'];
 	}
 }else{
 	die('add_new_switch');
@@ -43,6 +44,7 @@ $getAllPort = $db->Multi('switch_port','*',['monitor' => 'yes']);
 if(count($getAllPort)){
 	$arrayport = array();
 	foreach ($getAllPort as $port) {
+		if($switcharray[$port['deviceid']]['monitor']=='yes'){
 		if($switcharray[$port['deviceid']]['oid']==15){
 			$types = 'port'.$port['typeport'];
 		}else{
@@ -66,7 +68,7 @@ if(count($getAllPort)){
 			$arrayport[$port['id']]['result'] = unserialize($getOID['result']);
 			$arrayport[$port['id']]['oid'] = str_replace('keyport',$port['llid'],$getOID['oid']);
 		}
-	}
+	}}
 	if(is_array($arrayport)) {
 		foreach ($arrayport as $portid => $data){
 			$result_port[$portid] = get_curl_api(array('do' => 'oid', 'oid' => $data['oid'], 'id' => $data['id']), true, 10);
@@ -84,17 +86,18 @@ if(count($getAllPort)){
 		}
 	}
 }
-
 $getAllPortErr = $db->Multi('switch_port','*',['monitor' => 'yes','error' => 'yes','operstatus' => 'up']);
 if(count($getAllPortErr)){
 	$listPon = array();
 	foreach($getAllPortErr as $port) {
-		$listPon[$port['id']]['id'] = $port['id'];
-		$listPon[$port['id']]['deviceid'] = $port['deviceid'];
-		$listPon[$port['id']]['place'] = $switcharray[$port['deviceid']]['place'];
-		$listPon[$port['id']]['sms'] = $port['sms'];
-		$listPon[$port['id']]['llid'] = $port['llid'];
-		$listPon[$port['id']]['descrport'] = $port['nameport'].($port['descrport']?' ('.$port['descrport'].')':'').' ';
+		if($switcharray[$port['deviceid']]['monitor']=='yes'){
+			$listPon[$port['id']]['id'] = $port['id'];
+			$listPon[$port['id']]['deviceid'] = $port['deviceid'];
+			$listPon[$port['id']]['place'] = $switcharray[$port['deviceid']]['place'];
+			$listPon[$port['id']]['sms'] = $port['sms'];
+			$listPon[$port['id']]['llid'] = $port['llid'];
+			$listPon[$port['id']]['descrport'] = $port['nameport'].($port['descrport']?' ('.$port['descrport'].')':'').' ';
+		}
 	}
 	if(is_array($listPon)){
 		foreach($listPon as $idPort => $dataSwitch){

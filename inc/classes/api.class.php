@@ -42,18 +42,13 @@ class MonitorApi{
 		$confapi = array();
 		if(is_array($ListOId)){
 			foreach($ListOId as $conf) {
-				/*
-				$confapi['id'] = $array['id'];
-				$confapi['netip'] = $array['netip'];
-				$confapi['snmpro'] = $array['snmpro'];
-				$confapi['oid'][$conf['types']] = $conf['oid'];
-				*/
 				if(!empty($conf['oid'])){
-					$getIn = $this->snmp->get($array['netip'],$array['snmpro'],$conf['oid']);
-					$res = @$this->trimSNMPOutput($getIn,$conf['oid']);	
-					if($res)
+					$getIn = @$this->snmp->get($array['netip'],$array['snmpro'],$conf['oid']);
+					$res = $this->trimSNMPOutput($getIn,$conf['oid']);	
+					if($res){
 						$data = $this->getResultFromat($res,$conf['result']);
-					$confapi['result'][$conf['types']] = $data;					
+					}
+					$confapi['result'][$conf['types']] = ($data ? $data : '');					
 				}
 			}
 		}
@@ -133,14 +128,14 @@ class MonitorApi{
 		$result = trim($result);
 		return $result;
 	}
-	public function getResultFromat($data,$format = null){
+	public function getResultFromat($data,$format){
 		$result = $data;
 		if($format){
 			if(preg_match('/a:2:/',$format)){
 				$res = unserialize($format);
 				$result = $res[$data];
 			}
-			if(preg_match('/FUNCT/i',$format)) {
+			if(preg_match('/FUNC/i',$format)) {
 				preg_match('/=(.*)INT(\d+)=/i',$format,$dataMatch);
 				if(preg_match('/FUNCT1/',$dataMatch[1])){
 					$result = $data / $dataMatch[2];
@@ -158,7 +153,7 @@ class MonitorApi{
 			if($type && !empty($value['oid'])){
 				$get = @$this->snmp->get($value['netip'],$value['snmpro'],$value['oid']);
 				$data = $this->trimSNMPOutput($get,$value['oid']);
-				if(!empty($value['format'])){
+				if(!empty($value['format']) && $data){
 					$result[$type] = $this->getResultFromat($data,$value['format']);	
 				}else{
 					$result[$type] = $data;	

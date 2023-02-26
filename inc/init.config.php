@@ -6,6 +6,7 @@ if(!defined('CONFIG')){
 	die('Hacking attempt config!');
 }
 $config = $db->config();
+$allowed_types = array('image/pjpeg' => 'jpg','image/jpeg' => 'jpg','image/jpg' => 'jpg','image/png' => 'png');
 $colorfiber['1'] = '#87ff00';
 $colorfiber['2'] = '#f47d7d';
 $colorfiber['4'] = '#6fb9e7';

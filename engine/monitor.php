@@ -2,54 +2,51 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
-$olt = null;
-$jobid = null;
-$gocheck = null;
-$goport = false;
-$tempdata = null;
-$supportonu = null;
+$starttime = microtime(true);
+$olt = $olt ?? null;
+$jobid = $jobid ?? null;
+$gocheck = $gocheck ?? null;
+$goport = $goport ?? null;
+$tempdata = $tempdata ?? null;
+$supportonu = $supportonu ?? null;
+$resultrxarray = $resultrxarray ?? null;
 $starttime = 0;
 set_time_limit(6000);
 $time = date('Y-m-d H:i:s');
 require ROOT_DIR.'/inc/init.monitor.php';
 $long_options = ["switch:","jobid:"];
 $options = getopt("s:j:", $long_options);
-if(isset($options["s"]) || isset($options["switch"])) {
+if(isset($options["s"]) || isset($options["switch"]))
     $olt = isset($options["s"]) ? $options["s"] : $options["switch"];
-}
-if(isset($options["j"]) || isset($options["jobid"])) {
+if(isset($options["j"]) || isset($options["jobid"]))
     $jobid = isset($options["j"]) ? $options["j"] : $options["jobid"];
-}
-if(!$olt && !$jobid) {
+if(!$olt && !$jobid)
 	die('corect_system_cron');
-}
-if($olt) {
-	$getSwitch = $db->Fast($PMonTables['switch'],'*',['id'=>$olt]);
-	if(!$getSwitch['id'])
+if(is_numeric($olt)){
+	$getswitch = $db->Fast($PMonTables['switch'],'*',['id'=>$olt]);
+	if(!$getswitch['id'])
 		die('empty_device_id');
-	if(!empty($getSwitch['id'])){
-		$db->SQLdelete($PMonTables['swcron'],['oltid'=>$getSwitch['id']]);
+	if(!empty($getswitch['id'])){
+		$db->SQLdelete($PMonTables['swcron'],['oltid'=>$getswitch['id']]);
 		$gocheck = true;
-		switchLog($getSwitch['id'],'cron',$lang['gocheckcron']);
+		switchLog($getswitch['id'],'cron',$lang['gocheckcron']);
 	}
 }else{
 	die('unknown_device');
 }
 if(!$gocheck)
 	die('unknown_cmd');
-$getMonitor = new Monitor($getSwitch['id'],$getSwitch['class']);
-$supportonu = $getMonitor->getSupportOnu();
+$getmonitor = new Monitor($getswitch['id'],$getswitch['class']);
+$supportonu = $getmonitor->getSupportOnu();
 if($supportonu){
 	$db->SQLupdate($PMonTables['switch'],['status'=>'go','updates'=>$time,'jobid'=>0],['id' => $olt]);
-	$tempdata = $getMonitor->start();
+	$tempdata = $getmonitor->start();
 }
-$starttime = microtime(true);
 if($supportonu && !$tempdata){
-	switchLog($getSwitch['id'],'cron',$lang['emptytemponu']);
+	switchLog($getswitch['id'],'cron',$lang['emptytemponu']);
 }
 if($supportonu && is_array($tempdata)){
 	foreach($tempdata as $idont => $getdata){
-		#usleep(random_int(1,5));
 		$resapi = get_curl_api($getdata,true);
 		if(isset($resapi)){
 			$resarray[$idont] = array_merge($getdata, $resapi);
@@ -61,58 +58,55 @@ if($supportonu && is_array($tempdata)){
 	if(is_array($resarray)){
 		foreach($resarray as $getdataont){
 			if($getdataont['pon']=='epon'){
-				$getMonitor->tempSaveEpon($getdataont);
+				$getmonitor->tempSaveEpon($getdataont);
 			}
 			if($getdataont['pon']=='gpon'){
-				$getMonitor->tempSaveGpon($getdataont);
+				$getmonitor->tempSaveGpon($getdataont);
 			}
 		}
 		$goont = true;
-		$db->SQLdelete($PMonTables['onus'],['cron' => 2, 'olt' => $olt]);
 	}else{
-		switchLog($getSwitch['id'],'cron',$lang['checkapisystem']);
+		switchLog($getswitch['id'],'cron',$lang['checkapisystem']);
 	}
-	$getlistrxcheck = $getMonitor->getListSignal();
+	$getlistrxcheck = $getmonitor->getListSignal();
 	if($goont && is_array($getlistrxcheck)){
-		foreach($getlistrxcheck as $idrx => $getrxdata){
-			#usleep(random_int(1,5));
+		foreach($getlistrxcheck as $key => $getrxdata){
 			if(isset($getrxdata)){
 				$resRxApi = get_curl_api($getrxdata,true);
 			}
 			if(is_array($resRxApi) && is_array($getrxdata)){
-				$resultrxarray[$idrx] = array_merge($getrxdata,$resRxApi);
+				$resultrxarray[$key] = array_merge($getrxdata,$resRxApi);
 			}else{
-				$resultrxarray[$idrx] = $getrxdata;
+				$resultrxarray[$key] = $getrxdata;
 			}
+			print_R($resultrxarray);
 		}
 	}
 	if(is_array($resultrxarray)){
 		foreach($resultrxarray as $getrxdataont){
 			if($getrxdataont['pon']=='epon'){
-				$getMonitor->tempSaveSignalEpon($getrxdataont);
+				$getmonitor->tempSaveSignalEpon($getrxdataont);
 			}
 			if($getrxdataont['pon']=='gpon'){
-				$getMonitor->tempSaveSignalGpon($getrxdataont);
+				$getmonitor->tempSaveSignalGpon($getrxdataont);
 			}
 		}	
 	}
 }
 sleep(2);
-$supportport = $getMonitor->getSupportPort();
+$supportport = $getmonitor->getSupportPort();
 if($supportport){
-	$indexport = $getMonitor->getPort();
+	$indexport = $getmonitor->getPort();
 	if(is_array($indexport)){
-		$getMonitor->savePort($indexport);
+		$getmonitor->savePort($indexport);
 	}
 }
 sleep(2);
 if(is_array($resarray))
-	$getMonitor->UpdateInformationOlt();
-if($starttime){
-	$endTime = microtime(true);
-	$executionTime = (int)$endTime - $starttime;
-	if($executionTime){
-		$db->SQLupdate($PMonTables['switch'],['status'=>'no','timecheck'=>$executionTime,'timechecklast'=>(!empty($getSwitch['timecheck'])?$getSwitch['timecheck']:0)],['id'=>$getSwitch['id']]);
-	}
+	$getmonitor->UpdateInformationOlt();
+if(!empty($getswitch['id'])){
+	$executionTime = microtime(true) - $starttime;
+	$db->SQLupdate($PMonTables['switch'],['status'=>'no','timecheck'=>$executionTime,'timechecklast'=>(!empty($getswitch['timecheck'])?$getswitch['timecheck']:0)],['id'=>$getswitch['id']]);
+
 }
 ?>

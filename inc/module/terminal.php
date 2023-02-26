@@ -2,10 +2,11 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
-$column = '';
-$url_terminal = '';
-$oldlinks = '';
-$$ORDERBY = '';
+$column = $column ?? null;
+$url_terminal = $url_terminal ?? null;
+$oldlinks = $oldlinks ?? null;
+$ORDERBY = $ORDERBY ?? null;
+$whereoltandpon = $whereoltandpon ?? null;
 $id = isset($_GET['id']) ? Clean::int($_GET['id']) : null;
 $port = isset($_GET['port']) ? Clean::int($_GET['port']) : null;
 $sort = isset($_GET['sort']) ? Clean::int($_GET['sort']) : null;
@@ -59,10 +60,8 @@ if($column && $ascdesc)
 	$ORDERBY[$column] =  $ascdesc;
 }
 if(!$id)
-	$go->redirect('main');	
-$whereOlTandPON = array();
+	$go->redirect('main');
 
-// SORT
 $link1 = '';$link2 = '';$link3 = '';$link4 = '';$link5 = '';$link6 = '';$link7 = '';$link8 = '';$sortbtn = '';
 $count_get = 0;
 	$oldlink = null;
@@ -162,27 +161,27 @@ if ($sort==8) {
 		$link8='asc';
 }
 if($USER['hideonu']=='yes'){
-	$whereOlTandPON['status'] = 1;
+	$whereoltandpon['status'] = 1;
 }
-$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=1&type='.$link1.'"><img src="../style/img/sort/'.$link1.'.png">'.$lang['name'].'</a>';
-$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=2&type='.$link2.'"><img src="../style/img/sort/'.$link2.'.png">'.$lang['signal'].'</a>';
-$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=3&type='.$link3.'"><img src="../style/img/sort/'.$link3.'.png">'.$lang['volokno'].'</a>';
-$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=4&type='.$link4.'"><img src="../style/img/sort/'.$link4.'.png">'.$lang['register'].'</a>';
-$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=5&type='.$link5.'"><img src="../style/img/sort/'.$link5.'.png">'.$lang['online'].'</a>';
+$sortbtn .='<a class="sort table1" href="/?'.$oldlink.'&sort=1&type='.$link1.'"><img src="../style/img/sort/'.$link1.'.png">'.$lang['name'].'</a>';
+$sortbtn .='<a class="sort table2" href="/?'.$oldlink.'&sort=3&type='.$link3.'"><img src="../style/img/sort/'.$link3.'.png">'.$lang['volokno'].'</a>';
+$sortbtn .='<a class="sort table3" href="/?'.$oldlink.'&sort=2&type='.$link2.'"><img src="../style/img/sort/'.$link2.'.png">'.$lang['signal'].'</a>';
+#$sortbtn .='<a class="sort table4" href="/?'.$oldlink.'&sort=4&type='.$link4.'"><img src="../style/img/sort/'.$link4.'.png">'.$lang['register'].'</a>';
+#$sortbtn .='<a class="sort table5" href="/?'.$oldlink.'&sort=5&type='.$link5.'"><img src="../style/img/sort/'.$link5.'.png">'.$lang['online'].'</a>';
 #$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=6&type='.$link6.'"><img src="../style/img/sort/'.$link6.'.png">'.$lang['offline'].'</a>';
-$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=7&type='.$link7.'"><img src="../style/img/sort/'.$link7.'.png">UID</a>';
-$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=8&type='.$link8.'"><img src="../style/img/sort/'.$link8.'.png">'.$lang['marker'].'</a>';
+#$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=7&type='.$link7.'"><img src="../style/img/sort/'.$link7.'.png">UID</a>';
+#$sortbtn .='<a class="sort" href="/?'.$oldlink.'&sort=8&type='.$link8.'"><img src="../style/img/sort/'.$link8.'.png">'.$lang['marker'].'</a>';
 if(!empty($ORDERBY[$column]))
 	$oldlinks = '&sort='.(int)$sort.'&type='.$type;
 // SORT
 if($port){
 	$dataPon = $db->Fast('switch_pon','*',['id'=>$port]);
 	$dataPort = $db->Fast('switch_port','*',['deviceid'=>$id,'llid'=>$dataPon['sfpid']]);
-	$whereOlTandPON['olt'] = $id;
-	$whereOlTandPON['portolt'] = $dataPon['sfpid'];
+	$whereoltandpon['olt'] = $id;
+	$whereoltandpon['portolt'] = $dataPon['sfpid'];
 	$url_terminal = $config['url'].'/?do=terminal&id='.$id.'&port='.$port.$oldlinks;
 	$metatags = array('title'=>$dataPon['pon'].' '.$lang['pt_onu'],'description'=>$lang['pd_onu'],'page'=>'terminal');
-	$selectportolt .= '<div class="pon-sfp-detail"><div class="sfp-img"><img src="../style/img/pon.png"></div>';
+	$selectportolt = '<div class="pon-sfp-detail"><div class="sfp-img"><img src="../style/img/pon.png"></div>';
 	$selectportolt .= '<div class="inform"><h2>'.$dataPon['pon'].'';
 	if(!empty($dataPort['descrport']))
 		$selectportolt .= '<span class="descrport-terminal"><img src="../style/img/iconinfo.png">'.$dataPort['descrport'].'</span>';	
@@ -199,7 +198,7 @@ if($port){
 	$selectportolt .= '</div>';
 	$selectportolt .= '</div></div>';
 }else{
-	$whereOlTandPON['olt'] = $id;
+	$whereoltandpon['olt'] = $id;
 	$url_terminal = $config['url'].'/?do=terminal&id='.$id.$oldlinks;
 	$metatags = array('title'=>$lang['pt_onu'],'description'=>$lang['pd_onu'],'page'=>'terminal');
 	$selectportolt = '';
@@ -208,13 +207,14 @@ $dataSwitch = $db->Fast('switch','*',['id'=>$id]);
 if(!$dataSwitch['id']){
 	$go->redirect('main');		
 }
-$SQLCount = $db->Multi('onus','idonu',$whereOlTandPON);
+$SQLCount = $db->Multi('onus','idonu',$whereoltandpon);
 list($pagertop, $pagerbottom, $limit, $offset) = pager($config['countviewpageonu'],count($SQLCount),$url_terminal);
-$SQLTerminal = $db->Multi('onus','*',$whereOlTandPON,$ORDERBY,$offset,$limit);
+$SQLTerminal = $db->Multi('onus','*',$whereoltandpon,$ORDERBY,$offset,$limit);
 if(count($SQLTerminal)){
 	foreach($SQLTerminal as $Terminal){
 		$tpl->load_template('terminal/list.tpl');
 		$status = statusTermianl($Terminal['status']);
+		$tpl->set('{checkadded}',(!empty($status['added']) && $Terminal['status'] == 2 ? checkWhenAdded($status['added']): ''));
 		$tpl->set('{status}',$status['img']);
 		$tpl->set('{statuscss}',$status['css']);
 		$tpl->set('{signal}',signalTerminal($Terminal['rx']).($Terminal['rxstatus']=='up' || $Terminal['rxstatus']=='down' ? '<span class="signaldown"><i class="fi fi-rr-angle-small-'.$Terminal['rxstatus'].'"></i></span>':''));
@@ -225,6 +225,7 @@ if(count($SQLTerminal)){
 		$tpl->set('{type}',$Terminal['type']);
 		$tpl->set('{idonu}',$Terminal['idonu']);
 		$tpl->set('{reason}',($Terminal['status']==2?(!empty($Terminal['reason'])?'<span class="reason_'.$Terminal['reason'].'"></span>':''):''));
+		$tpl->set('{time}',($Terminal['status']==2?(!empty($Terminal['offline'])?''.aftertime($Terminal['offline']).'':''):''));
 		$tpl->set('{terminal}',(!empty($Terminal['vendor']) || !empty($Terminal['model'])?'<span class="setterminal">'.$Terminal['model'].''.$Terminal['vendor'].'</span>':''));
 		$tpl->set('{uid}',(!empty($Terminal['uid'])?'<span class="terminaluid" onclick="ajaxbillingdata('.$Terminal['idonu'].')"><img src="/style/img/info.png">'.$Terminal['uid'].'</span>':''));
 		$tpl->set('{tag}',(!empty($Terminal['tag'])?'<span class="terminaltag">'.$Terminal['tag'].'</span>':''));
@@ -262,7 +263,7 @@ if(!empty($dataPon['pon'])){
 }else{
 	$tpl->load_template('olt/right-all.tpl');
 	$tpl->set('{viewbtn}',$viewbtn);
-	$tpl->set('{listpon}',getlistPonTpl(['deviceid'=>$id,'ponid'=>$dataPon['id']]));
+	$tpl->set('{listpon}',getlistPonTpl(['deviceid'=>$id]));
 	$tpl->compile('block-right');
 	$tpl->clear();	
 }

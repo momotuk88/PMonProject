@@ -2,6 +2,7 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+$addparam = $addparam ?? null;
 $id = isset($_GET['id']) ? Clean::int($_GET['id']) : null;
 if(!$id){
 	$go->redirect('main');	

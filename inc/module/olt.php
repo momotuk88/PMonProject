@@ -4,6 +4,7 @@ if (!defined('PONMONITOR')){
 }
 $blockonline = null;
 $blockoffline = null;
+$getpage = $getpage ?? null;
 $tplRes ='';
 $page = isset($_GET['page']) ? Clean::str($_GET['page']) : null;
 $id = isset($_GET['id']) ? Clean::int($_GET['id']) : null;
@@ -14,8 +15,9 @@ $dataSwitch = $db->Fast('switch','*',['id'=>$id]);
 if(!$dataSwitch['id']){
 	$go->redirect('main');	
 }
-$$SQLPortDevice = false;
-$SQLPon = false;
+$SQLPortDevice = $SQLPortDevice ?? null;
+$SQLPon = $SQLPon ?? null;
+$NewDataPort = $NewDataPort ?? null;
 if($dataSwitch['device']=='olt')
 	$SQLPon = $db->Multi('switch_pon','*',['oltid'=>$id]);
 if($dataSwitch['device']=='switch')
@@ -35,7 +37,7 @@ if(!empty($USER['class']) && $USER['class']>=6){
 	if($dataSwitch['device']=='olt' && $dataSwitch['monitor']=='yes'){
 		$panel .='<a href="'.$config['url'].'/?do=detail&act='.$dataSwitch['device'].'&page=monitoring&id='.$id.'"><img src="../style/img/uptime.png">'.$lang['edit_monitor'].'</a>';
 	}
-	$panel .='<a href="'.$config['url'].'/?do=setup&id='.$id.'"><img src="../style/img/setting.png">'.$lang['setup'].'</a>';
+	$panel .='<a href="'.$config['url'].'/?do=setup&id='.$id.'"><img src="../style/img/setting.png">'.$lang['cfg'].'</a>';
 }
 if($dataSwitch['gallery']=='yes' && !empty($USER['class']) && $USER['class']>=6){
 	$panel .='<a href="'.$config['url'].'/?do=detail&act=olt&id='.$id.'&page=photo"><img src="../style/img/photo-gallery.png">'.$lang['photo'].'</a>';
@@ -193,8 +195,8 @@ if($page=='connect' && $dataSwitch['connect']=='yes'){
 			$IDBlock = idblock($PortData);
 			$tplRes .='<table class="tableport" border="0" cellspacing="0" cellpadding="10" style="width:100%;"><tr><td class="name-port" colspan="5">'.$PortData.'';
 			$tplRes .='<span style="cursor: pointer;" onclick="javascript: block_switch(\''.$id.$IDBlock.'\',\''.$auth->member[0]['id'].'\');"> ';
-			$tplRes .='<img border="0" src="../style/img/'.($hiddenUserPort[$id.$IDBlock]=='hide'?'plus':'minus').'.gif" id="picb'.$id.$IDBlock.'" title="'.($hiddenUserPort[$id.$IDBlock]=='hide'?$lang['view']:$lang['hide']).'"></span></td></tr></table>';
-			$tplRes .='<table id="sb'.$id.$IDBlock.'" style="display: '.($hiddenUserPort[$id.$IDBlock]=='hide'?'none':'block').';width:100%;" class="tableport" border="0" cellspacing="0" cellpadding="10" style="width: 99%;">';
+			$tplRes .='<img border="0" src="../style/img/'.(!empty($hiddenUserPort[$id.$IDBlock]) && $hiddenUserPort[$id.$IDBlock]=='hide'?'plus':'minus').'.gif" id="picb'.$id.$IDBlock.'" title="'.(!empty($hiddenUserPort[$id.$IDBlock]) &&$hiddenUserPort[$id.$IDBlock]=='hide'?$lang['view']:$lang['hide']).'"></span></td></tr></table>';
+			$tplRes .='<table id="sb'.$id.$IDBlock.'" style="display: '.(!empty($hiddenUserPort[$id.$IDBlock]) && $hiddenUserPort[$id.$IDBlock]=='hide'?'none':'block').';width:100%;" class="tableport" border="0" cellspacing="0" cellpadding="10" style="width: 99%;">';
 			foreach($resData as $portID => $port){
 				$connect = true;
 				$tplRes .='<tr class="hover"><td class="td0 status-'.$port['operstatus'].' '.($port['operstatus']=='up'?'blink_status':'').'">'.$port['operstatus'].'<div class="pmon_new"></div></td>';
@@ -335,8 +337,8 @@ $control = '';
 if(!empty($USER['class']) && $USER['class']>=6){
 	$control .='<span class="monitorsetup" onclick="ajaxcore(\'monitor\','.$dataSwitch['id'].');"><img src="../style/img/settings.png"></span>';
 	$control .='<span class="monitorsetup" onclick="ajaxcore(\'delete\','.$dataSwitch['id'].');"><img src="../style/img/delet.png"></span>';
-	if($dataSwitch['monitor']=='yes' && $dataSwitch['status']=='go' && !empty($dataSwitch['jobid']))
-		$control .='<span class="monitorsetup"><img src="../style/img/play.png"></span>';
+	#if($dataSwitch['monitor']=='yes' && $dataSwitch['status']=='go' && !empty($dataSwitch['jobid']))
+	#	$control .='<span class="monitorsetup"><img src="../style/img/play.png"></span>';
 }
 $tpl->set('{name}',$dataSwitch['inf'].' '.$dataSwitch['model'].''.$control);
 $tpl->set('{result}',$tpl->result['block-content']);

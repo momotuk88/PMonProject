@@ -1,13 +1,29 @@
 <?php
 /*
 =====================================================
- PMonProject - PON Device Management UA
+ Project PMon
 -----------------------------------------------------
- Copyright (c) 2023 
- -----------------------------------------------------
- Developer @momotuk88  
+ https://t.me/pon_monitor
+-----------------------------------------------------
+ Copyright (c) 2022-2023 PMon
 =====================================================
  This code is protected by copyright
 =====================================================
 */
-if ($_SERVER["\x52\105\121\x55\105\123\x54\137\x4d\x45\x54\x48\117\104"] == "\120\117\123\124") { $olt = isset($_POST["\157\x6c\164"]) ? (int) $_POST["\x6f\x6c\164"] : null; $jobid = isset($_POST["\152\157\x62\151\144"]) ? (int) $_POST["\x6a\x6f\142\151\x64"] : null; if ($olt && $jobid) { exec("\x70\x68\160\x20\x6d\x6f\156\x69\164\157\x72\56\x70\150\x70\40\x2d\55\x73\x77\151\x74\143\150\40\x22" . $olt . "\x22\x20\55\x2d\152\157\142\151\144\x20\x22" . $jobid . "\x22\x20\x20\x3e\x20\x2f\144\x65\x76\x2f\156\x75\x6c\x6c\x20\x32\76\x26\x31"); } } ?>
+
+ob_start();
+ob_implicit_flush(false);
+
+date_default_timezone_set('Europe/Kiev');
+
+error_reporting ( E_ALL ^ E_WARNING ^ E_DEPRECATED ^ E_NOTICE );
+ini_set ( 'error_reporting', E_ALL ^ E_WARNING ^ E_DEPRECATED ^ E_NOTICE );
+
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+	$olt = isset($_POST['olt']) ? (int)$_POST['olt'] : null;
+	$jobid = isset($_POST['jobid']) ? (int)$_POST['jobid'] : null;
+	if($olt && $jobid){
+		exec('php monitor.php --switch "'.$olt.'" --jobid "'.$jobid.'"  > /dev/null 2>&1');
+	}
+}
+?>

@@ -1,2 +1,30 @@
 <?php
- goto cdxql; tvjy3: require ROOT_DIR . "\x2f\151\156\143\x2f\x69\156\151\164\x2e\163\x71\154\56\x70\150\160"; goto F25St; F25St: require ROOT_DIR . "\57\151\156\143\x2f\x64\x61\x74\141\142\x61\163\x65\x2e\160\x68\x70"; goto PpkrR; G8Qzq: require ENGINE_DIR . "\x69\x6e\151\164\x2e\157\154\x74\x2e\160\150\160"; goto BO4Nw; F_Wpk: require ENGINE_DIR . "\x63\154\141\x73\x73\145\163\x2f\x73\x6e\x6d\x70\56\143\154\141\163\163\56\160\x68\160"; goto HUlj3; PpkrR: require ENGINE_DIR . "\x63\154\141\163\x73\145\x73\x2f\155\x6f\x6e\151\164\x6f\x72\56\144\142\x2e\143\154\141\163\163\56\x70\x68\160"; goto FZnAf; FoeXg: require ENGINE_DIR . "\146\165\x6e\143\164\x69\157\x6e\x73\x2f\143\x6f\162\145\x2e\160\150\x70"; goto l6aAm; SVvii: require ENGINE_DIR . "\143\x6c\141\163\163\x65\163\57\145\x71\x75\151\160\x6d\x65\156\x74\x2e\x63\154\x61\x73\x73\56\160\x68\x70"; goto F_Wpk; TfvY7: require ENGINE_DIR . "\x66\x75\156\x63\164\x69\x6f\x6e\163\57\x6d\157\x6e\x69\x74\157\162\x2e\160\x68\160"; goto FoeXg; iXX4s: define("\x43\x4f\116\x46\x49\x47", true); goto nUmyJ; vpbfL: require ROOT_DIR . "\57\151\x6e\143\57\x69\156\151\x74\56\143\157\156\x66\x69\147\56\160\x68\x70"; goto TfvY7; HUlj3: require ENGINE_DIR . "\143\x6c\x61\163\x73\145\163\x2f\143\x72\x6f\156\56\x63\x6c\x61\x73\x73\56\160\150\160"; goto G8Qzq; cdxql: if (!defined("\120\x4f\x4e\x4d\x4f\116\x49\x54\117\x52")) { die("\110\x61\143\x6b\x69\156\x67\40\x61\x74\164\x65\155\160\x74\41"); } goto iXX4s; l6aAm: require ENGINE_DIR . "\x63\x6c\x61\x73\163\145\x73\57\x63\157\x72\x65\56\x63\154\141\163\163\x2e\160\x68\x70"; goto SVvii; nUmyJ: require ENGINE_DIR . "\x69\x6e\151\164\56\x6c\x61\x6e\147\x2e\160\x68\x70"; goto tvjy3; FZnAf: require ENGINE_DIR . "\143\154\141\x73\x73\x65\163\57\x63\x6c\145\141\156\56\x63\154\141\x73\x73\56\160\x68\160"; goto vpbfL; BO4Nw: ?>
+/*
+=====================================================
+ PMonProject - PON Device Management UA
+-----------------------------------------------------
+ Copyright (c) 2023 
+ -----------------------------------------------------
+ Developer @momotuk88  
+=====================================================
+ This code is protected by copyright
+=====================================================
+*/
+if (!defined('PONMONITOR')){
+	die('Hacking attempt!');
+}
+define('CONFIG',true);
+require ENGINE_DIR.'init.lang.php';
+require ROOT_DIR.'/inc/init.sql.php';
+require ROOT_DIR.'/inc/database.php';
+require ENGINE_DIR.'classes/monitor.db.class.php';
+require ENGINE_DIR.'classes/clean.class.php';
+require ROOT_DIR.'/inc/init.config.php';
+require ENGINE_DIR.'functions/monitor.php';
+require ENGINE_DIR.'functions/core.php';
+require ENGINE_DIR.'classes/core.class.php';
+require ENGINE_DIR.'classes/equipment.class.php';
+require ENGINE_DIR.'classes/snmp.class.php';
+require ENGINE_DIR.'classes/cron.class.php';
+require ENGINE_DIR.'init.olt.php';
+?>

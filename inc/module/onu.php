@@ -67,26 +67,26 @@ if($config['comment']=='on'){
 $monitoronu = '';
 $dataMonONT = $db->Fast('monitoronu','*',['idonu'=>$id]);
 if(!empty($dataMonONT['id'])){
-	$monitoronu = '<span class="monitoronus"><div class="blob"></div>Моніториться</span>';
+	$monitoronu = '<span class="monitoronus"><div class="blob"></div>'.$lang['m'].'</span>';
 }
 $logonu = ListOnuLog($dataONT['idonu'],$dataOLT['id']);
 $tpl->load_template('onu/main.tpl');
 $tpl->set('{id}',$id);
 if(!empty($dataONT['mac']))
-	$mac_ont = '<span class="n">MAC</span><span class="m">'.$dataONT['mac'].'</span>';
+	$serialonu = '<span class="n">MAC</span><span class="m">'.$dataONT['mac'].'</span>';
 if(!empty($dataONT['sn']))
-	$sn_ont = '<span class="n">SN</span><span class="m">'.$dataONT['sn'].'</span>';
+	$serialonu = '<span class="n">SN</span><span class="m">'.$dataONT['sn'].'</span>';
 $checkONU = $db->Fast($PMonTables['mononu'],'*',['idonu'=>$id]);
 if(!empty($checkONU['id'])){
-	$addmonitor = '<span class="delmonitor" onclick="ajaxcore(\'delmonitor\',\''.$id.'\');">Видалити моніторинг</span>';
+	$addmonitor = '<span class="delmonitor" onclick="ajaxcore(\'delmonitor\',\''.$id.'\');">'.$lang['mdel'].'</span>';
 }else{
-	$addmonitor = '<span class="addmonitor" onclick="ajaxcore(\'addmonitor\',\''.$id.'\');">Додати в моніторинг</span>';	
+	$addmonitor = '<span class="addmonitor" onclick="ajaxcore(\'addmonitor\',\''.$id.'\');">'.$lang['madd'].'</span>';	
 }
-$tpl->set('{number_ont}',$mac_ont.$sn_ont);
+$tpl->set('{number_ont}',$serialonu);
 $tpl->set('{monitoronu}',$monitoronu);
-$tpl->set('{comments}',$tpl->result['comments']);
-$tpl->set('{tag}',$tpl->result['tag']);
-$tpl->set('{billing}',$tpl->result['billing']);
+$tpl->set('{comments}',isset($tpl->result['comments']) ? $tpl->result['comments'] : '');
+$tpl->set('{tag}',isset($tpl->result['tag']) ? $tpl->result['tag'] : '');
+$tpl->set('{billing}',isset($tpl->result['billing']) ? $tpl->result['billing'] : '');
 $tpl->set('{logonu}',$logonu);
 $tpl->set('{langcountonu}',$lang['langcountonu']);
 $tpl->set('{olt_id}',$dataOLT['id']);
@@ -95,7 +95,7 @@ $tpl->set('{olt_place}',$dataOLT['place']);
 $tpl->set('{olt_updates}',$dataOLT['updates']);
 $tpl->set('{type_ont}',$dataONT['type']);
 $tpl->set('{inface}',$dataONT['inface']);
-$tpl->set('{subinfoolt}',$subinfoolt);
+$tpl->set('{subinfoolt}','');
 $tpl->set('{olt}',$lang['olt']);
 $dataONTPort = $db->Fast('switch_pon','*',['sfpid'=>$dataONT['portolt'],'oltid'=>$dataONT['olt']]);
 $tpl->set('{port_id}',$dataONTPort['id']);

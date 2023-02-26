@@ -9,3 +9,19 @@ $(document).ready(function() {
     });
   });
 });
+//Живой поиск
+$(function(){
+$('.query').keyup(function() {
+    if(this.value.length >= 2){
+        $.ajax({
+            url: root+"ajax/search.php",
+			type: "POST",
+			data:{zapros:this.value},
+			dataType:"text",
+            success: function(data){
+                $("#mainstats").html(data).fadeIn(); //Выводим полученые данные в списке
+           }
+       })
+    }	
+})   
+})

@@ -3,9 +3,10 @@ if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
 $id = isset($_GET['id']) ? Clean::int($_GET['id']) : null;
-$dataLOCATION = $db->Fast($PMonTables['location'],'*',['id'=>$id]);
-if(!empty($dataLOCATION['id'])){
-	$listdevice = getAllDeviceLocation($dataLOCATION['id']);
+if($id)
+	$datalocation = $db->Fast($PMonTables['location'],'*',['id'=>$id]);
+if(!empty($datalocation['id'])){
+	$listdevice = getAllDeviceLocation($datalocation['id']);
 	if(is_array($listdevice)){
 		$devicelist = '<div id="block-location">';
 		foreach($listdevice as $dev){
@@ -15,18 +16,18 @@ if(!empty($dataLOCATION['id'])){
 	}else{
 		$devicelist = 'empty';	
 	}
-	$speedbar='<div id="onu-speedbar"><a class="brmhref" href="/?do=location"><i class="fi fi-rr-building"></i>'.$lang['location'].'</a><span class="brmspan"><i class="fi fi-rr-angle-left"></i>'.$dataLOCATION['name'].'</span></div>';
+	$speedbar='<div id="onu-speedbar"><a class="brmhref" href="/?do=location"><i class="fi fi-rr-building"></i>'.$lang['location'].'</a><span class="brmspan"><i class="fi fi-rr-angle-left"></i>'.$datalocation['name'].'</span></div>';
 	$metatags = array('title'=>$lang['locationdetail'],'description'=>$lang['locationdetail'],'page'=>'locationdetail');
 	$tpl->load_template('location/detail.tpl');
 	$tpl->set('{device}',$devicelist);
-	$tpl->set('{id}',$dataLOCATION['id']);
+	$tpl->set('{id}',$datalocation['id']);
 	$tpl->set('{pager}',$pager);
 	$tpl->set('{setup}',$lang['setups']);
 	$tpl->set('{geo}',$lang['geo']);
 	$tpl->set('{delet}',$lang['delet']);
-	$tpl->set('{name}',$dataLOCATION['name']);	
-	$tpl->set('{img}',(!$dataLOCATION['photo']?'':'<div class="photo"><img src="../file/location/'.$dataLOCATION['photo'].'"></div>'));	
-	$tpl->set('{note}',($dataLOCATION['note']?'<div class="note">'.$dataLOCATION['note'].'</div>':''));	
+	$tpl->set('{name}',$datalocation['name']);	
+	$tpl->set('{img}',(!$datalocation['photo']?'':'<div class="photo"><img src="../file/location/'.$datalocation['photo'].'"></div>'));	
+	$tpl->set('{note}',($datalocation['note']?'<div class="note">'.$datalocation['note'].'</div>':''));	
 	$tpl->compile('location');
 	$tpl->clear();	
 }else{
@@ -57,8 +58,9 @@ if(!empty($dataLOCATION['id'])){
 	}			
 }
 $tpl->load_template('location/main.tpl');
-$tpl->set('{add}',(checkAccess(6) && !$dataLOCATION['id']?'<div class="navigation mbottom20"><span class="deviceadd" onclick="ajaxcore(\'newlocation\');">'.$lang['add_location'].'</span></div>':''));
-$tpl->set('{result}',(!$dataLOCATION['id']?'<div id="location">'.$tpl->result['location'].'</div>':$tpl->result['location']));
-$tpl->set('{speedbar}',$speedbar);
+$tpl->set('{add}',(checkAccess(6) && empty($datalocation['id'])?'<div class="navigation mbottom20"><span class="deviceadd" onclick="ajaxcore(\'newlocation\');">'.$lang['add_location'].'</span></div>':''));
+$tpl->set('{result}',(empty($datalocation['id'])?'<div id="location">'.$tpl->result['location'].'</div>' : $tpl->result['location']));
+$tpl->set('{speedbar}','');
 $tpl->compile('content');
 $tpl->clear();
+?>

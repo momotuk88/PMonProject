@@ -1,3 +1,4 @@
+DROP TABLE `apikey`, `baseip`, `battery_list`, `config`, `connect_port`, `equipment`, `groups`, `historysignal`, `location`, `log`, `monitor`, `monitoring`, `monitoronu`, `oid`, `onus`, `onusold`, `onus_comm`, `onus_log`, `pingstats`, `pmonstats`, `sessions`, `sfp`, `sklad_battery`, `sklad_device`, `sklad_install`, `sklad_switch`, `sklad_ups`, `swcron`, `switch`, `switch_log`, `switch_photo`, `switch_pon`, `switch_port`, `switch_port_err`, `swlogport`, `task_users`, `unit`, `unitbasket`, `unitdevice`, `unitfiber`, `unitfibermap`, `unitmafta`, `unitponbox`, `unitponboxont`, `unitpontree`, `users`;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -9,7 +10,9 @@ CREATE TABLE `apikey` (
   `count` int(11) DEFAULT NULL,
   `types` varchar(10) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-INSERT INTO `apikey` (`id`, `added`, `apikey`, `ipaccess`, `count`, `types`) VALUES(1, NULL, 'regthy76rtfig8lt8ug', NULL, 10, 'monitor'),(2, NULL, 'rt325ye6irei65e', NULL, NULL, 'ont');
+INSERT INTO `apikey` (`id`, `added`, `apikey`, `ipaccess`, `count`, `types`) VALUES
+(1, NULL, 'regthy76rtfig8lt8ug', NULL, 10, 'monitor'),
+(2, NULL, 'rt325ye6irei65e', NULL, NULL, 'ont');
 CREATE TABLE `baseip` (
   `id` int(11) NOT NULL,
   `deviceid` int(11) DEFAULT NULL,
@@ -32,8 +35,8 @@ CREATE TABLE `config` (
 INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (1, 'root', '/', 'test', '0000-00-00 00:00:00'),
 (2, 'securityipst', NULL, 'ip', '2022-07-27 16:08:49'),
-(3, 'countviewpageonu', '40', 'int', '2023-01-31 22:18:30'),
-(4, 'url', 'http://1.ua', 'url', '2023-01-31 22:07:21'),
+(3, 'countviewpageonu', '40', 'int', '2023-02-24 15:03:45'),
+(4, 'url', 'http://192.168.1.31', 'url', '2023-01-31 22:07:21'),
 (5, 'skin', 'pmon', 'text', '0000-00-00 00:00:00'),
 (6, 'billingapikey', 'keyus', 'text', '0000-00-00 00:00:00'),
 (7, 'telegramtoken', 'sam_token', 'text', '2023-01-06 13:54:45'),
@@ -49,20 +52,20 @@ INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (17, 'comment', 'off', 'enum', '2023-01-03 17:15:04'),
 (18, 'lon', '', 'int', '0000-00-00 00:00:00'),
 (19, 'lan', '', 'int', '0000-00-00 00:00:00'),
-(20, 'criticsignal', '2', 'int', '2022-07-27 15:50:42'),
+(20, 'criticsignal', '2', 'int', '2023-02-24 15:03:45'),
 (21, 'countlistsitelog', '20', 'int', '0000-00-00 00:00:00'),
 (22, 'critictemp', '70', 'int', '2022-07-27 15:58:53'),
 (23, 'criticcpuolt', '20', 'int', '0000-00-00 00:00:00'),
 (24, 'root_pmon', '/', 'test', '0000-00-00 00:00:00'),
-(25, 'billingurl', 'http://2.test/api.php', 'url', '0000-00-00 00:00:00'),
+(25, 'billingurl', 'http://192.168.1.31/api.php', 'url', '0000-00-00 00:00:00'),
 (26, 'configport', 'off', 'enum', '2022-07-27 16:03:10'),
 (27, 'pathwalk', 'snmpwalk', 'text', '0000-00-00 00:00:00'),
 (28, 'pathget', 'snmpget', 'text', '0000-00-00 00:00:00'),
-(29, 'snmpmode', 'class', 'text', '0000-00-00 00:00:00'),
+(29, 'snmpmode', 'native', 'text', '0000-00-00 00:00:00'),
 (30, 'background', 'false', 'text', '0000-00-00 00:00:00'),
 (31, 'cachetime', '60', 'int', '0000-00-00 00:00:00'),
 (32, 'debug', 'false', 'text', '0000-00-00 00:00:00'),
-(33, 'monitorapi', 'http://1.ua/api.php', 'url', '2023-01-31 22:18:30'),
+(33, 'monitorapi', 'http://192.168.1.31/api.php', 'url', '2023-01-31 22:18:30'),
 (34, 'sklad', 'on', 'enum', '0000-00-00 00:00:00'),
 (35, 'pon', 'on', 'enum', '2023-01-30 12:53:09'),
 (36, 'billingtype', 'mikbill', 'enum', '0000-00-00 00:00:00'),
@@ -74,7 +77,11 @@ INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (42, 'onugraph', 'on', 'enum', '0000-00-00 00:00:00'),
 (43, 'debugmysql', 'no', 'text', '0000-00-00 00:00:00'),
 (44, 'statusport', 'on', 'enum', '0000-00-00 00:00:00'),
-(45, 'errorport', 'on', 'enum', '0000-00-00 00:00:00');
+(45, 'errorport', 'on', 'enum', '0000-00-00 00:00:00'),
+(46, 'viewipswitch', 'on', NULL, '0000-00-00 00:00:00'),
+(47, 'badsignalstart', '28', NULL, '2023-02-24 15:03:45'),
+(48, 'badsignalend', '40', NULL, '2023-02-24 15:03:45'),
+(49, 'logsignal', 'off', NULL, '2023-02-24 14:51:55');
 CREATE TABLE `connect_port` (
   `id` int(11) NOT NULL,
   `types` varchar(5) DEFAULT NULL,
@@ -121,12 +128,12 @@ INSERT INTO `equipment` (`id`, `cat`, `sort`, `oidid`, `model`, `device`, `name`
 (26, 5, 26, NULL, 'EL5610-08P', 'olt', 'GCOM', 'gcomgpon', 'no', NULL),
 (30, 3, 30, NULL, '5683', 'olt', 'Huawei', 'huawei', 'no', NULL),
 (31, 3, 31, NULL, 'S2326TP', 'switch', 'Huawei ', 'huawei2326switch', 'no', NULL),
-(32, 3, 32, 18, 'MA5608T', 'olt', 'Huawei', 'huawei5608t', 'no', 'huawei5608t.png'),
+(32, 3, 32, 14, 'MA5608T', 'olt', 'Huawei', 'huawei5608t', 'yes', 'huawei5608t.png'),
 (27, 5, 27, NULL, 'EL5610-04P', 'olt', 'GCOM', 'gcomgpon', 'no', NULL),
 (28, 6, 30, 5, 'DGS-1100-06/ME', 'switch', 'Dlink', 'dlinkdgs1106', 'yes', 'dlink1106me.png'),
 (40, 10, 40, 4, 'SGSW-24240', 'switchl2', 'PLANET ', 'planet', 'no', 'SGSW-24240.png'),
 (50, 20, 1, 50, 'Ip7', 'ups', 'Equicom', 'equicomip7', 'no', 'equicomip7.png'),
-(20, 2, 20, 15, 'FD1216', 'olt', 'C-DATA', 'cdataf1216s', 'no', 'cdata1216s.png');
+(20, 2, 20, 12, 'FD1616SN', 'olt', 'C-DATA', 'cdataf1616sn', 'yes', 'cdataf1616sn.png');
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL,
   `name` text DEFAULT NULL,
@@ -152,9 +159,9 @@ CREATE TABLE `log` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime DEFAULT NULL,
   `message` text DEFAULT NULL,
-  `userid` int(11) NOT NULL,
+  `userid` int(11) DEFAULT NULL,
   `deviceid` int(11) DEFAULT NULL,
-  `progress` enum('user','system','switch','telegram','config') NOT NULL
+  `progress` enum('user','system','switch','telegram','config','onudelet') NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 CREATE TABLE `monitor` (
   `id` int(11) NOT NULL,
@@ -167,6 +174,13 @@ CREATE TABLE `monitor` (
   `added` datetime DEFAULT NULL,
   `checker` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `monitoring` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `datetime` datetime DEFAULT NULL,
+  `types` text DEFAULT NULL,
+  `values` text DEFAULT NULL,
+  `deviceid` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 CREATE TABLE `monitoronu` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -247,8 +261,8 @@ INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `des
 (60, 1, 'listport', 'bdcom', 'epon', '1.3.6.1.4.1.3320.101.107.1.1', 'string', 'oid_epon_list_port', 'global', NULL),
 (61, 1, 'status', 'bdcom', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'integer', 'oid_epon_port_satus', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
 (62, 1, 'temp', 'bdcom', 'device', '1.3.6.1.4.1.3320.9.181.1.1.7.1', 'integer', 'oid_epon_switch_temp', 'health', NULL),
-(63, 50, 'status', 'equicom', 'device', '1.3.6.1.4.1.35160.1.26.0', 'integer', 'oid_status_220', 'health', 'a:2:{i:1;s:2:\"up\";i:0;s:4:\"down\";}'),
-(64, 50, 'volt', 'equicom', 'device', '1.3.6.1.4.1.35160.1.16.1.13.3', 'string', 'oid_volt_battery', 'health', '=FUNCT1INT10='),
+(63, 50,'status', 'equicom', 'device', '1.3.6.1.4.1.35160.1.26.0', 'integer', 'oid_status_220', 'health', 'a:2:{i:1;s:2:\"up\";i:0;s:4:\"down\";}'),
+(64, 50,'volt', 'equicom', 'device', '1.3.6.1.4.1.35160.1.16.1.13.3', 'string', 'oid_volt_battery', 'health', '=FUNCT1INT10='),
 (65, 2, 'sn', 'bdcom', 'gpon', '1.3.6.1.4.1.3320.10.3.1.1.4.keyonu', 'hex', 'oid_gpon_sn', 'onu', NULL),
 (66, 2, 'listname', 'bdcom', 'gpon', '1.3.6.1.2.1.2.2.1.2', 'hex', 'oid_gpon_list_inface', 'onu', NULL),
 (67, 2, 'dist', 'bdcom', 'gpon', '1.3.6.1.4.1.3320.10.3.1.1.33.keyonu', 'integer', 'oid_gpon_onu_dist', 'onu', '=FUNCT1INT10='),
@@ -316,8 +330,8 @@ INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `des
 (129, 7, 'reason', 'zte', 'gpon', '1.3.6.1.4.1.3902.1012.3.28.2.1.7.keyport.keyonu', 'auto', '', 'onu', NULL),
 (130, 7, 'model', 'zte', 'gpon', '1.3.6.1.4.1.3902.1012.3.50.11.2.1.17.keyport.keyonu', 'auto', '', 'onu', NULL),
 (131, 7, 'vendor', 'zte', 'gpon', '1.3.6.1.4.1.3902.1012.3.50.11.2.1.1.keyport.keyonu', 'auto', '', 'onu', NULL),
-(132, 7, 'uptime', 'zte', 'gpon', '1.3.6.1.4.1.3902.1012.3.28.2.1.5.keyport.keyonu', 'auto', '', 'onu', NULL),
-(133, 7, 'uptime', 'zte', 'device', '1.3.6.1.2.1.1.3.0', 'auto', '', 'health', NULL),
+(132, 7, 'uptime', 'zte', 'gpon', '1.3.6.1.4.1.3902.1012.3.28.2.1.5.keyport.keyonu', 'auto', 'oid_uptime', 'onu', NULL),
+(133, 7, 'uptime', 'zte', 'device', '1.3.6.1.2.1.1.3.0', 'auto', 'oid_uptime', 'health', NULL),
 (134, 7, 'name', 'zte', 'device', '1.3.6.1.2.1.1.5.0', 'auto', '', 'health', NULL),
 (135, 7, 'typereg', 'zte', 'gpon', '1.3.6.1.4.1.3902.1012.3.28.1.1.12.keyport.keyonu', 'auto', '', 'onu', NULL),
 (136, 7, 'status', 'zte', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'auto', '', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
@@ -325,17 +339,67 @@ INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `des
 (138, 7, 'ifinerrors', 'zte', 'port', '1.3.6.1.2.1.2.2.1.14.keyport', 'auto', '', 'monitor', NULL),
 (139, 7, 'config', 'zte', 'gpon', '1.3.6.1.4.1.3902.1012.3.28.1.1.1.keyport.keyonu', 'auto', '', 'onu', NULL),
 (140, 7, 'mngtvlan', 'zte', 'gpon', '1.3.6.1.4.1.3902.1015.1010.5.9.1.4.keyport.keyonu', 'auto', '', 'onu', NULL),
-(141, 3, 'vendor', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.1.1.1.1.6.keyonu', 'auto', '', 'onu', NULL);
+(141, 3, 'vendor', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.1.1.1.1.6.keyonu', 'auto', '', 'onu', NULL),
+(142, 12, 'eth', 'cdata', 'gpon', '3.6.1.4.1.34592.1.5.1.1.2.19.1.1.1.1.0.8keyonu.1', NULL, NULL, 'onu', NULL),
+(143, 12, 'status', 'cdata', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', NULL, NULL, 'monitor', NULL),
+(144, 12, 'ifinerrors', 'cdata', 'port', '1.3.6.1.2.1.2.2.1.14.keyport', NULL, NULL, 'global', NULL),
+(145, 12, 'ifouterrors', 'cdata', 'port', '1.3.6.1.2.1.2.2.1.20.keyport', NULL, NULL, 'global', NULL),
+(146, 12, 'listport', 'cdata', 'port', '1.3.6.1.2.1.31.1.1.1.1', NULL, NULL, 'global', NULL),
+(147, 12, 'model', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.5.keyonu', NULL, NULL, 'onu', NULL),
+(148, 12, 'vendor', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.6.keyonu', NULL, NULL, 'onu', NULL),
+(149, 12, 'rx', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.4.1.4.keyonu.0.0', NULL, NULL, 'onu', NULL),
+(150, 12, 'tx', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.4.1.5.keyonu.0.0', NULL, NULL, 'onu', NULL),
+(151, 12, 'dist', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.9.keyonu', NULL, NULL, 'onu', NULL),
+(152, 12, 'reason', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.103.keyonu', NULL, NULL, 'onu', NULL),
+(153, 12, 'listsn', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.3', NULL, NULL, 'onu', NULL),
+(154, 12, 'status', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.7.keyonu', NULL, NULL, 'onu', NULL),
+(155, 12, 'name', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.2.keyonu', NULL, NULL, 'onu', NULL),
+(156, 12, 'uptime', 'cdata', 'device', '1.3.6.1.4.1.17409.2.3.1.2.1.1.5.1', NULL, 'oid_uptime', 'health', NULL),
+(157, 12, 'cpu', 'cdata', 'device', '1.3.6.1.4.1.34592.1.3.100.1.8.1.0', NULL, NULL, 'health', NULL),
+(158, 12, 'temp', 'cdata', 'device', '1.3.6.1.4.1.34592.1.3.100.1.8.6.0', NULL, NULL, 'health', NULL),
+(159, 14, 'dist', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.46.1.20.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(160, 14, 'status', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.46.1.15.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(161, 14, 'listsn', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.43.1.3', NULL, NULL, 'onu', NULL),
+(162, 14, 'rx', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.51.1.4.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(163, 14, 'tx', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.51.1.3.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(164, 14, 'reason', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.46.1.24.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(165, 14, 'bias', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.158.1.1.1.2.1.12.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(166, 14, 'name', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.43.1.9.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(167, 14, 'eth', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.62.1.21.keyport.keyonu.1', NULL, NULL, 'onu', NULL),
+(168, 14, 'linepro', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.43.1.7.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(169, 14, 'service', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.43.1.8.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(170, 14, 'temp', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.51.1.1.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(171, 14, 'macport', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.46.1.21.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(172, 14, 'listport', 'huawei', 'port', '1.3.6.1.2.1.31.1.1.1.1', NULL, NULL, 'global', NULL),
+(173, 14, 'status', 'huawei', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', NULL, NULL, 'global', NULL),
+(174, 14, 'countmacport', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.46.1.21.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(175, 14, 'uservlan', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.62.1.7.keyport.keyonu.1', NULL, NULL, 'onu', NULL),
+(176, 14, 'model', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.2.45.1.4.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(177, 14, 'onuerror', 'huawei', 'gpon', '1.3.6.1.4.1.2011.6.128.1.1.4.27.1.2.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(178, 14, 'ifinerrors', 'huawei', 'port', '1.3.6.1.2.1.2.2.1.14.keyport', NULL, NULL, 'global', NULL),
+(179, 14, 'ifouterrors', 'huawei', 'port', '1.3.6.1.2.1.2.2.1.20.keyport', NULL, NULL, 'global', NULL),
+(180, 14, 'oltrx', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.104.1.1.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(181, 14, 'temp', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.104.1.2.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(182, 14, 'reason', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.103.1.8.keyport.keyonu.9', NULL, NULL, 'onu', NULL),
+(183, 14, 'name', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.53.1.9.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(184, 14, 'tx', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.104.1.4.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(185, 14, 'rx', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.104.1.5.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(186, 14, 'eth', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.81.1.31.keyport.keyonu.1', NULL, NULL, 'onu', NULL),
+(187, 14, 'dist', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.57.1.19.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(188, 14, 'status', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.57.1.18.keyport.keyonu', NULL, NULL, 'onu', NULL),
+(189, 14, 'listmac', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.53.1.3', NULL, NULL, 'onu', NULL),
+(190, 14, 'uptime', 'huawei', 'device', '1.3.6.1.2.1.1.3.0', NULL, 'oid_uptime', 'health', NULL),
+(191, 14, 'status', 'huawei', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', NULL, NULL, 'monitor', NULL);
 CREATE TABLE `onus` (
   `idonu` int(11) NOT NULL,
   `olt` int(11) UNSIGNED DEFAULT NULL,
   `sw_shelf` int(11) DEFAULT NULL,
   `sw_slot` int(11) DEFAULT NULL,
   `sw_port` int(11) DEFAULT NULL,
-  `portolt` int(11) UNSIGNED DEFAULT NULL,
+  `portolt` bigint(22) DEFAULT NULL,
   `sw_ont` int(11) DEFAULT NULL,
   `keyonu` int(11) UNSIGNED DEFAULT NULL,
-  `zte_idport` int(11) DEFAULT NULL,
+  `zte_idport` bigint(22) DEFAULT NULL,
   `status` int(11) UNSIGNED DEFAULT NULL,
   `wan` varchar(10) DEFAULT NULL,
   `inface` varchar(30) DEFAULT NULL,
@@ -343,7 +407,7 @@ CREATE TABLE `onus` (
   `mac` varchar(20) DEFAULT NULL,
   `name` varchar(300) DEFAULT NULL,
   `descr` text DEFAULT NULL,
-  `sn` varchar(20) DEFAULT NULL,
+  `sn` varchar(40) DEFAULT NULL,
   `rx` varchar(7) DEFAULT '0',
   `lastrx` varchar(7) DEFAULT NULL,
   `tx` varchar(7) DEFAULT NULL,
@@ -414,9 +478,18 @@ CREATE TABLE `onus_log` (
   `user` int(11) DEFAULT NULL,
   `olt` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE `pingstats` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `datetime` datetime DEFAULT NULL,
+  `time` text DEFAULT NULL,
+  `system` int(11) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 CREATE TABLE `pmonstats` (
   `id` int(10) UNSIGNED NOT NULL,
   `datetime` datetime DEFAULT NULL,
+  `badsignal` int(11) DEFAULT NULL,
+  `countonu` int(11) DEFAULT NULL,
   `online` int(11) DEFAULT NULL,
   `offline` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -448,9 +521,21 @@ CREATE TABLE `sfp` (
   `dist` text DEFAULT NULL,
   `speed` varchar(50) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `sfp`
+--
+
 INSERT INTO `sfp` (`id`, `model`, `cat`, `sort`, `types`, `wavelength`, `connector`, `dist`, `speed`) VALUES
 (1, 'SFP Alistar Модуль SFP 1000BASE-BX 1SM WDM LC 3KM', NULL, 0, 'sm', '1310', 'lc', '3', '1'),
 (2, 'SFP Alistar Модуль SFP 1000BASE-BX 1SM WDM LC 3KM', NULL, 0, 'sm', '1550', 'lc', '3', '1');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `sklad_battery`
+--
+
 CREATE TABLE `sklad_battery` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime DEFAULT NULL,
@@ -465,6 +550,13 @@ CREATE TABLE `sklad_battery` (
   `sn` text DEFAULT NULL,
   `upsid` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `sklad_device`
+--
+
 CREATE TABLE `sklad_device` (
   `id` int(11) NOT NULL,
   `model` varchar(100) DEFAULT NULL,
@@ -476,6 +568,13 @@ CREATE TABLE `sklad_device` (
   `note` text DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `sklad_install`
+--
+
 CREATE TABLE `sklad_install` (
   `id` int(11) NOT NULL,
   `skladdeviceid` int(11) DEFAULT NULL,
@@ -485,6 +584,13 @@ CREATE TABLE `sklad_install` (
   `photo` text DEFAULT NULL,
   `connect` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `sklad_switch`
+--
+
 CREATE TABLE `sklad_switch` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime DEFAULT NULL,
@@ -493,6 +599,13 @@ CREATE TABLE `sklad_switch` (
   `install` enum('yes','no') DEFAULT 'no',
   `sn` varchar(200) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `sklad_ups`
+--
+
 CREATE TABLE `sklad_ups` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime DEFAULT NULL,
@@ -504,6 +617,13 @@ CREATE TABLE `sklad_ups` (
   `note` text DEFAULT NULL,
   `sn` text DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `swcron`
+--
+
 CREATE TABLE `swcron` (
   `id` int(11) NOT NULL,
   `status` enum('yes','no','go') NOT NULL DEFAULT 'no',
@@ -511,8 +631,16 @@ CREATE TABLE `swcron` (
   `priority` int(11) DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `switch`
+--
+
 CREATE TABLE `switch` (
   `id` int(11) NOT NULL,
+  `ping` enum('up','down') NOT NULL DEFAULT 'up',
   `monitor` enum('yes','no') DEFAULT NULL,
   `status` enum('yes','no','go') NOT NULL DEFAULT 'no',
   `gallery` enum('yes','no') NOT NULL DEFAULT 'no',
@@ -555,15 +683,30 @@ CREATE TABLE `switch` (
   `password` varchar(60) DEFAULT NULL,
   `location` int(11) DEFAULT NULL,
   `locationname` text DEFAULT NULL,
-  `groups` int(11) DEFAULT NULL
+  `groups` int(11) DEFAULT NULL,
+  `timeping` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `switch_log`
+--
+
 CREATE TABLE `switch_log` (
   `id` int(11) NOT NULL,
   `deviceid` int(11) NOT NULL DEFAULT 0,
-  `types` enum('cron','system','user','switch') DEFAULT 'system',
+  `types` enum('cron','system','user','switch','deletonu','addonu') DEFAULT 'system',
   `added` datetime DEFAULT NULL,
   `message` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `switch_photo`
+--
+
 CREATE TABLE `switch_photo` (
   `id` int(11) NOT NULL,
   `deviceid` int(11) NOT NULL DEFAULT 0,
@@ -573,6 +716,12 @@ CREATE TABLE `switch_photo` (
   `added` datetime DEFAULT NULL,
   `userid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `switch_pon`
+--
 
 CREATE TABLE `switch_pon` (
   `id` int(10) UNSIGNED NOT NULL,
@@ -589,6 +738,13 @@ CREATE TABLE `switch_pon` (
   `offline` int(11) DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `switch_port`
+--
+
 CREATE TABLE `switch_port` (
   `id` int(11) NOT NULL,
   `monitor` enum('yes','no') NOT NULL DEFAULT 'no',
@@ -596,7 +752,7 @@ CREATE TABLE `switch_port` (
   `log` enum('yes','no') NOT NULL DEFAULT 'no',
   `error` enum('yes','no') NOT NULL DEFAULT 'no',
   `deviceid` int(11) NOT NULL,
-  `llid` int(11) DEFAULT NULL,
+  `llid` bigint(22) DEFAULT NULL,
   `operstatus` enum('up','down','none') DEFAULT NULL,
   `nameport` varchar(100) DEFAULT NULL,
   `descrport` varchar(200) DEFAULT NULL,
@@ -609,18 +765,32 @@ CREATE TABLE `switch_port` (
   `timeup` datetime DEFAULT NULL,
   `information` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `switch_port_err`
+--
+
 CREATE TABLE `switch_port_err` (
   `id` int(11) UNSIGNED NOT NULL,
-  `llid` int(11) DEFAULT NULL,
+  `llid` bigint(22) DEFAULT NULL,
   `deviceid` int(11) DEFAULT NULL,
   `status_outerror` varchar(5) DEFAULT 'no',
   `status_inerror` varchar(5) DEFAULT 'no',
-  `inerror` int(11) DEFAULT 0,
+  `inerror` bigint(22) DEFAULT NULL,
   `newin` int(11) NOT NULL DEFAULT 0,
   `outerror` bigint(22) DEFAULT 0,
   `newout` int(11) NOT NULL DEFAULT 0,
   `added` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `swlogport`
+--
+
 CREATE TABLE `swlogport` (
   `id` int(11) NOT NULL,
   `deviceid` int(11) NOT NULL DEFAULT 0,
@@ -628,6 +798,13 @@ CREATE TABLE `swlogport` (
   `status` enum('up','down') DEFAULT 'down',
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `task_users`
+--
+
 CREATE TABLE `task_users` (
   `id` int(10) UNSIGNED NOT NULL,
   `taskid` int(11) DEFAULT NULL,
@@ -635,6 +812,13 @@ CREATE TABLE `task_users` (
   `class` int(11) DEFAULT NULL,
   `userid` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unit`
+--
+
 CREATE TABLE `unit` (
   `id` int(11) NOT NULL,
   `port` int(11) DEFAULT NULL,
@@ -647,12 +831,26 @@ CREATE TABLE `unit` (
   `logo` varchar(20) DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unitbasket`
+--
+
 CREATE TABLE `unitbasket` (
   `id` int(11) NOT NULL,
   `ponboxid` int(11) DEFAULT NULL,
   `spliter` int(11) DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unitdevice`
+--
+
 CREATE TABLE `unitdevice` (
   `id` int(11) NOT NULL,
   `sort` int(11) NOT NULL,
@@ -660,6 +858,13 @@ CREATE TABLE `unitdevice` (
   `unitid` int(11) DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unitfiber`
+--
+
 CREATE TABLE `unitfiber` (
   `id` int(11) NOT NULL,
   `typesfiber` enum('vol1','vol2','vol4','vol8','vol12','vol18','vol24','vol48') DEFAULT NULL,
@@ -674,6 +879,13 @@ CREATE TABLE `unitfiber` (
   `metr` int(11) DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unitfibermap`
+--
+
 CREATE TABLE `unitfibermap` (
   `id` int(11) NOT NULL,
   `fiberid` int(11) NOT NULL,
@@ -681,6 +893,13 @@ CREATE TABLE `unitfibermap` (
   `geo` text DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unitmafta`
+--
+
 CREATE TABLE `unitmafta` (
   `id` int(11) NOT NULL,
   `locationid` int(11) NOT NULL,
@@ -689,6 +908,13 @@ CREATE TABLE `unitmafta` (
   `lon` varchar(50) DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unitponbox`
+--
+
 CREATE TABLE `unitponbox` (
   `id` int(11) NOT NULL,
   `sort` int(11) UNSIGNED DEFAULT NULL,
@@ -709,6 +935,13 @@ CREATE TABLE `unitponbox` (
   `online` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unitponboxont`
+--
+
 CREATE TABLE `unitponboxont` (
   `id` int(11) NOT NULL,
   `ponboxid` int(11) UNSIGNED DEFAULT NULL,
@@ -717,6 +950,13 @@ CREATE TABLE `unitponboxont` (
   `added` datetime DEFAULT NULL,
   `updates` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `unitpontree`
+--
+
 CREATE TABLE `unitpontree` (
   `id` int(11) NOT NULL,
   `name` text DEFAULT NULL,
@@ -726,6 +966,13 @@ CREATE TABLE `unitpontree` (
   `unitid` int(11) DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `users`
+--
+
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(200) NOT NULL,
@@ -740,12 +987,25 @@ CREATE TABLE `users` (
   `setip` varchar(50) DEFAULT NULL,
   `onlyip` enum('on','off') NOT NULL DEFAULT 'off',
   `url` varchar(200) DEFAULT NULL,
-  `hideonu` enum('yes','no') DEFAULT 'no'
+  `hideonu` enum('yes','no') DEFAULT 'no',
+  `viewlist` enum('yes','no') NOT NULL DEFAULT 'no'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-INSERT INTO `users` (`id`, `username`, `name`, `class`, `ip`, `password`, `email`, `added`, `lastactivity`, `port`, `setip`, `onlyip`, `url`, `hideonu`) VALUES
-(1, 'user', 'alex', 7, '127.0.0.1', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2022-07-24 17:01:20', '2023-02-05 17:53:23', 'a:1:i:85s:4:show', '127.0.0.2', 'off', '/', 'no'),
-(7, 'user1', 'alex', 1, '127.0.0.1', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2023-01-09 17:57:47', '2023-01-18 22:45:16', NULL, NULL, 'off', '/?do=exit', NULL);
 
+--
+-- Дамп данных таблицы `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `name`, `class`, `ip`, `password`, `email`, `added`, `lastactivity`, `port`, `setip`, `onlyip`, `url`, `hideonu`, `viewlist`) VALUES
+(1, 'user', 'alex', 7, '192.168.2.30', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2022-07-24 17:01:20', '2023-02-26 17:50:21', 'a:1:i:210s:4:hide', '127.0.0.2', 'off', '/', 'no', 'yes'),
+(7, 'user1', 'alex', 1, '127.0.0.1', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2023-01-09 17:57:47', '2023-01-18 22:45:16', NULL, NULL, 'off', '/?do=exit', NULL, 'no');
+
+--
+-- Индексы сохранённых таблиц
+--
+
+--
+-- Индексы таблицы `apikey`
+--
 ALTER TABLE `apikey`
   ADD PRIMARY KEY (`id`);
 
@@ -811,6 +1071,12 @@ ALTER TABLE `monitor`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `monitoring`
+--
+ALTER TABLE `monitoring`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `monitoronu`
 --
 ALTER TABLE `monitoronu`
@@ -846,6 +1112,12 @@ ALTER TABLE `onus_comm`
 ALTER TABLE `onus_log`
   ADD PRIMARY KEY (`id`),
   ADD KEY `added` (`added`);
+
+--
+-- Индексы таблицы `pingstats`
+--
+ALTER TABLE `pingstats`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `pmonstats`
@@ -1029,7 +1301,7 @@ ALTER TABLE `battery_list`
 -- AUTO_INCREMENT для таблицы `config`
 --
 ALTER TABLE `config`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT для таблицы `connect_port`
@@ -1068,6 +1340,12 @@ ALTER TABLE `monitor`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT для таблицы `monitoring`
+--
+ALTER TABLE `monitoring`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `monitoronu`
 --
 ALTER TABLE `monitoronu`
@@ -1077,7 +1355,7 @@ ALTER TABLE `monitoronu`
 -- AUTO_INCREMENT для таблицы `oid`
 --
 ALTER TABLE `oid`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=192;
 
 --
 -- AUTO_INCREMENT для таблицы `onus`
@@ -1104,6 +1382,12 @@ ALTER TABLE `onus_log`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT для таблицы `pingstats`
+--
+ALTER TABLE `pingstats`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `pmonstats`
 --
 ALTER TABLE `pmonstats`
@@ -1125,7 +1409,7 @@ ALTER TABLE `sklad_battery`
 -- AUTO_INCREMENT для таблицы `sklad_device`
 --
 ALTER TABLE `sklad_device`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `sklad_install`
@@ -1149,7 +1433,7 @@ ALTER TABLE `sklad_ups`
 -- AUTO_INCREMENT для таблицы `swcron`
 --
 ALTER TABLE `swcron`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
 
 --
 -- AUTO_INCREMENT для таблицы `switch`
@@ -1260,92 +1544,6 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
-ALTER TABLE `switch_port_err` CHANGE `inerror` `inerror` BIGINT(22) NULL DEFAULT NULL;
-ALTER TABLE `onus` CHANGE `sn` `sn` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-ALTER TABLE `switch_port` CHANGE `llid` `llid` BIGINT(22) NULL DEFAULT NULL;
-ALTER TABLE `switch_port_err` CHANGE `llid` `llid` BIGINT(22) NULL DEFAULT NULL;
-ALTER TABLE `onus` CHANGE `portolt` `portolt` BIGINT(22) NULL DEFAULT NULL;
-ALTER TABLE `onus` CHANGE `zte_idport` `zte_idport` BIGINT(22) NULL DEFAULT NULL;
-ALTER TABLE `users` CHANGE `hideonu` `hideonu` ENUM('yes','no') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'no';
-UPDATE equipment set phpclass = 'huawei5608t', work = 'yes', oidid = '14', photo = 'huawei5608t.png'  where id = 32;
-INSERT INTO `config` (`name`,`value`) VALUES ('viewipswitch','on');
-INSERT INTO `config` (`name`,`value`) VALUES ('badsignalstart','28');
-INSERT INTO `config` (`name`,`value`) VALUES ('badsignalend','40');
-ALTER TABLE `pmonstats` ADD `badsignal` INT(11) NULL DEFAULT NULL AFTER `datetime`;
-ALTER TABLE `pmonstats` ADD `countonu` INT(11) NULL DEFAULT NULL AFTER `badsignal`;
-ALTER TABLE `users` ADD `viewlist` ENUM('yes','no') NOT NULL DEFAULT 'no' AFTER `hideonu`;
-UPDATE `equipment` SET `model` = 'FD1616SN',`oidid` = '12',`phpclass` = 'cdataf1616sn',`work` = 'yes',`photo` = 'cdataf1616sn.png' WHERE `id` = 20;
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','eth','cdata','gpon','3.6.1.4.1.34592.1.5.1.1.2.19.1.1.1.1.0.8keyonu.1','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','status','cdata','port','1.3.6.1.2.1.2.2.1.8.keyport','monitor');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','ifinerrors','cdata','port','1.3.6.1.2.1.2.2.1.14.keyport','global');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','ifouterrors','cdata','port','1.3.6.1.2.1.2.2.1.20.keyport','global');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','listport','cdata','port','1.3.6.1.2.1.31.1.1.1.1','global');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','model','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.1.1.5.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','vendor','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.1.1.6.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','rx','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.4.1.4.keyonu.0.0','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','tx','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.4.1.5.keyonu.0.0','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','dist','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.1.1.9.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','reason','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.1.1.103.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','listsn','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.1.1.3','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','status','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.1.1.7.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','name','cdata','gpon','1.3.6.1.4.1.17409.2.8.4.1.1.2.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','uptime','cdata','device','1.3.6.1.4.1.17409.2.3.1.2.1.1.5.1','health');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','cpu','cdata','device','1.3.6.1.4.1.34592.1.3.100.1.8.1.0','health');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('12','temp','cdata','device','1.3.6.1.4.1.34592.1.3.100.1.8.6.0','health');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','dist','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.46.1.20.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','status','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.46.1.15.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','listsn','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.43.1.3','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','rx','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.51.1.4.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','tx','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.51.1.3.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','reason','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.46.1.24.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','bias','huawei','gpon','1.3.6.1.4.1.2011.6.158.1.1.1.2.1.12.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','name','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.43.1.9.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','eth','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.62.1.21.keyport.keyonu.1','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','linepro','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.43.1.7.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','service','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.43.1.8.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','temp','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.51.1.1.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','macport','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.46.1.21.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','listport','huawei','port','1.3.6.1.2.1.31.1.1.1.1','global');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','status','huawei','port','1.3.6.1.2.1.2.2.1.8.keyport','global');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','countmacport','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.46.1.21.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','uservlan','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.62.1.7.keyport.keyonu.1','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','model','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.2.45.1.4.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','onuerror','huawei','gpon','1.3.6.1.4.1.2011.6.128.1.1.4.27.1.2.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','ifinerrors','huawei','port','1.3.6.1.2.1.2.2.1.14.keyport','global');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','ifouterrors','huawei','port','1.3.6.1.2.1.2.2.1.20.keyport','global');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','oltrx','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.104.1.1.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','temp','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.104.1.2.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','reason','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.103.1.8.keyport.keyonu.9','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','name','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.53.1.9.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','tx','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.104.1.4.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','rx','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.104.1.5.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','eth','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.81.1.31.keyport.keyonu.1','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','dist','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.57.1.19.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','status','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.57.1.18.keyport.keyonu','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','listmac','huawei','epon','1.3.6.1.4.1.2011.6.128.1.1.2.53.1.3','onu');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','uptime','huawei','device','1.3.6.1.2.1.1.3.0','health');
-INSERT INTO `oid` (`oidid`,`types`,`model`,`pon`,`oid`,`inf`) VALUES ('14','status','huawei','port','1.3.6.1.2.1.2.2.1.8.keyport','monitor');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

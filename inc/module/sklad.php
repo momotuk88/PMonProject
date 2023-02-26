@@ -2,7 +2,7 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
-$act = ($act?$act:'sfp');
+$act = ($act ? $act : 'sfp');
 switch($act){
 	case 'device';
 		$SQLCount = $db->Multi('sklad_device');
@@ -110,7 +110,7 @@ switch($act){
 				$tpl->set('{speed}',($device['speed']?'<span class="style1">Швидкість:</span>'.$device['speed'].'G':''));
 				$tpl->set('{types}',($device['types']?'<span class="style1">Тип волокна:</span>'.$device['types']:''));
 				$tpl->set('{connector}',($device['connector']?'<span class="style1">Тип конектора:</span>'.$device['connector']:''));
-				$tpl->set('{added}',$device['added']);
+				$tpl->set('{added}',(!empty($device['added']) ? $device['added'] : ''));
 				$tpl->compile('sklad');
 				$tpl->clear();				
 			}
@@ -119,7 +119,7 @@ switch($act){
 		}
 	break;
 }
-$navigation .='<div class="navigation">';
+$navigation ='<div class="navigation">';
 #$navigation .='<a class="pageadd" href="/?do=add">Додати новий</a>';
 #$navigation .='<a class="add '.($act=='device'?'active':'').'" href="/?do=sklad&act=device'.$page.'">Активне</a>';
 #$navigation .='<a class="add '.($act=='switch'?'active':'').'" href="/?do=sklad&act=switch'.$page.'">Пасивне</a>';
@@ -128,6 +128,7 @@ $navigation .='<div class="navigation">';
 $navigation .='<a class="add '.($act=='sfp'?'active':'').'" href="/?do=sklad&act=sfp'.$page.'">SFP</a>';
 #$navigation .='<div class="sklad_search"><input name="search" class="input1" placeholder="model, sn, mac, ip" type="text" value=""></div>';
 $navigation .='</div>';
+$metatags = array('title'=>$head,'description'=>$head,'page'=>'sklad');
 $tpl->load_template('sklad/main.tpl');
 $tpl->set('{name}',$head);
 $tpl->set('{navigation}',$navigation);

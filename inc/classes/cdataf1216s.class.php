@@ -31,23 +31,17 @@ class CDATA_1216s {
 			break;			
 		}	
 	}
-	/*
-		community - масив oid
-		deviceoid - id олта
-		ip - іп комутатора
-	*/
-    public function __construct($id = '', $AllConfig) {
-		$this->initsnmp();
-		$this->now = date('Y-m-d H:i:s');
-		$this->filter = true;
-		$this->id = $id;
-		$this->ip = $AllConfig->switchIp[$id];
-		$this->community = $AllConfig->switchCommunity[$id];
-		$this->deviceoid = $AllConfig->SwitchOid;
-	}  
-	/*
-	Декодуємо ід ону в інтерфейс
-	*/
+    public function __construct($swid,$allcfg){
+		if(is_numeric($swid)){
+			$this->snmp= new SnmpMonitor();
+			$this->now = date('Y-m-d H:i:s');
+			$this->filter = true;
+			$this->id = $swid;
+			$this->ip = $allcfg->switchIp[$swid];
+			$this->community = $allcfg->switchCommunity[$swid];
+			$this->deviceoid = $allcfg->SwitchOid;
+		}
+	} 
 	public function portnametext1216($data){
 		$port = floor($data/256)%256-10;
 		$numonu = ($data%64);
@@ -97,7 +91,10 @@ class CDATA_1216s {
 		}else{
 			$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'emptysnmpwalk','added' =>$this->now]);
 		}
-		return (is_array($result) ? $result : null);
+			if(is_array($result)){
+				checkerONU($result,$this->id);
+			}
+			return (is_array($result) ? $result : null);
 	}
 	/*
 	Кофіг для ONU щоб отримати по API
@@ -336,15 +333,21 @@ class CDATA_1216s {
 		global $db, $PMonTables, $config;
 		$onu = $db->Fast($PMonTables['onus'],'status,rx,idonu',['olt' => $this->id,'keyonu' => $dataOnu['keyonu']]);
 		if(!empty($onu['idonu'])){
+			$rx = $rx ?? null;
 			if(!empty($dataOnu['rx'])){
 				$rx = $this->clear_rx($dataOnu['rx']);
+				if($rx){
+					$db->SQLupdate($PMonTables['onus'],['rx' => $rx,'rating' => 1],['idonu' => $onu['idonu']]);
+				}
 			}
-			$savehistor = false;
-			if($rx){
-				$db->SQLupdate($PMonTables['onus'],['rx' => $rx,'rating' => 1],['idonu' => $onu['idonu']]);
-				$savehistor = SignalMonitor($onu['status'], $rx, $onu['rx'], $onu['idonu']);
+			if($config['logsignal']=='on'){
+				if($rx){
+					$savehistor = SignalMonitor($onu['status'], $rx, $onu['rx'], $onu['idonu']);
+				}
+			}else{
+				$savehistor = true;
 			}
-			if(!empty($config['onugraph']) && $config['onugraph']=='on' && $savehistor){
+			if(!empty($config['onugraph']) && $config['onugraph']=='on' && $savehistor && $rx){
 				$db->SQLInsert($PMonTables['historyrx'],['device' => $this->id,'onu' => $onu['idonu'],'signal' => $rx,'datetime' => $this->now]);
 			}
 		}
@@ -357,11 +360,6 @@ class CDATA_1216s {
 				$db->SQLinsert($PMonTables['switchport'],['deviceid' => $this->id,'llid' => $data['llid'],'nameport' => $data['name'],'typeport' => $data['typeport'],'operstatus' => 'none','added' => $this->now]);
 		}
 	}    
-    protected function initsnmp() {
-        $this->snmp = new SnmpMonitor();
-		if(!$this->snmp)
-			die('snmp&');
-    }  
     private function prepareResult(array $data): array {
         if($this->filter){
             $result = array_map(

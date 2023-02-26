@@ -7,7 +7,7 @@
 {css}
 <link rel="shortcut icon" href="../style/favicon.ico" />
 <link rel="icon" type="image/png" href="../style/favicon-32x32.png" sizes="32x32" />
-<meta name="generator" content="PMon 4">
+<meta name="generator" content="PMon4">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>

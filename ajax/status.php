@@ -47,15 +47,16 @@ if($_POST['id']){
 		}
 		/// BDCOM, CDATA
 		if(!empty($switch['id'])){
+			$inf = '';
 			if($switch['oidid']==12 || $switch['oidid']==5 || $switch['oidid']==2 || $switch['oidid']==13 || $switch['oidid']==15 || $switch['oidid']==1  || $switch['oidid']==14 ){
 				$res_snmp = get_curl_api(array('do' => 'device','id' => $id), true, 10);
 				if(is_array($res_snmp)){
 					if(is_array($res_snmp['result'])){
 						foreach($res_snmp['result'] as $type => $value) {
 							if($type=='cpu'){
-								$inf .= '<div class="uptime_block"><img src="../style/img/cpu.png"><span class="data">'.$value.'%</span></div>';
+								$inf .= '<div class="uptime"><img src="../style/img/cpu.png"><span class="name">'.$lang['load_cpu'].'</span><span class="data">'.$value.'%</span></div>';
 							}elseif($type=='temp'){
-								$inf .= '<div class="uptime_block"><img src="../style/img/temperature-control.png"><span class="data">'.$value.'°C</span></div>';
+								$inf .= '<div class="uptime"><img src="../style/img/temperature-control.png"><span class="name">'.$lang['load_temp'].'</span><span class="data">'.$value.'°C</span></div>';
 							}elseif($type=='firmware'){
 								$inf .= '<div class="uptime"><img src="../style/img/temperature-control.png"><span class="data">'.$value.'</span></div>';
 							}elseif($type=='name'){

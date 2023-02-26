@@ -8,12 +8,13 @@ class Auth {
     private $errors = array();
     var $minval = 4;
     var $maxval = 22;
+    var $member = array();
     var $members = array();
     var $minpass = 6;
     var $salt = '#@()DIJK#)(F#&*()DS#@JKS)@(I()#@DU)*(&@#)(#U)J';
     var $emailAuth = false; 
     function __construct() {
-        if ( $this->type == 'session') {
+        if ($this->type == 'session'){
             session_start();
         }
         $this->check();
@@ -226,7 +227,7 @@ class Auth {
 			header('Location: /?do=login');
     } 
 }
-$USER = array();
+$USER = $USER ?? null;
 $auth = new Auth(); 
 $USER = $auth->members();
 ?>

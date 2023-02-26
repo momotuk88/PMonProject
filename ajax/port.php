@@ -24,8 +24,7 @@ switch($act){
 		$gettype = ($type=='hide'?'hide':'show');
 		if($id && $userid){
 			$getUser = $db->Fast('users','port,id',['id'=>$userid]);
-			if($getUser['port']){
-				$setup = array();
+			if(!empty($getUser['port'])){
 				$setup = unserialize($getUser['port']);
 				$setup[$blockid] = $gettype;
 				// дублікати видаляємо
@@ -33,7 +32,7 @@ switch($act){
 				$setup = array();
 				$setup[$blockid] = $gettype;
 			}
-			if($setup)
+			if(is_array($setup) && !empty($getUser['id']))
 				$db->SQLupdate('users',['port'=>serialize($setup)],['id'=>$getUser['id']]);
 		}
 	break;	

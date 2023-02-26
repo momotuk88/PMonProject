@@ -4,6 +4,32 @@ html {
     font-size: 14px;
     line-height: 1.6;
 }
+.purple:nth-child(even) {
+    background: #9bacb605;
+}
+#terminals:nth-child(even) {
+    background: #9bacb605;
+}
+#page_seacrh tr:nth-child(even) {
+    background: #9bacb605;
+}
+.empty_search{
+    background: #eeeeee4d;
+    padding: 5px 10px;
+    border-radius: 3px;
+    color: #8484b8;
+}
+.todayonu{
+    position: relative;
+    float: right;
+	background: #2bd72b;
+    color: #fff;
+    padding: 0 3px;
+    border-radius: 3px;
+    text-align: center;
+    line-height: 14px;
+	font-size: 13px;
+}
 .port-sfp {
     display: block;
     font-size: 14px;
@@ -103,27 +129,36 @@ html {
 }
 .main-stats-tab a {
     padding: 7px 10px 7px 10px;
-	transition: background 0.5s, border 0.5s, border-radius 0.5s, box-shadow 0.5s;
+    display: inline-block;
+    transition: background 0.5s, border 0.5s, border-radius 0.5s, box-shadow 0.5s;
+}
+.mainblockadmin span img {
+    vertical-align: sub;
+}
+.mainblockadmin .block1 h2 {
+    font-size: 14px;
+}
+.mainblockadmin .block1{
+	width: 50%;
+}
+.mainblockadmin {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
 }
 .main-stats-tab a.tab-url {
-    border-bottom: 1px solid #99b3d0;
-	border-top: 1px solid #fff;
-    border-right: 1px solid #fff;
-    border-left: 1px solid #fff;
+    border: 1px solid #fff0;
     color: #5b7fa7;
 }
 .main-stats-tab a.tab-active {
-    border-left: 1px solid #99b3d0;
-    border-right: 1px solid #99b3d0;
-    border-top: 1px solid #99b3d0;
+    border: 1px solid #99b3d0;
     color: #99b3d0;
 }
 .main-stats-tab a.tab-active:hover{}
 .main-stats-tab a.tab-url:hover {
-    border-top: 1px solid #2b87b1;
-    border-right: 1px solid #2b87b1;
-    border-left: 1px solid #2b87b1;
-    border-bottom: 1px solid #fff;
+    border: 1px solid #2b87b1;
     color: #2b87b1;
 }
 
@@ -155,6 +190,9 @@ html {
 	background: #507baf;
     color: #fff;	
 }
+.switch_block .devname:hover {
+    color: #2e9ccf;
+}
 .main_block {
     display: flex;
     flex-wrap: wrap;
@@ -164,7 +202,6 @@ html {
 }
 a.switch_block:hover{
 	box-shadow: 0 1px 20px 0 rgb(69 90 100 / 5%);
-	border: 1px solid #fff;
 	background: #b3d0da2b;
 }
 .devstats .css15 span.mon_on{
@@ -179,6 +216,7 @@ a.switch_block:hover{
 }
 .switch_block .devname {
     display: block;
+	transition: background 0.5s, border 0.5s, border-radius 0.5s, box-shadow 0.5s;
     color: #092540;
     font-size: 14px;
     line-height: 14px;
@@ -204,13 +242,16 @@ a.switch_block:hover{
 }
 .devstats {
     display: flex;
-    width: 100%;
+    /* width: 100%; */
     font-size: 12px;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     align-content: center;
     flex-wrap: nowrap;
     flex-direction: row;
+    background: #b3c7cc1c;
+    padding: 2px;
+    border-radius: 3px;
 }
 .devstats .css10{max-width: 35px;overflow: hidden;}
 .devstats .css10 span{color: #2aa6d0a3;}
@@ -251,8 +292,6 @@ a.switch_block:hover{
     line-height: 14px;
     margin: 0 3px;
     padding: 3px 3px 1px 3px;
-    border-radius: 3px;
-    border-top: 1px solid #d8d9ed;
 }
 .devstats div b{}
 .switch_block .devtype {
@@ -266,19 +305,17 @@ a.switch_block:hover{
     position: absolute;
     border-radius: 3px;
 }
-.switch_block .devstats{}
 .switch_block {
     display: flex;
     transition: background 0.5s, border 0.5s, border-radius 0.5s, box-shadow 0.5s;
     cursor: pointer;
-    border: 1px solid #eee0;
-    width: 240px;
+    width: 24%;
     padding: 3px;
     height: 90px;
+	overflow: hidden;
     flex-shrink: 0;
     cursor: pointer;
     margin: 0 10px 10px 0;
-    background: #b3d0da1a;
     font-size: 14px;
     border-radius: 5px;
     flex-wrap: wrap;
@@ -1107,6 +1144,9 @@ a.blockminstats:hover {
 .h-5 {
     height: 1.25rem;
 }
+#mainstats .blockstats .blockminstats .blmsicon img {
+    height: 35px;
+}
 #mainstats .blockstats .blockminstats .blmsicon{
 	display: flex;
 	align-items: center;
@@ -1260,14 +1300,22 @@ a.blockminstats:hover {
     background-repeat: no-repeat;
     background-position: 5px 7px;
 }
+.table1{width: 170px;}
+.table1 img{ margin-left: 45px;}
+.table2 {
+    width: 100px;
+}
+.table3{width: 110px;}
+.table4{width: 127px;}
+.table5{}
 .reason_err1 {
     background-image: url(../img/iconpower.png);
-    width: 26px;
+    width: 22px;
     background-size: 20px 19px;
-    height: 23px;
-    top: 7px;
+    height: 17px;
+    top: 3px;
     display: inline-block;
-    position: absolute;
+    position: relative;
     background-repeat: no-repeat;
 }
 .olt-descr-pon {
@@ -1285,7 +1333,7 @@ a.blockminstats:hover {
     height: 23px;
     top: 7px;
     display: inline-block;
-    position: absolute;
+    position: relative;
     background-repeat: no-repeat;
 }
 #page_seacrh td {
@@ -3370,9 +3418,11 @@ a.mapback{
     padding: 0 3px;
 }
 .portlist .ponl li .elem .subinf .pon_online {
-    background: #bcf8ae24;
-    color: #3ccc1a;
+    background: #239fd6;
+    color: #fff;
     padding: 0 3px;
+    margin-right: 3px;
+    border-radius: 3px;
 }
 .portlist .ponl li .elem .subinf .pon_real {
     color: #80808087;
@@ -3804,6 +3854,7 @@ background: #58d658;
     background-color: rgb(233, 233, 233);
     margin-top: 2px;
     margin-bottom: 2px;
+    border-radius: 3px;
 }
 .descrport-terminal img {
     height: 12px;
@@ -3841,7 +3892,7 @@ background: #58d658;
     background-color: #9edbad;
 }
 .loadpon .load5, .loadli .load5 {
-    background: linear-gradient(45deg,#db0505 10%,#f92020 100%);
+    background: linear-gradient(45deg,#71a2c4 10%,#2d71b0 100%);
     opacity: 0.6;
 }
 .loadpon .load {
@@ -4087,6 +4138,7 @@ background: #58d658;
 #ajaxdevice .uptime .name {
     font-weight: 300;
     margin-right: 5px;
+    font-size: 14px;
     color: #7597dd;
 }
 #ajaxdevice .uptime {
@@ -4811,8 +4863,6 @@ a:hover, a:focus {
     font-weight: 100;
 }
 .logo .b-bg {
-    background: linear-gradient(-135deg,#1de9b6,#1dc4e9);
-    border-radius: 7px;
     width: 30px;
     height: 30px;
     display: inline-flex;
@@ -4824,10 +4874,11 @@ a:hover, a:focus {
     color: #ffffff;
     font-weight: 300;
 }
-.logo a img{
-    height: 27px;
+.logo a img {
+    height: 35px;
     position: absolute;
-    margin-left: -34px;
+    margin-left: 0px;
+    top: 10px;
 }  
 .main-user h2 {
     font-size: 13px;
@@ -4920,8 +4971,8 @@ a:hover, a:focus {
     height: 53px;
     overflow: hidden;
     text-align: left;
-    padding-top: 10px;
-    padding-left: 13px;
+    padding-top: 4px;
+    padding-left: 18px;
     font-size: 1.4rem;
 }
 .menu-left{
@@ -5064,7 +5115,7 @@ input.header_input:hover, input.header_input:focus {
     font-size: 14px;
     color: #66769f;
     margin: 0 5px;
-    padding: 6px 10px 0px 10px;
+    padding: 0px 10px 0px 10px;
 }
 .terminal .mac_sn span {
     font-weight: 300;
@@ -5142,8 +5193,11 @@ input.header_input:hover, input.header_input:focus {
 #infEmpty b{}
 /* style empty*/
 /*Color signal*/
-.terminal .inface a:hover{
-	color:red;
+.mmain .today {
+    border-left: 2px solid #3be723;
+}
+.terminal .inface a:hover {
+    color: #479eef;
 }
 .terminal .inface a {
     color: #2393c9;
@@ -5162,7 +5216,7 @@ input.header_input:hover, input.header_input:focus {
     cursor: pointer;
 }
 .block-center .terminal:nth-child(even) {
-    background: #9bacb605;
+	background: #9bacb60d;
 }
 .block-center .terminal_down .inface a{
 	color:#808080a1;
@@ -5171,12 +5225,16 @@ input.header_input:hover, input.header_input:focus {
 	color:#808080a1;
 }
 .block-center .terminal:hover {
-    background: #a5a5a512;
+    background: #bfed502e;
+}
+.mmain .block-monitor .block-center .newterminal{
+    border-left: 2px solid #47d944;	
 }
 .terminal {
     position: relative;
     display: flex;
     border-bottom: 0px solid #f0f0f0;
+    border-left: 2px solid #fff;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
@@ -5227,8 +5285,8 @@ a.olt-setup {
     color: #8299bb;
 }
 .monitortime span {
-	color: #222;
-    background: #fff9c4;
+    color: #7791e0;
+    background: #d9f0f966;
     padding: 1px 4px;
     font-size: 12px;
     border-radius: 3px;
@@ -7615,10 +7673,9 @@ pre {
 .onu_stats .berr {
     padding: 0px 5px;
     height: 14px;
-    color: tomato;
+    color: #ecaca0;
     font-weight: 300;
     margin-right: 5px;
-    background: #ff634708;
 }
 .onu_stats .boff {
     padding: 0px 5px;

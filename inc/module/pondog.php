@@ -2,6 +2,8 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+$pagerlink = $pagerlink ?? null;
+$where = $where ?? null;
 $metatags = array('title'=>$lang['pl_device'],'description'=>$lang['pd_device'],'page'=>'pondog');
 if (!empty($addparam)) {
     if (!empty($pagerlink))
@@ -9,7 +11,7 @@ if (!empty($addparam)) {
 } else {
     $addparam = $pagerlink;
 }
-if(!empty($USER['class']) && $USER['class']>=5 && $_GET['act']=='del'){		
+if(!empty($USER['class']) && $USER['class']>=5 && $act=='del'){		
 	if(isset($_GET['id']))
 		$getDataSql['id'] = Clean::int($_GET['id']);
 	if(!empty($getDataSql['id'])){
@@ -17,9 +19,9 @@ if(!empty($USER['class']) && $USER['class']>=5 && $_GET['act']=='del'){
 		$go->redirect('pondog');	
 	}
 }
-$SQLCount = $db->Multi('swcron','*',$Where);
+$SQLCount = $db->Multi('swcron','*',$where);
 list($pagertop, $pagerbottom, $limit, $offset) = pager(20,count($SQLCount),'/?do=pondog'.$addparam);
-$SQLDevice = $db->Multi('swcron','*',$Where,null,$offset,$limit);
+$SQLDevice = $db->Multi('swcron','*',$where,null,$offset,$limit);
 if(count($SQLDevice)){
 	foreach($SQLDevice as $Device){
 		$tpl->load_template('pondog/list.tpl');

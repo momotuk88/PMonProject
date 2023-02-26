@@ -6,20 +6,19 @@ define('LANG',true);
 class lang implements arrayaccess {
 	private $lang_system = array();
 	public function __construct() {
-		global $nova_ukraine, $config;
 		require ENGINE_DIR.'/lang/ua.php';
 		$this->lang_system = $nova_ukraine;
 	}
-    public function offsetSet($offset, $value) {
+    public function offsetSet(mixed $offset, $value): void {
         $this->lang_system[$offset] = $value;
     }
-    public function offsetExists($offset) {
+    public function offsetExists(mixed $offset): bool {
         return isset($this->lang_system[$offset]);
     }
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset): void {
         unset($this->lang_system[$offset]);
     }
-    public function offsetGet($offset) {
+    public function offsetGet(mixed $offset): string {
         return isset($this->lang_system[$offset]) ? $this->lang_system[$offset] : 'NO_LANG_'.strtoupper($offset);
     }
 }

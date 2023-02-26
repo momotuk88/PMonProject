@@ -3,18 +3,14 @@ if(!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
 class Cron{
-	public $timer;	
-    public function __construct(){
-		global $db;		
-		$this->clock = microtime(true);
-		$this->times = date("Y-m-d H:i:s");
-    }	
 	public function InsertCron($id){
 		global $db;
-		$db->SQLinsert('swcron',['oltid' => $id,'status' => 'yes','priority' => 3,'added' => $this->times]);
-		$jobid = $db->getInsertId();
-		$db->SQLupdate('switch',['jobid'=>$jobid],['id'=>$id]);
-		return $jobid;
+		if(is_numeric($id)){
+			$db->SQLinsert('swcron',['oltid' => $id,'status' => 'yes','priority' => 3,'added' => date("Y-m-d H:i:s")]);
+			$jobid = $db->getInsertId();
+			$db->SQLupdate('switch',['jobid'=>$jobid],['id'=>$id]);
+			return $jobid;
+		}
 	}
 	public function convert_tim_check($time){
 		if($time=='1h'){
@@ -74,7 +70,7 @@ class Cron{
 		if(count($SQLSelectSwitch)){
 			foreach($SQLSelectSwitch as $arr){
 				$timecheck = self::convert_tim_check($arr['typecheck']);
-				if(strtotime($arr['updates']) < strtotime($this->times.' -'.$timecheck)){
+				if(strtotime($arr['updates']) < strtotime(date("Y-m-d H:i:s").' -'.$timecheck)){
 					$checkCronList = $db->Fast('swcron','*',['oltid' => $arr['id']]);
 					if(!empty($checkCronList['id'])){
 						
@@ -172,7 +168,7 @@ class Cron{
 	}	
 	public function RunMonitor($params = array()){
 		if(!empty($params['olt']) && !empty($params['jobid'])){
-			print_r('post'.$params['jobid'].'-'.$params['olt']);
+			#print_r('post'.$params['jobid'].'-'.$params['olt']);
 			post_system($params['jobid'],$params['olt']);
 		}
 	}

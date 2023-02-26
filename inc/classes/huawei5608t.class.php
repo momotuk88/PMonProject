@@ -16,15 +16,17 @@ class HUAWEI_5608t {
 		'/Gauge32: /','/INTEGER: /i','/Counter32: /i',
 		'/SNMPv2-SMI::enterprises\./i','/iso\.3\.6\.1\.4\.1\./i'
 	];
-    public function __construct($id = '', $AllConfig) {
-		$this->initsnmp();
-		$this->now = date('Y-m-d H:i:s');
-		$this->filter = true;
-		$this->id = $id;
-		$this->ip = $AllConfig->switchIp[$id];
-		$this->community = $AllConfig->switchCommunity[$id];
-		$this->deviceoid = $AllConfig->SwitchOid;
-	}  
+    public function __construct($swid,$allcfg){
+		if(is_numeric($swid)){
+			$this->snmp= new SnmpMonitor();
+			$this->now = date('Y-m-d H:i:s');
+			$this->filter = true;
+			$this->id = $swid;
+			$this->ip = $allcfg->switchIp[$swid];
+			$this->community = $allcfg->switchCommunity[$swid];
+			$this->deviceoid = $allcfg->SwitchOid;
+		}
+	} 
 	public function Support($check){
 		switch ($check) {
 			case 'port' : 
@@ -45,7 +47,7 @@ class HUAWEI_5608t {
 		$return['olt'] = ($ifIndex & 16252928) >> 19;
 		$return['slot'] = ($ifIndex & 253952) >> 13;
 		$return['port'] = ($ifIndex & 3840) >> 8;
-		return ''.$return['olt'].'/'.$return['slot'].'/'.$return['port'].'';
+		return $return['olt'].'/'.$return['slot'].'/'.$return['port'];
 	}	
 	public function array_huawei_ifindex($ifIndex){
 		$return['olt'] = ($ifIndex & 16252928) >> 19;
@@ -65,13 +67,12 @@ class HUAWEI_5608t {
 						$line = explode('=', $eachsig);
 						if(isset($line[0]) && isset($line[1])){
 							preg_match('/(\d+).(\d+)/',$line[0],$mat);
-							$resultGpon[$io] = array('inface'=>$this->huawei_ifindex(trim($mat[1])).':'.trim($mat[2]),'sn'=>SnHuawei($line[1]),'do' => 'onu','id'=>$this->id,'pon'=>'gpon','types'=>$this->primarygpon,'keyonu'=> trim($mat[2]),'keyport'=> trim($mat[1]));
+							if(is_numeric($mat[1]) && is_numeric($mat[2]))
+								$resultGpon[$io] = array('inface'=>$this->huawei_ifindex(trim($mat[1])).':'.trim($mat[2]),'sn'=>SnHuawei($line[1]),'do' => 'onu','id'=>$this->id,'pon'=>'gpon','types'=>$this->primarygpon,'keyonu'=> trim($mat[2]),'keyport'=> trim($mat[1]));
 						}	
 					}
 					if (count($resultGpon) === 0) {
 						$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'empty gpon data','added' =>$this->now]);
-					}else{
-						$db->SQLupdate($PMonTables['onus'],['cron' => 2],['olt' => $this->id]);
 					}
 				}
 			}
@@ -86,13 +87,12 @@ class HUAWEI_5608t {
 						$lines = explode('=', $eachsigs);
 						if(isset($lines[0]) && isset($lines[1])){
 							preg_match('/(\d+).(\d+)/',$lines[0],$mats);
-							$resultEpon[$ios] = array('inface'=>$this->huawei_ifindex(trim($mats[1])).':'.trim($mats[2]),'mac'=>MacHuawei($lines[1]),'do' => 'onu','id'=>$this->id,'pon'=>'epon','types'=>$this->primaryepon,'keyonu'=> trim($mats[2]),'keyport'=> trim($mats[1]));
+							if(is_numeric($mat[1]) && is_numeric($mat[2]))
+								$resultEpon[$ios] = array('inface'=>$this->huawei_ifindex(trim($mats[1])).':'.trim($mats[2]),'mac'=>MacHuawei($lines[1]),'do' => 'onu','id'=>$this->id,'pon'=>'epon','types'=>$this->primaryepon,'keyonu'=> trim($mats[2]),'keyport'=> trim($mats[1]));
 						}
 					}
-					if (count($resultGpon) === 0) {
+					if (count($resultEpon) === 0) {
 						$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'empty epon data','added' =>$this->now]);
-					}else{
-						$db->SQLupdate($PMonTables['onus'],['cron' => 2],['olt' => $this->id]);
 					}
 				}
 			}
@@ -105,6 +105,10 @@ class HUAWEI_5608t {
 			$result = $resultEpon;
 		}else{
 			$result = null;			
+		}
+		if(is_array($result)){
+			$db->SQLupdate($PMonTables['onus'],['cron' => 2],['olt' => $this->id]);
+			checkerONU($result,$this->id);
 		}
 		return ((count($result) === 0) ? null : $result);
 	}
@@ -139,11 +143,10 @@ class HUAWEI_5608t {
 		}else{
 			$result = false;
 		}
-		return $result;
+		return ((count($result) === 0) ? null : $result);
 	}
 	public function updateonu($ont,$getData){
 		global $db, $lang, $config;
-		$result = array();	
 		if(is_array($getData)){
 			if(!empty($getData['tx'])){
 				$SQLset['tx'] = $getData['tx'];
@@ -165,7 +168,8 @@ class HUAWEI_5608t {
 				if($getData['offline'])
 					$SQLset['online'] = $getData['offline'];
 				$SQLset['status'] = 1;
-			}elseif($ont['status']==1 &&  $getData['status']==2){
+			}
+			if($ont['status']==1 &&  $getData['status']==2){
 				$SQLset['offline'] = $this->now;
 				$SQLset['status'] = 2;
 			}
@@ -208,21 +212,18 @@ class HUAWEI_5608t {
 				$result['oltrx'] = $getData['oltrx'];			
 			if(!empty($getData['temp'])) 
 				$result['temp'] = $getData['temp'];
-			return $result;
+			return (isset($result) ? $result : null);
 		}
 	}	
-	public function volot_css($value){
-		return (int)$value;
-	}
 	public function preparedataGpon($dataApi,$type){
 		$data = $this->clearData($dataApi);
 		switch($type){
 			case 'status':
-				$result = ($data==1 ? 2 : 1);
+				$result = ($data==1 ? 1 : 2);
 			break;			
 			case 'dist':
-				if(isset($data))
-					$result = (int)$data;
+				$data = str_replace('-1', 0,$data);
+				$result = (int)$data;
 			break;
 			case 'rx':
 				if($data)
@@ -254,7 +255,7 @@ class HUAWEI_5608t {
 				$result = $data;
 			break;			
 			case 'reason':
-				$result = $this->reasonGpon($data);
+				$result = reasonGponHuawei($data);
 			break;			
 			case 'bias':
 				$result = (isset($data) ? ceil($data/1000) : 0);
@@ -263,7 +264,7 @@ class HUAWEI_5608t {
 				$result = ($data==34 || $data==24 || $data==2 ?'up':'down');				
 			break;			
 		}		
-		return ($result ? $result : null);
+		return (isset($result) ? $result : null);
 	}
 	public function preparedataEpon($dataApi,$type){
 		$data = $this->clearData($dataApi);
@@ -272,8 +273,8 @@ class HUAWEI_5608t {
 				$result = ($data==1 ? 2 : 1);
 			break;			
 			case 'dist':
-				if(isset($data))
-					$result = (int)$data;
+				$data = str_replace('-1', 0,$data);
+				$result = (int)$data;
 			break;
 			case 'rx':
 				if($data)
@@ -298,7 +299,7 @@ class HUAWEI_5608t {
 				$result = $data;
 			break;			
 			case 'reason':
-				$result = $this->reasonGpon($data);
+				$result = reasonGponHuawei($data);
 			break;			
 			case 'eth':
 				$result = ($data==2?'down':'up');				
@@ -400,11 +401,6 @@ class HUAWEI_5608t {
 			}
 		}
 	}
-    protected function initsnmp() {
-        $this->snmp = new SnmpMonitor();
-		if(!$this->snmp)
-			die('snmp&');
-    }  
 	public function tempUpdateSignalCheck(){	
 		global $db;
 
@@ -414,14 +410,21 @@ class HUAWEI_5608t {
 		$savehistor = false;
 		$onu = $db->Fast($PMonTables['onus'],'status,rx,idonu',['olt' => $this->id,'zte_idport' => $dataOnu['keyport'],'keyonu' => $dataOnu['keyonu']]);
 		if(!empty($onu['idonu'])){
+			$rx = $rx ?? null;
 			if(!empty($dataOnu['rx'])){
 				$rx = $this->clear_rx($dataOnu['rx']);
+				if($rx){
+					$db->SQLupdate($PMonTables['onus'],['rx' => $rx,'rating' => 1],['idonu' => $onu['idonu']]);
+				}
 			}
-			if($rx){
-				$db->SQLupdate($PMonTables['onus'],['rx' => $rx,'rating' => 1],['idonu' => $onu['idonu']]);
-				$savehistor = SignalMonitor($onu['status'], $rx, $onu['rx'], $onu['idonu']);
+			if($config['logsignal']=='on'){
+				if($rx){
+					$savehistor = SignalMonitor($onu['status'], $rx, $onu['rx'], $onu['idonu']);
+				}
+			}else{
+				$savehistor = true;
 			}
-			if(!empty($config['onugraph']) && $config['onugraph']=='on' && $savehistor){
+			if(!empty($config['onugraph']) && $config['onugraph']=='on' && $savehistor && $rx){
 				$db->SQLInsert($PMonTables['historyrx'],['device' => $this->id,'onu' => $onu['idonu'],'signal' => $rx,'datetime' => $this->now]);
 			}
 		}
@@ -475,8 +478,9 @@ class HUAWEI_5608t {
 	}
 	public function tempSaveOnuGpon($dataOnu){	
 		global $db, $config, $lang, $PMonTables;
+		$dataOnu['dist'] = str_replace('-1', 0,$dataOnu['dist']);
 		$dataOnu['status'] = (!empty($dataOnu['status']) ? ($dataOnu['status']==1 ? 1 : 2 ) : (!empty($dataOnu['dist']) ? 1 : 2));
-		if(!empty($dataOnu['keyport'])){
+		if(is_numeric($dataOnu['keyport'])){
 			$onucard = $this->array_huawei_ifindex($dataOnu['keyport']);
 			if(is_array($onucard)){
 				$SQLset['sw_shelf'] = $onucard['olt'];
@@ -487,7 +491,7 @@ class HUAWEI_5608t {
 				$SQLinsert['portolt'] = $onucard['slot'];
 			}
 		}
-		if(!empty($dataOnu['keyonu'])){
+		if(is_numeric($dataOnu['keyonu'])){
 			$arr = $db->Fast($PMonTables['onus'],'*',['zte_idport' =>$dataOnu['keyport'],'keyonu' =>$dataOnu['keyonu'],'olt' => $dataOnu['id']]); 
 			if(!empty($arr['idonu'])){
 				if($dataOnu['status']==1 && $arr['status']==2){
@@ -515,12 +519,10 @@ class HUAWEI_5608t {
 				if(!empty($dataOnu['inface']))
 					$SQLset['inface'] = $dataOnu['inface'];				
 				if(!empty($dataOnu['reason']))
-					$SQLset['reason'] = $this->reasonGpon($dataOnu['reason']);					
+					$SQLset['reason'] = reasonGponHuawei($dataOnu['reason']);					
 				if(!empty($dataOnu['rx']))
 					$SQLset['rx'] = $dataOnu['rx'];	
-				if($dataOnu['keyport']){
-					$SQLset['zte_idport'] = $dataOnu['keyport'];
-				}
+				$SQLset['zte_idport'] = $dataOnu['keyport'];
 				$db->SQLupdate($PMonTables['onus'],$SQLset,['idonu' => $arr['idonu']]);
 			}else{			
 				$SQLinsert['olt'] = $dataOnu['id'];
@@ -535,7 +537,7 @@ class HUAWEI_5608t {
 				if(!empty($dataOnu['name']))
 					$SQLinsert['name'] = $dataOnu['name'];				
 				if(!empty($dataOnu['reason']))
-					$SQLinsert['reason'] = $this->reasonGpon($dataOnu['reason']);				
+					$SQLinsert['reason'] = reasonGponHuawei($dataOnu['reason']);				
 				if(!empty($dataOnu['rx']))
 					$SQLinsert['rx'] = $dataOnu['rx'];
 				$SQLinsert['inface'] = $dataOnu['inface'];
@@ -549,8 +551,10 @@ class HUAWEI_5608t {
 	}	
 	public function tempSaveOnuEpon($dataOnu){	
 		global $db, $config, $lang, $PMonTables;
-		$dataOnu['status'] = (!empty($dataOnu['status']) ? ($dataOnu['status']==2 ? 1 : 2 ) : (!empty($dataOnu['dist']) ? 1 : 2));
-		if(!empty($dataOnu['keyport'])){
+		$dataOnu['dist'] = str_replace('-1', 0, $dataOnu['dist']);
+		// EPON:STATUS 1 -offline 2 - online
+		$dataOnu['status'] = (!empty($dataOnu['status']) ? ($dataOnu['status']==1 ? 2 : 1 ) : (!empty($dataOnu['dist']) ? 1 : 2));
+		if(is_numeric($dataOnu['keyport'])){
 			$onucard = $this->array_huawei_ifindex($dataOnu['keyport']);
 			if(is_array($onucard)){
 				$SQLset['sw_shelf'] = $onucard['olt'];
@@ -561,7 +565,7 @@ class HUAWEI_5608t {
 				$SQLinsert['portolt'] = $onucard['slot'];
 			}
 		}
-		if(!empty($dataOnu['keyonu'])){
+		if(is_numeric($dataOnu['keyonu'])){
 			$arr = $db->Fast($PMonTables['onus'],'*',['zte_idport' =>$dataOnu['keyport'],'keyonu' =>$dataOnu['keyonu'],'olt' => $dataOnu['id']]); 
 			if(!empty($arr['idonu'])){
 				if($dataOnu['status']==1 && $arr['status']==2){
@@ -589,12 +593,10 @@ class HUAWEI_5608t {
 				if(!empty($dataOnu['inface']))
 					$SQLset['inface'] = $dataOnu['inface'];				
 				if(!empty($dataOnu['reason']))
-					$SQLset['reason'] = $this->reasonGpon($dataOnu['reason']);					
+					$SQLset['reason'] = reasonGponHuawei($dataOnu['reason']);					
 				if(!empty($dataOnu['rx']))
 					$SQLset['rx'] = $dataOnu['rx'];	
-				if($dataOnu['keyport']){
-					$SQLset['zte_idport'] = $dataOnu['keyport'];
-				}
+				$SQLset['zte_idport'] = $dataOnu['keyport'];
 				$db->SQLupdate($PMonTables['onus'],$SQLset,['idonu' => $arr['idonu']]);
 			}else{			
 				$SQLinsert['olt'] = $dataOnu['id'];
@@ -609,7 +611,7 @@ class HUAWEI_5608t {
 				if(!empty($dataOnu['name']))
 					$SQLinsert['name'] = $dataOnu['name'];				
 				if(!empty($dataOnu['reason']))
-					$SQLinsert['reason'] = $this->reasonGpon($dataOnu['reason']);				
+					$SQLinsert['reason'] = reasonGponHuawei($dataOnu['reason']);				
 				if(!empty($dataOnu['rx']))
 					$SQLinsert['rx'] = $dataOnu['rx'];
 				$SQLinsert['inface'] = $dataOnu['inface'];
@@ -646,86 +648,11 @@ class HUAWEI_5608t {
 		$array = array();
 		if(is_array($sqlList)){
 			foreach($sqlList as $key => $value){
-				if(!empty($value['keyonu']) && !empty($value['type']))
+				if(is_numeric($value['keyonu']) && !empty($value['type']))
 					$array[$key] = array('id'=>$this->id,'keyport'=>$value['zte_idport'],'keyonu'=>$value['keyonu'],'pon'=>$value['type'],'do'=>'onu','types'=>'rx');
 			}
 		}
 		return $array;
 	}
-	public function reasonGpon($data){
-		switch ($data) {
-			case '1':						
-				return 'err6'; // LOS
-			break;				
-			case '2':						
-				return 'err36'; // LOSi(Loss of signal for ONUi) or LOBi (Loss of burst for ONUi)
-			break;				
-			case '3':						
-				return 'err37'; // LOFI(Loss of frame of ONUi)
-			break;			
-			case '4':						
-				return 'err38'; // SFI(Signal fail of ONUi)
-			break;	
-			case '5':						
-				return 'err39'; //  LOAI(Loss of acknowledge with ONUi)
-			break;	
-			case '6':						
-				return 'err40'; // LOAMI(Loss of PLOAM for ONUi)
-			break;	
-			case '7':						
-				return 'err41'; // deactive ONT fails
-			break;	
-			case '8':						
-				return 'err42'; // deactive ONT success
-			break;	
-			case '9':						
-				return 'err43'; // reset ONT
-			break;	
-			case '10':						
-				return 'err44'; // re-register ONT
-			break;	
-			case '11':						
-				return 'err45'; // pop up fail 
-			break;	
-			case '13':						
-				return 'err1';							
-			break;				
-			case '15':						
-				return 'err46'; // LOKI(Loss of key synch with ONUi) 
-			break;				
-			case '18':						
-				return 'err47'; // deactived ONT due to the ring 
-			break;				
-			case '30':						
-				return 'err48'; // shut down ONT optical module
-			break;				
-			case '31':						
-				return 'err49'; // reset ONT by ONT command
-			break;				
-			case '32':						
-				return 'err50'; // reset ONT by ONT reset button
-			break;				
-			case '33':						
-				return 'err51'; // reset ONT by ONT software
-			break;				
-			case '34':						
-				return 'err52'; // deactived ONT due to broadcast attack
-			break;				
-			case '35':						
-				return 'err53'; // operator check fail
-			break;				
-			case '37':						
-				return 'err54'; // a rogue ONT detected by itself
-			break;	
-			case '-1':						
-				return 'err6';	
-			break;			
-			case '255':						
-				return 'err1';	
-			break;
-			default:	
-				return 'err20';						
-		}
-	}	
 }
 ?>

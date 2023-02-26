@@ -13,7 +13,7 @@
 </div>
 <div class="onu-inf">
 	<div class="onu-data">
-		<div id="ont"></div>
+		<div id="ont"><img src="../style/img/load.gif"></div>
 	</div>		
 	<div class="onu-olt">
 		<div class="ont-block">

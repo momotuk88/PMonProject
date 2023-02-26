@@ -3,52 +3,55 @@ if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
 class Monitor{
-	public function __construct($id = '',$phpClass){
-		$this->id = $id;	
-		$this->device = new Equipment($id);	
-		$this->getModel = $this->initclass($id,$phpClass,$this->device);
+	public function __construct($id, $phpclass){
+		if(is_numeric($id)){
+			$this->id = $id;	
+			$this->device = new Equipment($id);	
+			$this->getModel = $this->initclass($id, $phpclass, $this->device);
+		}
 	}
-	protected function initclass($id='',$optionClass,$OidDevice) {
-        switch ($optionClass) {
-			case 'cdataf1616sn':
-				return new CDATA_1616sn($id,$OidDevice);				
-            break;			
-			case 'huawei5608t':
-				return new HUAWEI_5608t($id,$OidDevice);				
-            break;            
-			case 'zte320_2':
-				return new ZTE_c320_2($id,$OidDevice);					
-            break;				
-			case 'zte220_2':
-				return new ZTE_c220_2($id,$OidDevice);					
-            break;				
-			case 'zte300_2':
-				return new ZTE_c300_2($id,$OidDevice);					
-            break;			
-			case 'bdcomepon':
-				return new BDCOM_Epon($id,$OidDevice);				
-            break;				
-			case 'dlinkdgs1106':
-				return new DlinkDGS1106ME($id,$OidDevice);				
-            break;			
-			case 'bdcomgpon':
-				return new BDCOM_Gpon($id,$OidDevice);
-            break;			
-			case 'cdata1208sr2dap':
-				return new CDATA_1208sr2dap($id,$OidDevice);
-            break;			
-			case 'cdata1208sr1':
-				return new CDATA_1208sr1($id,$OidDevice);
-            break;			
-			case 'cdataf1216s':
-				return new CDATA_1216s($id,$OidDevice);
-            break;			
-			case 'cdata1108':
-				return new CDATA_1108($id,$OidDevice);
-            break;
-			default:
-				die('not support');
-        }
+	protected function initclass($id, $optionclass, $oiddevice) {
+		if(is_numeric($id)){
+			switch ($optionclass) {
+				case 'huawei5608t':
+					return new HUAWEI_5608t($id, $oiddevice);				
+				break;            
+				case 'zte320_2':
+					return new ZTE_c320_2($id, $oiddevice);					
+				break;				
+				case 'zte220_2':
+					return new ZTE_c220_2($id, $oiddevice);					
+				break;				
+				case 'zte300_2':
+					return new ZTE_c300_2($id, $oiddevice);					
+				break;			
+				case 'bdcomepon':
+					return new BDCOM_Epon($id, $oiddevice);				
+				break;				
+				case 'dlinkdgs1106':
+					return new DlinkDGS1106ME($id, $oiddevice);				
+				break;			
+				case 'bdcomgpon':
+					return new BDCOM_Gpon($id, $oiddevice);
+				break;	
+				case 'cdataf1616sn':
+					return new CDATA_1616sn($id, $oiddevice);				
+				break;	
+				case 'cdata1208sr2dap':
+					return new CDATA_1208sr2dap($id, $oiddevice);
+				break;			
+				case 'cdataf1216s':
+					return new CDATA_1216s($id, $oiddevice);
+				break;			
+				case 'cdata1108':
+					return new CDATA_1108($id,$oiddevice);
+				break;
+				default:
+					die('not support');
+			}
+		}else{
+			die('empty id');
+		}
     }
 	public function start(){		
 		$globalIndex  = $this->getModel->Load();		

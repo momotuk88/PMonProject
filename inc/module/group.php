@@ -3,13 +3,14 @@ if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
 $id = isset($_GET['id']) ? Clean::int($_GET['id']) : null;
-$dataGroup = $db->Fast($PMonTables['gr'],'*',['id'=>$id]);
-if(!empty($dataGroup['id'])){
+if($id)
+	$datagroup = $db->Fast($PMonTables['gr'],'*',['id'=>$id]);
+if(!empty($datagroup['id'])){
 	$metatags = array('title'=>$lang['title_group'],'description'=>$lang['descr_group'],'page'=>'group');
 	$tpl->load_template('group/detail.tpl');
-	$tpl->set('{id}',$dataGroup['id']);
-	$tpl->set('{name}',$dataGroup['name']);
-	$SQLDevice = $db->Multi('switch','*',['groups'=>$dataGroup['id']]);
+	$tpl->set('{id}',$datagroup['id']);
+	$tpl->set('{name}',$datagroup['name']);
+	$SQLDevice = $db->Multi('switch','*',['groups'=>$datagroup['id']]);
 	if(count($SQLDevice)){
 		$devicelist .='<div class="group-list-detail">';
 		foreach($SQLDevice as $Device){
@@ -20,7 +21,7 @@ if(!empty($dataGroup['id'])){
 	$tpl->set('{device}',$devicelist);
 	$tpl->compile('group');
 	$tpl->clear();	
-	$speedbar = '<div id="onu-speedbar"><a class="brmhref" href="/?do=group"><i class="fi fi-rr-folder"></i>Групи</a><span class="brmspan"><i class="fi fi-rr-angle-left"></i>'.$dataGroup['name'].'</span></div>';
+	$speedbar = '<div id="onu-speedbar"><a class="brmhref" href="/?do=group"><i class="fi fi-rr-folder"></i>'.$lang['group'].'</a><span class="brmspan"><i class="fi fi-rr-angle-left"></i>'.$datagroup['name'].'</span></div>';
 }else{
 	$metatags = array('title'=>$lang['title_group'],'description'=>$lang['descr_group'],'page'=>'group');
 	if(count($SQLListlocation)){
@@ -50,3 +51,4 @@ $tpl->set('{speedbar}',$speedbar);
 $tpl->set('{addgroup}',$addgroup);
 $tpl->compile('content');
 $tpl->clear();
+?>

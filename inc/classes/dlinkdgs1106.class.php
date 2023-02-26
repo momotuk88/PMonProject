@@ -14,15 +14,17 @@ class DlinkDGS1106ME {
 			break;			
 		}	
 	}
-    public function __construct($id = '', $AllConfig) {
-		$this->initsnmp();
-		$this->now = date('Y-m-d H:i:s');
-		$this->filter = true;
-		$this->id = $id;
-		$this->ip = $AllConfig->switchIp[$id];
-		$this->community = $AllConfig->switchCommunity[$id];
-		$this->deviceoid = $AllConfig->SwitchOid;
-	}  
+    public function __construct($swid,$allcfg){
+		if(is_numeric($swid)){
+			$this->snmp= new SnmpMonitor();
+			$this->now = date('Y-m-d H:i:s');
+			$this->filter = true;
+			$this->id = $swid;
+			$this->ip = $allcfg->switchIp[$swid];
+			$this->community = $allcfg->switchCommunity[$swid];
+			$this->deviceoid = $allcfg->SwitchOid;
+		}
+	}   
 	public function Load(){
 		global $db;		
 	}	
@@ -98,11 +100,6 @@ class DlinkDGS1106ME {
 			return 'up';
 		}
 	}	
-    protected function initsnmp() {
-        $this->snmp = new SnmpMonitor();
-		if(!$this->snmp)
-			die('snmp&');
-    }  
 	public function clearData($value){
 		$value = str_replace('INTEGER:', '',$value);
 		$value = str_replace('Hex-STRING:', '',$value);

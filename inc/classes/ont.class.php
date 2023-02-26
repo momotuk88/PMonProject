@@ -12,10 +12,7 @@ class Ont{
         switch ($optionClass) {
 			case 'cdataf1616sn':
 				return new CDATA_1616sn($id,$OidDevice);				
-            break;				
-			case 'zte220_2':
-				return new ZTE_c220_2($id,$OidDevice);					
-            break;		
+            break;			
 			case 'huawei5608t':
 				return new HUAWEI_5608t($id,$OidDevice);				
             break;            

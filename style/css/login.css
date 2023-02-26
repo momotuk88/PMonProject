@@ -9,8 +9,6 @@ body {
     line-height: 1.5;
     color: #212529;
 	background: #f8f9fd;
-	background-image: url("../img/bg.svg");
-	background-size: cover;
 }
 .limiter {
     width: 100%;
@@ -58,23 +56,25 @@ body {
     box-shadow: 0px 10px 15px -15px rgb(0 0 0 / 24%);
 }
 .limiter .loginform:hover {
-    box-shadow: 0 0 5px 3px #0000000d;
+    box-shadow: 0 0 5px 3px #00000005;
 }
 .limiter .loginform {
     transition: background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;
     width: 340px;
     background: #fff;
-    border-radius: 11px;
     padding: 20px 30px;
     position: relative;
     background-color: #fff;
     -moz-box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
-    border-radius: 8px;
-    box-shadow: 0 0 5px 3px #00000008;
+}
+.limiter .loginform .login span {
+    color: #0063bc;
+    font-size: 18px;
 }
 .limiter .loginform .login b {
-    color: #7ca0be;
+    color: #8ab6db;
     font-size: 18px;
+    font-weight: 300;
 }
 .limiter .loginform .login {
     font-size: 26px;
@@ -154,7 +154,7 @@ body {
     background: #7dc561;
     color: #fff;
 }
-.limiter .loginform .send input {
+body .limiter .loginform .send input {
     border: 0;
     color: #fff;
     background-color: #6eb4e3;
@@ -163,4 +163,5 @@ body {
     font-size: 14px;
     margin: 0 auto;
     display: block;
+    padding: 8px 30px;
 }

@@ -27,7 +27,7 @@ if(count($sqlmonitoronu)){
 }
 $tpl->load_template('mononu/main.tpl');
 $tpl->set('{result}',$tpl->result['mononu']);
-$tpl->set('{speedbar}','<div id="onu-speedbar"><span class="brmspan"><i class="fi fi-rr-thumbtack"></i>Моніторинг ONU</span></div>');
+$tpl->set('{speedbar}','<div id="onu-speedbar"><span class="brmspan"><i class="fi fi-rr-thumbtack"></i>'.$lang['monitor_onu'].'</span></div>');
 $tpl->compile('content');
 $tpl->clear();
 ?>

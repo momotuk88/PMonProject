@@ -3,12 +3,19 @@ if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
 $metatags = array('title'=>$lang['lang_page_search'],'description'=>$lang['lang_page_search'],'page'=>'search');
-$SQL_Zaput = '';
-$pagertop = '';
-$orderby_data = array();
-$where_data = array();
-$SQLonus = null;
-$select_signal = '';
+$sql_zaput_v_bazy = $sql_zaput_v_bazy ?? null;
+$sqlorderby  = $sqlorderby ?? null;
+$sqlwhere = $sqlwhere ?? null;
+$pagertop = $pagertop ?? null;
+$orderby_data = $orderby_data ?? null;
+$where_data = $where_data ?? null;
+$select_olt = $select_olt ?? null;
+$sqlonus = $sqlonus ?? null;
+$select_dist = $select_dist ?? null;
+$select_search = $select_search ?? null;
+$select_pon = $select_pon ?? null;
+$select_signal = $select_signal ?? null;
+$select_onlyactive = $select_onlyactive ?? null;
 if(isset($_GET['act']) && $_GET['act']=='search'){
 $select_search = Clean::text(trim(strip_tags(stripcslashes(SQLclear($_GET['search']))))); // що будемо шукати
 if($select_search){
@@ -16,11 +23,11 @@ if($select_search){
 }else{
 	$select_search = '';
 }
-$select_pon = checkSearch($_GET['selectpon']); // тип технології
-$select_dist = checkSearch($_GET['selectdist']); // довжина волокна
-$select_signal = checkSearch($_GET['selectsignal']); // якість сигналу
-$select_onlyactive = checkSearch($_GET['onlyactive']); // якість сигналу
-$select_olt = Clean::int($_GET['selectolt']); // Комутатор
+$select_onlyactive = (isset($_GET['onlyactive']) ? checkSearch($_GET['onlyactive']) : null);
+$select_pon = (isset($_GET['selectpon']) ? checkSearch($_GET['selectpon']) : null);
+$select_dist = (isset($_GET['selectdist']) ? checkSearch($_GET['selectdist']) : null); 
+$select_signal = (isset($_GET['selectsignal']) ? checkSearch($_GET['selectsignal']) : null); 
+$select_olt = (isset($_GET['selectolt']) ? checkSearch($_GET['selectolt']) : null); 
 if($select_search){
 	$where_data[] = " sn LIKE '%".$select_search."%' 
 	OR mac LIKE '%".$select_search."%' 
@@ -35,9 +42,10 @@ if($select_olt){
 }
 if($select_pon=='epon'){
 	$where_data[] = "type = 'epon'";
-}
-if($select_pon=='gpon'){
+}elseif($select_pon=='gpon'){
 	$where_data[] = "type = 'gpon'";
+}else{
+	
 }
 if($select_onlyactive=='on'){
 	$where_data[] = 'status = 1';
@@ -54,21 +62,21 @@ if($select_dist=='big'){
 if($select_dist=='small'){
 	$orderby_data[] = '`dist` ASC';
 }
-if(count($where_data)){
+if(is_array($where_data)){
 	$where = implode(' AND ', $where_data);
 	if (!empty($where))
-	   $SQLwhere = 'WHERE '.$where;
+	   $sqlwhere = 'WHERE '.$where;
 }
-if(count($orderby_data)){
+if(is_array($orderby_data)){
 	$order_by = implode(', ', $orderby_data);
 	if (!empty($order_by))
-	   $SQLOrderBy = ' ORDER BY '.$order_by;
+	   $sqlorderby = ' ORDER BY '.$order_by;
 }
-$SQL_Zaput = 'SELECT * FROM onus '.$SQLwhere.''.$SQLOrderBy.'';
+$sql_zaput_v_bazy = 'SELECT * FROM onus '.$sqlwhere.''.$sqlorderby.'';
 }
-$select_olt_list = '';
 $SQLDevice = $db->Multi($PMonTables['switch'],'id,place,model,inf',['device'=>'olt']);
 if(count($SQLDevice)){
+	$select_olt_list = '';
 	foreach($SQLDevice as $Device){
 		$select_olt_list .= '<option value="'.$Device['id'].'"';
 		if($select_olt && $Device['id']==$select_olt)
@@ -79,26 +87,25 @@ if(count($SQLDevice)){
 		$DATAolt[$Device['id']]['model'] = $Device['inf'].' '.$Device['model'];
 	}
 }
-$searchform .= '<div class="search-page" id="filtersForm">';
+$searchform = '<div class="search-page" id="filtersForm">';
 $searchform .= '<form action="/" method="get"><input type="hidden" name="do" value="search">';
-$searchform .= '<div class="search-block" id="filtersForm">';
-$searchform .= '<div class="input-search"><input type="text" name="search" class="search" placeholder="MAC (xx:xx:xx:xx:xx), Тег, Маркер, SN" autocomplete="off" value="'.($select_search?$select_search:'').'"></div>';
-$searchform .= '<div class="item-search block-select">';
+$searchform .= '<div class="search-block" id="filtersForm"><div class="input-search"><input type="text" name="search" class="search" placeholder="MAC (xx:xx:xx:xx:xx), SN, Tag, Mark..." autocomplete="off" value="'.($select_search?$select_search:'').'"></div><div class="item-search block-select">';
 if($select_olt_list){
-	$searchform .= '<div class="block"><h3>Комутатор</h3><div><select name="selectolt" class="sort icon-arowDown open"><option value="0">Всі комутатори</option>'.$select_olt_list.'</select></div></div>';
+	$searchform .= '<div class="block"><h3>'.$lang['device'].'</h3><div><select name="selectolt" class="sort icon-arowDown open"><option value="0">'.$lang['allswitch'].'</option>'.$select_olt_list.'</select></div></div>';
 }
 	$searchform .= '<div class="block">
-		<h3>Тип технології</h3>
+		<h3>'.$lang['typepon'].'</h3>
 		<div>
 			<select name="selectpon" class="sort icon-arowDown open" > 
-				<option value="all" '.($select_pon=='all'?'selected':'').'>Всі</option>
+				<option value="all" '.($select_pon=='all'?'selected':'').'>'.$lang['all'].'</option>
 				<option value="gpon" '.($select_pon=='gpon'?'selected':'').'>GPON</option>
 				<option value="epon" '.($select_pon=='epon'?'selected':'').'>EPON</option>
+				<option value="xgpon" '.($select_pon=='xgpon'?'selected':'').'>XG-PON</option>
 			</select>
 		</div>
 	</div>
 	<div class="block">
-		<h3>Довжина волокна</h3>
+		<h3>'.$lang['dist'].'</h3>
 		<div>
 			<select name="selectdist" class="sort icon-arowDown open" > 
 				<option value="all" '.($select_dist=='all'?'selected':'').'>Як буде</option>
@@ -108,7 +115,7 @@ if($select_olt_list){
 		</div>
 	</div>
 	<div class="block">
-		<h3>Сигнал RX</h3>
+		<h3>'.$lang['rxsignal'].'</h3>
 		<div>
 			<select name="selectsignal" class="sort icon-arowDown open" > 
 				<option value="all" '.($select_signal=='all'?'selected':'').'>Як буде</option>
@@ -119,16 +126,17 @@ if($select_olt_list){
 	</div>
 </div>
 <div class="search-footer">
-	<input class="go" type="submit" value="Шукати"><input type="hidden" name="act" value="search">
+	<input class="go" type="submit" value="'.$lang['search'].'"><input type="hidden" name="act" value="search">
 	<div class="items-search">
 			<div><input type="checkbox" name="onlyactive" class="check_trailer_lock" '.($select_onlyactive=='on'?'checked':'').'>
-			<label class="item__check icon-chekR">Тільки активні</label></div>
+			<label class="item__check icon-chekR">'.$lang['onlyonline'].'</label></div>
 	</div>
 </div>
 </form></div>';	
-if($SQL_Zaput){
-	$SQLonusCount = $db->SimpleWhile($SQL_Zaput);
-	if(count($SQLonusCount)){		
+$searchform_result = '';
+if($sql_zaput_v_bazy){
+	$sqlonusCount = $db->SimpleWhile($sql_zaput_v_bazy);
+	if(count($sqlonusCount)){		
 		$count_get = 0;
 		$oldlink = null;
 		foreach ($_GET as $get_name => $get_value) {
@@ -145,13 +153,13 @@ if($SQL_Zaput){
 		}
 		if($count_get > 0)
 			$oldlink = $oldlink . "";
-		list($pagertop, $pagerbottom, $limit, $offset) = pager(30,count($SQLonusCount),'/?'.$oldlink);
-		$SQLLIMIT = $SQL_Zaput.' LIMIT '.$limit.','.$offset;
-		$SQLonus = $db->SimpleWhile($SQLLIMIT);
+		list($pagertop, $pagerbottom, $limit, $offset) = pager(30,count($sqlonusCount),'/?'.$oldlink);
+		$SQLLIMIT = $sql_zaput_v_bazy.' LIMIT '.$limit.','.$offset;
+		$sqlonus = $db->SimpleWhile($SQLLIMIT);
 		$searchform_result .= '<div id="form_result">';
-		if(count($SQLonus)){
+		if(count($sqlonus)){
 			$searchform_result .= '<table cellspacing="0" cellpadding="3" width="100%" id="page_seacrh">';
-			foreach($SQLonus as $ontid => $ont){
+			foreach($sqlonus as $ontid => $ont){
 				$inface = $ont['type'].' '.$ont['inface'].'<br>'.($select_search ? highlight_word($ont['mac'].$ont['sn'],$select_search):$ont['mac'].$ont['sn']);
 				$searchform_result .= '<tr id="ont-'.$ont['idonu'].'">';
 				// olt
@@ -179,10 +187,10 @@ if($SQL_Zaput){
 				$searchform_result .= '</td>';
 				// статус
 				$searchform_result .= '<td width="15%" class="device_active '.($ont['status']==1?'geton':'getoff').'" align="left">';
-				if($ont['status']==1 && !empty($ont['online']))
-					$searchform_result .= '<span class="ont-online-serach"><img src="../style/img/uptime.png">онлайн з<br>'.$ont['online'].'</span>';				
+				#if($ont['status']==1 && !empty($ont['online']))
+					#$searchform_result .= '<span class="ont-online-serach"><img src="../style/img/uptime.png">онлайн з<br>'.$ont['online'].'</span>';				
 				if($ont['status']==2 && !empty($ont['offline']))
-					$searchform_result .= '<span class="ont-offline-serach"><img src="../style/img/uptime.png">оффлайн з<br>'.$ont['offline'].'</span>';
+					$searchform_result .= '<span class="ont-offline-serach"><img src="../style/img/uptime.png">'.$lang['offline'].' <br>'.aftertime($ont['offline']).'</span>';
 				$searchform_result .= '</td>';				
 				$searchform_result .= '<td class="bl-all">';
 					if(!empty($ont['name']))
@@ -208,9 +216,9 @@ if($SQL_Zaput){
 }	
 $tpl->load_template('terminal/searchmain.tpl');
 $tpl->set('{sort}',$searchform.$searchform_result);
-$tpl->set('{pagerbottom}',($SQLonus>30 ? $pagertop :''));
-$tpl->set('{name}','Пошук');
-$tpl->set('{result}',$SQL);
+$tpl->set('{pagerbottom}',($sqlonus>30 ? $pagertop :''));
+$tpl->set('{name}','');
+$tpl->set('{result}','');
 $tpl->compile('content');
 $tpl->clear();
 ?>

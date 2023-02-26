@@ -64,8 +64,11 @@ if(count($SQLCount)){
 	foreach($SQLCount as $Dev){
 		if(!empty($Dev['id']) && $Dev['monitor']=='yes')
 		$SQLonusCount = $db->SimpleWhile('SELECT SUM(newin) as countin, deviceid FROM `switch_port_err` WHERE deviceid = '.$Dev['id'].' AND added  >= curdate()');
+		$sqlnewonutoday = $db->SimpleWhile('SELECT idonu FROM `onus` WHERE olt = '.$Dev['id'].' AND added  >= curdate()');
 		if(!empty($SQLonusCount[0]['countin']) && $SQLonusCount[0]['countin']>=100)
 			$array_error[$Dev['id']]['count'] = $SQLonusCount[0]['countin'];
+		if(count($sqlnewonutoday))
+			$arraynewonutoday[$Dev['id']]['count'] = count($sqlnewonutoday);
 	}
 }
 list($pagertop, $pagerbottom, $limit, $offset) = pager(20,count($SQLCount),'/?do=device'.$addparam);
@@ -83,7 +86,7 @@ if(count($SQLDevice)){
 			$SQLbadonu = $db->SimpleWhile("SELECT idonu FROM onus WHERE rx BETWEEN '-".$config['badsignalstart']."' AND '-".$config['badsignalend']."' AND olt = ".$Device['id']);
 			$SQLcountONUoffe = (int)count($SQLcountONU)-count($SQLcountONUonline);
 			$tpl->set('{time}',aftertime($Device['updates']));
-			$tpl->set('{mon}',($Device['monitor']=='yes'?'<span class="mon_on">вкл</span>':'<span class="mon_off">викл</span>'));
+			$tpl->set('{mon}',($Device['monitor']=='yes'?'<span class="mon_on">on</span>':'<span class="mon_off">off</span>'));
 			$tpl->set('{countonu}',(count($SQLcountONU)?'<div class="css10"><span>ONU</span><b>'.count($SQLcountONU).'</b></div>':''));
 			$tpl->set('{countonuon}',(count($SQLcountONUonline)?'<div class="css11"><span>On</span><b>'.count($SQLcountONUonline).'</b></div>':''));
 			$tpl->set('{countonuoff}',($SQLcountONUoffe?'<div class="css12"><span>Off</span><b>'.$SQLcountONUoffe.'</b></div>':''));
@@ -104,6 +107,7 @@ if(count($SQLDevice)){
 			$SQLbadonu = $db->SimpleWhile("SELECT idonu FROM onus WHERE rx BETWEEN '-".$config['badsignalstart']."' AND '-".$config['badsignalend']."' AND olt = ".$Device['id']);
 			$tpl->set('{info}',infstatus($Device['monitor'],count($SQLcountONU)));
 			$tpl->set('{svg_icon}',($Device['device']=='olt' ? $svg_full_box:$svg_min_box));
+			$tpl->set('{todayonu}',(!empty($arraynewonutoday[$Device['id']]['count'])?'<span class="todayonu">+'.$arraynewonutoday[$Device['id']]['count'].'</span>':''));
 			$tpl->set('{place}',$Device['place']);
 			$tpl->set('{location}',(!empty($Device['locationname'])?$Device['locationname']:''));
 			if($Device['groups']>0 && !empty($Group['name'])){
@@ -112,8 +116,8 @@ if(count($SQLDevice)){
 				$tpl->set('{group}','');
 			}
 			$tpl->set('{netip}',($USER['class']>=4 && !empty($USER['class']) ?($config['viewipswitch']=='on' ? $Device['netip'] : ''):''));
-			$SQLcountONUoffline = (int)count($SQLcountONU)-count($SQLcountONUonline);
-			$tpl->set('{onus}','<div class="onu_stats">'.(count($SQLbadonu) && isset($SQLbadonu)?'<div class="berr">'.count($SQLbadonu).' '.$lang['listrxdescr'].'</div>':'').'	'.($array_error[$Device['id']]['count'] ? '<div class="berr">+'.$array_error[$Device['id']]['count'].' '.$lang['errdescr'].'</div>':'').'</div>');
+			$SQLcountONUoffline = (int)(count($SQLcountONU) ? count($SQLcountONU) : 0)-(count($SQLcountONUonline) ? count($SQLcountONUonline) : 0);
+			$tpl->set('{onus}','<div class="onu_stats">'.(isset($SQLbadonu)?'<div class="berr">'.count($SQLbadonu).' '.$lang['listrxdescr'].'</div>':'').'	'.(!empty($array_error[$Device['id']]['count']) ? '<div class="berr">+'.$array_error[$Device['id']]['count'].' '.$lang['errdescr'].'</div>':'').'</div>');
 			$tpl->set('{monitor_status}',($Device['monitor']=='yes'?'<span class="olt_conn_on">'.$lang['descron'].'</span>':'<span class="olt_conn_off">'.$lang['descroff'].'</span>'));
 			$tpl->set('{conn_status}',($Device['connect']=='yes'?'<span class="olt_conn_on">'.$lang['descron'].'</span>':'<span class="olt_conn_off">'.$lang['descroff'].'</span>'));
 			$tpl->set('{time}','<span>'.aftertime($Device['updates']).'</span>');

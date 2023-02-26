@@ -5,7 +5,6 @@ if (!defined('PONMONITOR')){
 if (!defined('AJAX')){
 	die('Hacking attempt!');
 }	
-date_default_timezone_set('Europe/Kiev');
 $time = date('Y-m-d H:i:s');
 define('CONFIG',true);
 require ENGINE_DIR.'init.lang.php';

@@ -2,6 +2,13 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+function checkWhenAdded($data) {
+	$result = false;
+	$onudata = date_parse_from_format('Y-m-d h:i:s',$data);
+	if(date("j")==$onudata['day'] && date("H")==$onudata['hour'])
+		$result = 'todayonu';			
+	return $result;
+}
 function HuaweiReasonGpon($data){
 	switch ($data) {
 		case '1':						
@@ -497,6 +504,8 @@ function styleRxMap($rx){
 		$result='<span class=rx4>'.$rx.'</span>';
 	}elseif($signala>=30 AND $signala<=70){
 		$result='<span class=rx5>'.$rx.'</span>';
+	}else{
+		$result='';
 	}
 	return $result;
 }
@@ -987,7 +996,7 @@ function getlistPonTpl($data){
 	if(count($SQLport)){
 		foreach($SQLport as $Port){
 			$css_load_bar = loadbarpon($Port['support'],$Port['count']);
-			$tpl .= '<li '.($data['ponid']==$Port['id']?'class="active"':'').'>'.($data['ponid']==$Port['id'] && $Port['count']>10?'':'').'';//<span class="connect_bd"></span>
+			$tpl .= '<li '.(!empty($data['ponid']) && $data['ponid']==$Port['id']?'class="active"':'').'>'.(!empty($data['ponid']) && $data['ponid']==$Port['id'] && $Port['count']>10?'':'').'';//<span class="connect_bd"></span>
 			$tpl .= '<div class="elem nam"><a href="/?do=terminal&id='.$data['deviceid'].'&port='.$Port['id'].'">'.$Port['pon'].'';
 			$SQLgetPort = $db->Fast('switch_port','*',['deviceid'=>$Port['oltid'],'llid'=>$Port['sfpid']]);
 			if(!empty($Port['support'])){
@@ -1398,6 +1407,8 @@ function idblock($name){
 		case 'ge':
 			$id = 7;
 		break;
+		default:
+			$id = 10;
 	}
 	return $id;
 }

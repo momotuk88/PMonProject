@@ -19,6 +19,8 @@ $PMonTables = array(
 'fibermap' => 'unitfibermap',	
 'myfta' => 'unitmafta',	
 'swlogport' => 'swlogport',	
+'monitoring' => 'monitoring',	
+'pingstats' => 'pingstats',	
 'onus' => 'onus',	
 'temponu' => 'onus_temp',	
 'unitpontree' => 'unitpontree',	
@@ -33,6 +35,6 @@ $PMonTables = array(
 'pmonstats' => 'pmonstats',	
 'users' => 'users',	
 'historyrx' => 'historysignal',	
-'mononu' => 'monitoronu',	
+'mononu' => 'monitoronu'	
 );
 ?>
