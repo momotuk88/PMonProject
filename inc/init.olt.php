@@ -1,2 +1,16 @@
 <?php
- goto NcCT0; NcCT0: if (!defined("\x50\x4f\x4e\115\x4f\116\111\124\117\x52")) { die("\110\141\x63\x6b\151\156\147\40\141\x74\164\145\155\160\x74\41"); } goto scvGm; eZYVu: require ENGINE_DIR . "\x63\x6c\141\x73\x73\145\163\x2f\172\x74\145\x32\x32\60\137\62\56\143\154\x61\x73\163\x2e\160\150\x70"; goto oJFBl; oojbS: require ENGINE_DIR . "\143\x6c\141\x73\x73\x65\x73\57\143\x64\x61\164\x61\61\62\x30\70\x73\x72\x32\144\141\x70\56\143\154\x61\163\163\56\x70\x68\160"; goto Nq7ZY; u8Mdo: require ENGINE_DIR . "\143\154\141\163\163\x65\163\x2f\x7a\x74\x65\63\x30\x30\x5f\x32\56\x63\154\x61\x73\x73\56\x70\x68\160"; goto GB1Lj; IDDl6: require ENGINE_DIR . "\143\x6c\141\x73\x73\x65\163\57\x68\165\x61\167\x65\x69\x35\66\60\x38\x74\x2e\x63\154\141\163\163\x2e\x70\x68\x70"; goto szC42; Nq7ZY: require ENGINE_DIR . "\143\154\141\x73\x73\x65\x73\57\x63\144\x61\164\141\x66\61\x32\x31\x36\163\56\x63\154\141\163\163\56\160\x68\x70"; goto vH6ic; vH6ic: require ENGINE_DIR . "\x63\x6c\141\163\x73\x65\163\x2f\x63\x64\x61\x74\141\x31\61\x30\x38\56\x63\x6c\141\163\163\x2e\x70\150\x70"; goto u8Mdo; szC42: require ENGINE_DIR . "\143\154\x61\163\x73\x65\163\x2f\x63\x64\141\164\141\x31\x36\61\x36\163\x6e\x2e\143\154\141\x73\x73\x2e\x70\x68\x70"; goto QMA7a; Cf1AL: require ENGINE_DIR . "\143\154\141\x73\x73\x65\163\57\x62\144\x63\157\x6d\147\160\157\x6e\x2e\143\154\x61\163\163\x2e\x70\x68\x70"; goto oojbS; oJFBl: require ENGINE_DIR . "\x63\154\x61\163\163\145\163\57\x64\154\151\x6e\x6b\144\x67\163\x31\61\60\66\56\x63\x6c\141\163\x73\56\x70\x68\160"; goto IDDl6; scvGm: require ENGINE_DIR . "\x63\x6c\141\163\163\145\163\57\142\x64\143\157\x6d\x65\x70\x6f\x6e\56\x63\x6c\141\163\x73\56\x70\150\160"; goto Cf1AL; GB1Lj: require ENGINE_DIR . "\143\x6c\x61\163\163\x65\x73\57\x7a\x74\145\x33\x32\x30\137\62\x2e\143\x6c\141\163\163\x2e\x70\x68\x70"; goto eZYVu; QMA7a: ?>
+if (!defined('PONMONITOR')){
+	die('Hacking attempt!');
+}	
+require ENGINE_DIR.'classes/bdcomepon.class.php';
+require ENGINE_DIR.'classes/bdcomgpon.class.php';
+require ENGINE_DIR.'classes/cdata1208sr2dap.class.php';
+require ENGINE_DIR.'classes/cdataf1216s.class.php';
+require ENGINE_DIR.'classes/cdata1108.class.php';
+require ENGINE_DIR.'classes/zte300_2.class.php';
+require ENGINE_DIR.'classes/zte320_2.class.php';
+require ENGINE_DIR.'classes/zte220_2.class.php';
+require ENGINE_DIR.'classes/dlinkdgs1106.class.php';
+require ENGINE_DIR.'classes/huawei5608t.class.php';
+require ENGINE_DIR.'classes/cdata1616sn.class.php';
+?>

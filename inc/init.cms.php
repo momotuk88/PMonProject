@@ -1,2 +1,23 @@
 <?php
- goto RAASN; DlaVF: if ($worksystem) { if (!empty($USER["\x69\x64"])) { require ENGINE_DIR . "\155\145\x6e\165\x2e\x70\x68\x70"; } $tpl->load_template("\150\164\x6d\x6c\x2e\x74\160\x6c"); $tpl->set("\173\150\164\155\154\175", $html); $tpl->set("\173\x61\152\141\x78\175", $ajax); $tpl->set("\173\150\x65\141\x64\x7d", isset($htmlhead) ? $htmlhead : ''); $tpl->set("\x7b\x76\141\162\175", $var); $tpl->set("\173\143\x73\x73\x7d", $css); $tpl->set("\173\164\x70\154\x7d", "\x2f\163\164\171\x6c\x65\x2f"); $tpl->set("\x7b\146\157\154\x64\x65\162\175", $tpl->folder); $tpl->set("\x7b\x63\x6f\156\164\x65\x6e\164\175", $infolicense . $tpl->result["\143\157\x6e\164\145\x6e\x74"]); if ($config["\144\145\142\165\x67\x6d\171\163\161\154"] == "\171\145\163") { $queryList = $db->queryListdebug($db->query_list); } $tpl->set("\x7b\144\x65\x62\165\x67\x7d", $config["\x64\x65\x62\x75\x67\155\x79\x73\161\x6c"] == "\171\x65\163" && !empty($queryList["\x6c\x69\163\x74"]) ? $queryList["\154\151\x73\164"] : ''); $tpl->set("\x7b\x6d\145\x6e\x75\x7d", !isset($tpl->result["\x6d\145\x6e\165"]) ? '' : $tpl->result["\x6d\145\x6e\165"]); $tpl->set("\173\142\154\x6f\143\153\x2d\162\x69\147\x68\164\175", !isset($tpl->result["\142\154\157\143\x6b\x2d\162\x69\147\x68\x74"]) ? '' : $tpl->result["\x62\154\x6f\x63\x6b\55\x72\151\147\x68\x74"]); $tpl->compile("\155\x61\151\156"); echo $tpl->result["\x6d\141\151\x6e"]; $tpl->global_clear(); } else { die("\x4c\x69\143\x65\156\163\145\x20\153\145\x79\40\143\150\145\143\x6b\x20\x66\141\x69\154\x65\x64\x20\145\162\x72\157\162\54\x20\100\x6d\x6f\x6d\x6f\164\165\153\x38\x38"); } goto Yia1C; RAASN: if (!defined("\120\117\116\x4d\117\116\111\x54\x4f\x52")) { die("\x48\x61\x63\153\x69\156\x67\40\x61\x74\x74\145\155\x70\x74\41"); } goto DlaVF; Yia1C: ?>
+if (!defined('PONMONITOR')){
+	die('Hacking attempt!');
+}
+if(!empty($USER['id']))	require ENGINE_DIR.'menu.php';
+$tpl->load_template('html.tpl');
+$tpl->set('{html}',$html);
+$tpl->set('{ajax}',$ajax);
+$tpl->set('{head}',(isset($htmlhead)?$htmlhead:''));
+$tpl->set('{var}',$var);
+$tpl->set('{css}',$css);
+$tpl->set('{tpl}','/style/');
+$tpl->set('{folder}',$tpl->folder);
+$tpl->set('{content}',$tpl->result['content']);
+if($config['debugmysql']=='yes')
+	$queryList = $db->queryListdebug($db->query_list);
+$tpl->set('{debug}',($config['debugmysql']=='yes' && !empty($queryList['list'])?$queryList['list']:''));
+$tpl->set('{menu}',(!isset($tpl->result['menu'])?'':$tpl->result['menu']));
+$tpl->set('{block-right}',(!isset($tpl->result['block-right']) ? '' : $tpl->result['block-right']));
+$tpl->compile('main');
+echo $tpl->result['main'];
+$tpl->global_clear();
+?>

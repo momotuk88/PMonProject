@@ -1,2 +1,142 @@
 <?php
- goto p0rvY; p0rvY: if (!defined("\120\x4f\x4e\115\x4f\x4e\111\124\117\x52")) { header("\x48\x54\x54\120\x2f\x31\x2e\x31\x20\64\60\63\x20\x46\157\162\142\x69\x64\144\x65\x6e"); header("\114\157\143\141\x74\x69\157\x6e\72\40\x2e\x2e\57"); die("\x48\x61\143\153\x69\x6e\x67\40\x61\x74\x74\x65\155\x70\x74\x21"); } goto fCPIQ; mPKow: if (!isset($do) and isset($_REQUEST["\144\157"])) { $do = totranslit($_REQUEST["\x64\x6f"]); } elseif (isset($do)) { $do = totranslit($do); } else { $do = null; } goto xea_V; neb4G: $worksystem = $worksystem ?? null; goto Rb3dU; Cn13x: $keys2 = "\166\x69\160\x76\145\x35\x65\x36\x68\67\x6b\x66\x38\154\164\x67\165\x74\70"; goto BKbXW; Rb3dU: $infolicense = $infolicense ?? null; goto U860u; BKbXW: $keys3 = "\155\157\x6d\157\164\165\x6b\70\x38\x67\x35\146\x35\65\64\x67\65\146\65"; goto mPKow; fCPIQ: $keys1 = "\x76\151\160\x34\63\164\65\x34\171\150\x36\x35\145\152"; goto Cn13x; U860u: if (count($checkLicenseSwitch) && $pmonprojectkey == "\x66\x72\145\145" || $pmonprojectkey == $keys1 || $pmonprojectkey == $keys3 || $pmonprojectkey == $keys2) { $worksystem = true; if ($pmonprojectkey == $keys1) { $countdevice = 20; } elseif ($pmonprojectkey == $keys2) { $countdevice = 25; } elseif ($pmonprojectkey == $keys3) { $countdevice = 30; } else { $countdevice = 10; } if (count($checkLicenseSwitch) >= $countdevice) { $infolicense = "\x3c\144\151\x76\40\163\164\171\154\145\x3d\x22\x62\x6f\170\55\163\x68\x61\x64\x6f\167\x3a\x20\x30\40\61\x70\170\x20\x32\60\x70\x78\40\x30\x20\162\147\x62\x28\x36\71\40\x39\x30\x20\61\x30\x30\x20\x2f\40\62\x38\45\51\73\x64\x69\x73\x70\x6c\x61\x79\x3a\40\142\x6c\157\143\x6b\x3b\160\x6f\x73\x69\x74\x69\157\156\72\40\146\151\x78\145\144\x3b\162\x69\x67\x68\x74\72\40\x38\160\x78\73\146\x6f\156\x74\x2d\163\151\172\x65\x3a\40\x31\63\160\x78\x3b\x77\x69\x64\x74\150\72\40\x33\x30\x25\73\x6d\x61\x72\147\151\x6e\72\x20\61\x30\x70\170\40\60\40\61\60\x70\x78\40\60\73\142\x61\x63\153\x67\x72\x6f\165\x6e\x64\72\40\43\146\146\x66\x3b\x70\141\x64\144\x69\156\147\x3a\x20\61\x30\160\x78\73\142\x6f\x74\x74\157\x6d\72\40\60\x3b\x6c\x69\156\x65\x2d\150\145\151\147\150\164\72\40\61\x34\x70\x78\x3b\42\x3e\120\x6c\x65\141\163\145\x20\x63\157\x6e\164\141\x63\x74\x20\x74\150\x65\x20\163\x6f\x66\164\167\141\x72\x65\x20\144\x65\166\x65\154\157\160\145\x72\x20\x74\157\x20\160\165\x72\143\x68\x61\x73\x65\x20\164\150\145\40\141\x64\x76\x61\x6e\x63\x65\144\x20\166\x65\162\163\151\157\x6e\x20\x3c\x66\157\x6e\164\x20\x63\x6f\154\x6f\x72\x3d\142\154\x75\x65\x3e\100\x6d\x6f\x6d\x6f\164\165\x6b\x38\x38\74\x2f\x66\157\x6e\x74\76\x20\74\142\76\114\x69\143\x65\x6e\x73\x65\40\x6b\145\171\40\x63\x68\x65\x63\x6b\x20\x66\141\x69\x6c\x65\x64\x20\x65\162\x72\x6f\x72\74\57\142\76\x3c\57\144\x69\x76\76"; if ($act == "\x73\x61\x76\145\144\x65\x76\151\143\x65") { header("\114\x6f\x63\141\164\x69\157\156\72\x20\x2e\x2e\57"); die; } } } elseif (count($checkLicenseSwitch) == 0) { $worksystem = true; } goto AtEl5; AtEl5: switch ($do) { case "\154\x6f\147\151\x6e": define("\114\117\x47\x49\x4e", true); define("\x44\x45\x42\x55\x47", false); require MODULE . "\x6c\x6f\147\151\x6e\x2e\160\x68\x70"; break; case "\x65\x78\x69\164": $auth->logout(); break; case "\163\x65\x6e\144": $auth->isLoggedLogin(); define("\104\105\x42\125\107", false); require MODULE . "\x73\x65\156\x64\56\x70\150\x70"; break; case "\x73\x69\x67\x6e\x61\x6c": $auth->isLoggedLogin(); require MODULE . "\x73\x69\147\156\141\x6c\x2e\160\x68\160"; break; case "\x67\162\x61\160\150\x68\145\141\x6c\x74\150": $auth->isLoggedLogin(); require MODULE . "\147\x72\141\160\150\x68\x65\x61\x6c\x74\150\x2e\160\x68\160"; break; case "\164\145\154\156\145\x74": $auth->isLoggedLogin(); require MODULE . "\164\145\x6c\156\x65\x74\x2e\x70\150\160"; break; case "\147\x72\x61\160\150\x70\151\x6e\147": $auth->isLoggedLogin(); require MODULE . "\147\x72\x61\160\x68\x70\151\156\147\56\x70\x68\x70"; break; case "\x72\x65\x67\x6f\156\x75": $auth->isLoggedLogin(); require MODULE . "\162\145\147\x6f\x6e\x75\56\x70\x68\160"; break; case "\165\163\x65\162\163": $auth->isLoggedLogin(); require MODULE . "\165\163\x65\x72\163\x2e\x70\x68\x70"; break; case "\163\x74\x61\164\165\x73\160\x6f\162\x74": $auth->isLoggedLogin(); require MODULE . "\x73\164\141\164\x75\x73\160\157\162\164\56\x70\150\160"; break; case "\x70\x6f\x72\164\145\x72\x72\157\x72": $auth->isLoggedLogin(); require MODULE . "\x70\x6f\x72\164\x65\x72\162\x6f\x72\56\x70\x68\160"; break; case "\x73\167\151\164\143\150\154\x6f\147": $auth->isLoggedLogin(); require MODULE . "\x73\x77\x69\x74\x63\150\154\x6f\x67\x2e\x70\150\x70"; break; case "\154\157\143\x61\x74\x69\x6f\156": $auth->isLoggedLogin(); require MODULE . "\154\x6f\143\141\164\x69\157\x6e\56\160\x68\x70"; break; case "\x73\x65\x61\162\143\150": $auth->isLoggedLogin(); require MODULE . "\163\x65\x61\162\x63\x68\x2e\160\x68\160"; break; case "\x64\145\164\x61\151\x6c": $auth->isLoggedLogin(); if ($act == "\157\x6c\164") { require MODULE . "\x6f\154\164\56\x70\x68\160"; } if ($act == "\163\167\151\x74\x63\x68") { require MODULE . "\157\x6c\164\56\x70\x68\160"; } break; case "\160\x6f\156\144\157\x67": $auth->isLoggedLogin(); require MODULE . "\160\157\156\144\x6f\x67\x2e\x70\150\160"; break; case "\157\156\x75": $auth->isLoggedLogin(); require MODULE . "\157\156\165\x2e\x70\150\160"; break; case "\x67\162\157\165\160": $auth->isLoggedLogin(); require MODULE . "\147\162\x6f\165\x70\56\x70\x68\x70"; break; case "\x74\145\162\x6d\151\x6e\x61\154": $auth->isLoggedLogin(); require MODULE . "\164\145\x72\x6d\151\156\141\x6c\56\160\150\x70"; break; case "\x64\x65\166\151\x63\145": $auth->isLoggedLogin(); require MODULE . "\x64\145\x76\151\x63\x65\56\x70\150\160"; break; case "\x73\145\x74\x75\x70": $auth->isLoggedLogin(); require MODULE . "\x73\145\x74\165\x70\56\x70\x68\160"; break; case "\143\x6f\x6e\x66\151\147": $auth->isLoggedLogin(); require MODULE . "\143\157\x6e\146\151\147\56\x70\150\x70"; break; case "\x62\x69\154\x6c\151\x6e\x67": $auth->isLoggedLogin(); require MODULE . "\142\151\x6c\x6c\x69\x6e\147\x2e\x70\150\160"; break; case "\x61\x64\144": $auth->isLoggedLogin(); require MODULE . "\x61\144\144\x2e\160\150\x70"; break; case "\155\x61\x70": $auth->isLoggedLogin(); require MODULE . "\155\141\160\56\x70\150\x70"; break; case "\157\151\x64": $auth->isLoggedLogin(); require MODULE . "\x6f\x69\144\56\x70\x68\160"; break; case "\155\157\156\x6f\x6e\x75": $auth->isLoggedLogin(); require MODULE . "\x6d\x6f\156\x6f\156\x75\x2e\x70\150\x70"; break; case "\x73\x6b\154\141\144": $auth->isLoggedLogin(); if ($config["\163\153\154\141\x64"] == "\157\156") { require ENGINE_DIR . "\146\165\x6e\x63\x74\151\x6f\x6e\x73\57\x73\153\154\141\x64\56\160\x68\x70"; require MODULE . "\163\153\x6c\141\x64\x2e\160\150\x70"; } break; case "\x70\157\x6e": $auth->isLoggedLogin(); if ($config["\160\157\156"] == "\157\156") { require ENGINE_DIR . "\x66\x75\x6e\143\x74\x69\157\156\163\57\160\x6f\x6e\56\160\150\160"; require MODULE . "\x70\x6f\x6e\x2e\x70\150\160"; } else { } break; default: $auth->isLoggedLogin(); require MODULE . "\x6d\x61\151\156\x2e\x70\x68\x70"; } goto Kl6Yj; xea_V: if (!isset($act) and isset($_REQUEST["\141\143\164"])) { $act = totranslit($_REQUEST["\141\143\x74"]); } elseif (isset($act)) { $act = totranslit($act); } else { $act = null; } goto neb4G; Kl6Yj: ?>
+if (!defined('PONMONITOR')){
+	header('HTTP/1.1 403 Forbidden');
+	header('Location: ../');
+	die('Hacking attempt!');
+}	
+if(!isset($do) AND isset ($_REQUEST['do'])) $do = totranslit ($_REQUEST['do']); elseif(isset($do)) $do = totranslit($do); else $do = null;
+if(!isset($act) AND isset ($_REQUEST['act'])) $act = totranslit ($_REQUEST['act']); elseif(isset($act)) $act = totranslit($act); else $act = null;
+switch($do){
+	case 'login': 
+		define('LOGIN',true);
+		define('DEBUG',false);
+		require MODULE.'login.php';	
+	break;		
+	case 'exit': 
+		$auth->logout(); 	
+	break;	
+	case 'send':
+		$auth->isLoggedLogin();	
+		define('DEBUG',false);		
+		require MODULE.'send.php';	
+	break;		
+	case 'signal':
+		$auth->isLoggedLogin();		
+		require MODULE.'signal.php';	
+	break;	
+	case 'graphhealth':
+		$auth->isLoggedLogin();		
+		require MODULE.'graphhealth.php';	
+	break;	
+	case 'telnet':
+		$auth->isLoggedLogin();		
+		require MODULE.'telnet.php';	
+	break;		
+	case 'graphping':
+		$auth->isLoggedLogin();		
+		require MODULE.'graphping.php';	
+	break;		
+	case 'regonu':
+		$auth->isLoggedLogin();		
+		require MODULE.'regonu.php';	
+	break;	
+	case 'users':
+		$auth->isLoggedLogin();		
+		require MODULE.'users.php';	
+	break;		
+	case 'statusport':
+		$auth->isLoggedLogin();		
+		require MODULE.'statusport.php';	
+	break;		
+	case 'porterror':
+		$auth->isLoggedLogin();		
+		require MODULE.'porterror.php';	
+	break;		
+	case 'switchlog':
+		$auth->isLoggedLogin();		
+		require MODULE.'switchlog.php';	
+	break;		
+	case 'location':
+		$auth->isLoggedLogin();		
+		require MODULE.'location.php';	
+	break;	
+	case 'search':
+		$auth->isLoggedLogin();		
+		require MODULE.'search.php';	
+	break;	
+	case 'detail': 
+		$auth->isLoggedLogin();	
+		if($act=='olt')
+			require MODULE.'olt.php';		
+		if($act=='switch')
+			require MODULE.'olt.php';	
+	break;		
+	case 'pondog': 
+		$auth->isLoggedLogin();	
+		require MODULE.'pondog.php';	
+	break;		
+	case 'onu': 
+		$auth->isLoggedLogin();	
+		require MODULE.'onu.php';	
+	break;		
+	case 'group': 
+		$auth->isLoggedLogin();	
+		require MODULE.'group.php';	
+	break;	
+	case 'terminal': 
+		$auth->isLoggedLogin();	
+		require MODULE.'terminal.php';	
+	break;		
+	case 'device': 
+		$auth->isLoggedLogin();	
+		require MODULE.'device.php';	
+	break;		
+	case 'setup': 
+		$auth->isLoggedLogin();	
+		require MODULE.'setup.php';	
+	break;	
+	case 'config': 
+		$auth->isLoggedLogin();	
+		require MODULE.'config.php';	
+	break;		
+	case 'billing': 
+		$auth->isLoggedLogin();	
+		require MODULE.'billing.php';	
+	break;	
+	case 'add':	
+		$auth->isLoggedLogin();	
+		require MODULE.'add.php';	
+	break;		
+	case 'map':	
+		$auth->isLoggedLogin();	
+		require MODULE.'map.php';	
+	break;		
+	case 'oid':	
+		$auth->isLoggedLogin();	
+		require MODULE.'oid.php';	
+	break;	
+	case 'mononu':	
+		$auth->isLoggedLogin();	
+		require MODULE.'mononu.php';	
+	break;		
+	case 'sklad':	
+		$auth->isLoggedLogin();	
+		if($config['sklad']=='on'){
+			require ENGINE_DIR.'functions/sklad.php';
+			require MODULE.'sklad.php';
+		}			
+	break;	
+	case 'pon':	
+		$auth->isLoggedLogin();	
+		if($config['pon']=='on'){
+			require ENGINE_DIR.'functions/pon.php';
+			require MODULE.'pon.php';
+		}else{
+			
+		}		
+	break;	
+	default:
+		$auth->isLoggedLogin();		
+		require MODULE.'main.php';	
+}
+?>

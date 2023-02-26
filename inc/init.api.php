@@ -1,2 +1,16 @@
 <?php
- goto QZjB4; jYbwA: require ENGINE_DIR . "\143\154\x61\x73\163\x65\163\57\141\160\x69\x2e\143\x6c\x61\x73\163\56\x70\150\160"; goto W6uk_; QZjB4: if (!defined("\x50\x4f\116\115\x4f\x4e\x49\x54\117\x52")) { die("\x48\141\x63\x6b\x69\156\147\40\x61\x74\164\145\155\x70\x74\x21"); } goto BYqyL; htHD4: require ENGINE_DIR . "\x63\x6c\141\163\x73\145\x73\57\x73\x6e\155\x70\x2e\x63\154\x61\163\163\x2e\160\150\160"; goto tJD0W; WS07O: require ROOT_DIR . "\x2f\151\x6e\x63\57\144\141\164\x61\x62\x61\163\x65\x2e\160\150\160"; goto EMwYC; j0l60: require ENGINE_DIR . "\143\x6c\141\163\x73\x65\163\57\x65\x71\165\151\x70\x6d\145\x6e\164\x2e\143\x6c\141\163\x73\x2e\160\150\160"; goto htHD4; OcYNG: require ENGINE_DIR . "\146\x75\x6e\143\x74\x69\157\x6e\163\x2f\141\160\x69\56\x70\x68\160"; goto VIns6; Mk142: require ENGINE_DIR . "\x69\x6e\x69\x74\56\x6c\141\156\147\x2e\x70\x68\x70"; goto WS07O; VIns6: require ENGINE_DIR . "\x63\154\x61\163\x73\x65\x73\57\143\x6f\x72\x65\x2e\x63\154\141\163\x73\x2e\160\x68\x70"; goto j0l60; BYqyL: define("\103\117\116\x46\x49\107", true); goto Mk142; tJD0W: require ENGINE_DIR . "\x69\156\x69\x74\56\x6f\154\164\56\x70\150\x70"; goto jYbwA; rhlJN: require ROOT_DIR . "\57\x69\156\x63\57\151\156\151\x74\x2e\x63\x6f\x6e\146\x69\147\56\160\150\x70"; goto OcYNG; EMwYC: require ENGINE_DIR . "\143\154\141\x73\163\145\163\57\x6d\x6f\x6e\x69\164\x6f\162\x2e\x64\142\x2e\x63\154\141\163\x73\x2e\x70\x68\160"; goto rhlJN; W6uk_: ?>
+if (!defined('PONMONITOR')){
+	die('Hacking attempt!');
+}
+define('CONFIG',true);
+require ENGINE_DIR.'init.lang.php';
+require ROOT_DIR.'/inc/database.php';
+require ENGINE_DIR.'classes/monitor.db.class.php';
+require ROOT_DIR.'/inc/init.config.php';
+require ENGINE_DIR.'functions/api.php';
+require ENGINE_DIR.'classes/core.class.php';
+require ENGINE_DIR.'classes/equipment.class.php';
+require ENGINE_DIR.'classes/snmp.class.php';
+require ENGINE_DIR.'init.olt.php';
+require ENGINE_DIR.'classes/api.class.php';
+?>

@@ -1,2 +1,34 @@
 <?php
- goto JTxgv; O_0D3: define("\103\117\x4e\106\111\107", true); goto a1npi; ppgXJ: require ENGINE_DIR . "\x63\x6c\141\x73\x73\145\x73\x2f\162\157\165\x74\145\x2e\143\154\x61\163\163\56\160\150\160"; goto GFuDu; D1De1: require ENGINE_DIR . "\151\x6e\x69\164\x2e\154\x61\156\x67\x2e\160\x68\x70"; goto bGz5Q; oCqEQ: require ROOT_DIR . "\x2f\151\156\x63\x2f\x69\156\151\x74\56\x63\x6f\156\x66\x69\147\56\160\150\x70"; goto p4IqJ; gZblc: $tpl = new TemplateMonitor(); goto L2lYb; xlkng: require ROOT_DIR . "\57\x69\x6e\143\x2f\x69\x6e\151\164\56\x63\155\x73\56\x70\x68\x70"; goto ljtNl; S1tHt: $go = new Route(); goto gZblc; GxdvQ: require ENGINE_DIR . "\x63\154\x61\163\x73\145\x73\57\143\x6c\145\141\x6e\56\x63\154\x61\x73\163\56\x70\150\x70"; goto WRmcW; JTxgv: $time = date("\x59\55\x6d\x2d\144\x20\x48\72\151\x3a\163"); goto O_0D3; bGz5Q: require ROOT_DIR . "\57\x69\156\143\x2f\144\141\x74\141\x62\x61\163\145\x2e\x70\150\x70"; goto bE6Ci; ESlvn: require ROOT_DIR . "\x2f\x69\x6e\143\x2f\151\156\151\x74\x2e\155\157\x64\165\x6c\145\x2e\x70\x68\160"; goto lLJUY; L2lYb: $checkLicenseSwitch = $db->Multi($PMonTables["\163\x77\151\x74\143\150"]); goto bIhh3; MHfsy: require ENGINE_DIR . "\143\x6c\x61\163\x73\x65\163\x2f\x74\x70\x6c\56\143\x6c\141\x73\x73\x2e\160\150\x70"; goto ppgXJ; p4IqJ: require ENGINE_DIR . "\x63\154\141\x73\x73\x65\163\57\164\x65\x6c\x6e\145\x74\x2e\143\x6c\x61\x73\x73\x2e\x70\x68\x70"; goto bqYj6; hMQXh: require ENGINE_DIR . "\x63\x6c\141\x73\163\x65\163\57\155\x6f\156\151\x74\157\x72\56\144\x62\x2e\143\x6c\x61\163\x73\x2e\x70\150\x70"; goto GL5cb; Y7OXj: global $do; goto mu_lE; mu_lE: global $config; goto D1De1; lLJUY: require ROOT_DIR . "\x2f\x69\x6e\x63\57\151\156\x69\x74\56\150\164\155\x6c\x2e\160\150\x70"; goto xlkng; eVddX: global $act; goto Y7OXj; GL5cb: require ENGINE_DIR . "\143\x6c\x61\x73\x73\x65\x73\x2f\x75\x73\145\x72\x73\56\x63\154\141\163\x73\56\160\150\160"; goto oCqEQ; GFuDu: require ROOT_DIR . "\x2f\x69\x6e\143\x2f\151\156\151\164\56\x6c\x69\x63\x65\156\x73\x65\56\x70\x68\160"; goto S1tHt; bqYj6: require ENGINE_DIR . "\146\165\x6e\x63\x74\x69\157\x6e\x73\57\x63\157\162\x65\x2e\x70\150\160"; goto GxdvQ; a1npi: global $USER; goto eVddX; WRmcW: require ENGINE_DIR . "\143\154\x61\x73\x73\x65\163\57\143\x6f\x72\145\x2e\143\x6c\141\x73\x73\56\x70\150\x70"; goto MHfsy; bIhh3: $SQLListlocation = $db->Multi($PMonTables["\147\x72"]); goto rgfwq; rgfwq: $SQLCountMonitor = $db->Multi($PMonTables["\155\157\x6e\x6f\156\165"]); goto ESlvn; bE6Ci: require ROOT_DIR . "\x2f\x69\156\143\57\151\156\151\x74\56\x73\x71\154\56\x70\150\x70"; goto hMQXh; ljtNl: ?>
+/*
+*	PMonProject
+*	2023
+*	@momotuk88
+*/
+$time = date('Y-m-d H:i:s');
+define('CONFIG',true);
+global $USER;
+global $act;
+global $do;
+global $config;
+require ENGINE_DIR.'init.lang.php';
+require ROOT_DIR.'/inc/database.php';
+require ROOT_DIR.'/inc/init.sql.php';
+require ENGINE_DIR.'classes/monitor.db.class.php';
+require ENGINE_DIR.'classes/users.class.php';
+require ROOT_DIR.'/inc/init.config.php';
+require ENGINE_DIR.'classes/telnet.class.php';
+require ENGINE_DIR.'functions/core.php';
+require ENGINE_DIR.'classes/clean.class.php';
+require ENGINE_DIR.'classes/core.class.php';
+require ENGINE_DIR.'classes/tpl.class.php';
+require ENGINE_DIR.'classes/route.class.php';
+require ROOT_DIR.'/inc/init.license.php';
+$go =  new Route();
+$tpl =  new TemplateMonitor;
+$checkLicenseSwitch = $db->Multi($PMonTables['switch']);
+$SQLListlocation = $db->Multi($PMonTables['gr']);
+$SQLCountMonitor = $db->Multi($PMonTables['mononu']);
+require ROOT_DIR.'/inc/init.module.php';
+require ROOT_DIR.'/inc/init.html.php';
+require ROOT_DIR.'/inc/init.cms.php';
+?>
