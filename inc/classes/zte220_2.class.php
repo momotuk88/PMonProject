@@ -101,15 +101,12 @@ class ZTE_c220_2 {
 		}
 		return "{$sh}/{$sl}/{$ol}:{$on}";
 	}
-	/*
-	Отримуємо всі onu по snmp з комутатора
-	*/
 	public function Load(){
 		global $db, $PMonTables;		
-		$listEponinface = $this->deviceoid[$this->id]['onu']['listmac']['epon']['oid'];
-		$listEPON = $this->snmp->walk($this->ip,$this->community,$listEponinface,true);
-		if($listEPON){
-			$indexEponOnu = explodeRowsTwo(str_replace('.'.$listEponinface.'.','',$listEPON));
+		$listoidinface = $this->deviceoid[$this->id]['onu']['listmac']['epon']['oid'];
+		$listepondata = $this->snmp->walk($this->ip,$this->community,$listoidinface,true);
+		if($listepondata){
+			$indexEponOnu = explodeRowsTwo(str_replace('.'.$listoidinface.'.','',$listepondata));
 			if(is_array($indexEponOnu)){
 				foreach($indexEponOnu as $io => $eachsig) {
 					$line = explode('=', $eachsig);
@@ -119,29 +116,21 @@ class ZTE_c220_2 {
 				}
 				if(is_array($result)){
 					$db->SQLupdate($PMonTables['onus'],['cron' => 2],['olt' => $this->id]);
-				}else{
-					$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'emptyarraydata','added' =>$this->now]);
 				}
 			}
 		}else{
 			$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'emptysnmpwalk','added' =>$this->now]);
 		}
 		if(is_array($result)){
-			checkerONU($result);
+			checkerONU($result,$this->id);
 		}
 		return ((count($result) === 0) ? null : $result);
 	}
-	/*
-	Кофіг для ONU щоб отримати по API
-	*/
 	public function ConfigApiOnu($data){
 		if($data['type']=='epon')
 			$array = array('do' => 'onu','types' => $this->configapionuepon,'pon' => 'epon','keyonu' => $data['keyonu'],'id' => $this->id);
 		return $array;
 	}
-	/*
-	Перебираємо всю інформацію отриману по ONU
-	*/
 	public function Onu($dataPort,$dataOnu){
 		if(is_array($dataPort)){
 			foreach($dataPort as $type => $value) {
@@ -161,9 +150,6 @@ class ZTE_c220_2 {
 		}
 		return $result;
 	}
-	/*
-	Перебираємо всю інформацію отриману по ONU, деяку зберігаємо в базі і виводимо в результаті
-	*/
 	public function updateonu($ont,$getData){
 		global $db, $config, $PMonTables;
 		if(is_array($getData)){
@@ -313,9 +299,6 @@ class ZTE_c220_2 {
 	public function clearResult($value){
 		return str_replace('/','',trim(str_replace('"','',$value)));
 	}
-	/*
-	Зберігаємо всю інформацію по портах комутатора
-	*/
 	public function savePort($dataPort){
 		global $db, $PMonTables;
 		if(!empty($dataPort['port'])){
@@ -331,9 +314,6 @@ class ZTE_c220_2 {
 			$db->SQLupdate($PMonTables['switch'],['updates_port' => $this->now],['id' => $this->id]);
 		}
 	}
-	/*
-	Зберігаємо ПОН порти
-	*/
 	protected function savePonPortSwitch($data){
 		global $db, $PMonTables;
 		if(!empty($data['llid'])){	
@@ -342,31 +322,27 @@ class ZTE_c220_2 {
 				$db->SQLinsert($PMonTables['switchport'],['deviceid' => $this->id,'llid' => $data['llid'],'nameport' => $data['name'],'typeport' => $data['typeport'],'operstatus' => $data['operstatus'],'added' => $this->now]);
 		}
 	}
-	/*
-	Отримуємо всю інформацію по портах комутатора і формуємо масив
-	*/
 	public function Port(){
-		$data = array();
-		$OIdPortPort = $this->deviceoid[$this->id]['global']['listport']['port']['oid'];
-		if(!$this->indexdevice)
-			$ListPort = $this->snmp->walk($this->ip,$this->community,$OIdPortPort,true);
-		$AllListPort = str_replace('.'.$OIdPortPort.'.','',$ListPort);
-		$IndexponPort = explodeRows($AllListPort);	
-		if(is_array($IndexponPort)){
-			$listPort = array();
-			foreach ($IndexponPort as $idPort => $ValuePort) {	
+		$oidport = $this->deviceoid[$this->id]['global']['listport']['port']['oid'];
+		if($oidport){
+			$listportsnmp = $this->snmp->walk($this->ip,$this->community,$oidport,true);
+			$alllistport = str_replace('.'.$oidport.'.','',$listportsnmp);
+			$indexarrayport = explodeRows($alllistport);	
+		}
+		if(is_array($indexarrayport)){
+			foreach($indexarrayport as $idPort => $ValuePort) {	
                 $infPort = explode('=', $ValuePort);
 				if(!empty($infPort[0]) && !empty($infPort[1])){
 					$portstatus = $this->snmp->get($this->ip,$this->community,'1.3.6.1.2.1.2.2.1.8.'.trim($infPort[0]));
 					$portSw = trim(str_replace('"','',str_replace('STRING:','',$infPort[1])));
-					$listPort[$idPort] = array('operstatus' =>trim(str_replace('"','',str_replace('INTEGER:','',$portstatus))),'id' =>trim($infPort[0]),'typeport' => getTypePort($portSw),'name' => $portSw);
+					$listport[$idPort] = array('operstatus' =>trim(str_replace('"','',str_replace('INTEGER:','',$portstatus))),'id' =>trim($infPort[0]),'typeport' => getTypePort($portSw),'name' => $portSw);
 				}				
 			}
-			$data['port'] = $listPort;
+			$data['port'] = $listport;
 		}
 		if(is_array($data['port'])){
 			foreach($data['port'] as $idPonport => $valuePon){
-				if(preg_match('/epon/i',$valuePon['name'])) {
+				if(preg_match('/epon/i',mb_strtolower($valuePon['name']))) {
 					preg_match('/_0\/(\d+)\/(\d+)/',$valuePon['name'],$mat);
 					$listPon[$idPonport]['name'] = 'EPON 0/'.$mat[1].'/'.$mat[2].'';
 					$listPon[$idPonport]['sort'] = $mat[1];
@@ -385,9 +361,6 @@ class ZTE_c220_2 {
 		}
 		return (is_array($data) ? $data : null);
 	}
-	/*
-	Зберігаємо інформацію по портах
-	*/
     protected function savePortSwitch($data) {
 		global $db, $PMonTables;
 		if(!empty($data['id'])){	
@@ -420,7 +393,7 @@ class ZTE_c220_2 {
 	}
 	public function tempSaveSignalSaveOnuEpon($dataOnu){	
 		global $db, $PMonTables, $config;
-		$savehistor = false;
+		$savehistor = $savehistor ?? null;
 		$onu = $db->Fast($PMonTables['onus'],'status,rx,idonu',['olt' => $this->id,'keyonu' => $dataOnu['keyonu']]);
 		if(!empty($onu['idonu'])){
 			$rx = $rx ?? null;
@@ -502,7 +475,7 @@ class ZTE_c220_2 {
 		global $db, $config, $lang, $PMonTables;
 		$statusONU = (!empty($dataOnu['status']) && $dataOnu['status']==1 ? 1 : 2);
 		preg_match('/(\d+)\/(\d+)\/(\d+):/',$dataOnu['inface'],$mat);
-		if(!empty($dataOnu['keyonu'])){
+		if(is_numeric($dataOnu['keyonu'])){
 			$arr = $db->Fast($PMonTables['onus'],'*',['keyonu' =>$dataOnu['keyonu'],'olt' => $dataOnu['id']]); 
 			if(!empty($arr['idonu'])){
 				if($statusONU==1 && $arr['status']==2){
@@ -571,7 +544,7 @@ class ZTE_c220_2 {
 		$sqlList = $db->Multi($PMonTables['onus'],'keyonu,portolt,type',['olt' => $this->id,'status' => 1]);
 		if(is_array($sqlList)){
 			foreach($sqlList as $key => $value){
-				if(!empty($value['keyonu']) && !empty($value['type'])){
+				if(is_numeric($value['keyonu'])){
 					$temp['id'] = $this->id;
 					$temp['keyonu'] = $value['keyonu'];
 					if(!empty($value['portolt']))

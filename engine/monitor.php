@@ -79,7 +79,6 @@ if($supportonu && is_array($tempdata)){
 			}else{
 				$resultrxarray[$key] = $getrxdata;
 			}
-			print_R($resultrxarray);
 		}
 	}
 	if(is_array($resultrxarray)){

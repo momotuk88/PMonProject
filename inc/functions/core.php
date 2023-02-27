@@ -1539,30 +1539,22 @@ function statusTermianl($status){
 	}
 	return $data;
 }
-function signalTerminal($signal, $type=true){
-	$db = null;
-	if($signal=='Offline')
-		return ' ';
-	if($signal=='0')
-		return ' ';
-	if($signal=='-70')
-		return ' ';
-	if($type==true)
-		$db = ' dBm';
-	$signala = str_replace('-', '',$signal);
-	$signala = (int)$signala;
+function signalTerminal($signal){
+	global $config;
+	$signalbadstart = (!empty( $config['badsignalstart']) ? $config['badsignalstart'] : 26);
+	$signalbadend = (!empty( $config['badsignalend']) ? $config['badsignalend'] : 39);
+	$signala = (int)str_replace('-', '',$signal);
 	if($signala>=1 AND $signala<=12 ){		
-		return '<span class="signal1">'.$signal.$db.'</span>';	
+		return '<span class="signal1">'.$signal.' dBm</span>';	
 	}elseif($signala>=13 AND $signala<=19 ){		
-		return '<span class="signal2">'.$signal.$db.'</span>';	
-	}elseif($signala>=20 AND $signala<=25 ){		
-		return '<span class="signal3">'.$signal.$db.'</span>';	
-	}elseif($signala>=26 AND $signala<=39 ){		
-		return '<span class="signal4">'.$signal.$db.'</span>';	
+		return '<span class="signal2">'.$signal.' dBm</span>';	
+	}elseif($signala>=20 AND $signala<=($signalbadstart-1)){		
+		return '<span class="signal3">'.$signal.' dBm</span>';	
+	}elseif($signala>=$signalbadstart AND $signala<=$signalbadend){		
+		return '<span class="signal4">'.$signal.' dBm</span>';	
 	}else{		
 		if($signala){
-			$signal_ = sprintf("%.2f",$signal);
-			return '<span class="signal0">'.$signal_.$db.' </span>';
+			return '<span class="signal0">'.sprintf("%.2f",$signal).' dBm</span>';
 		}else{
 			return'---';
 		}
@@ -1610,3 +1602,4 @@ function totranslit($var, $lower = true, $punkt = true) {
 	}	
 	return $var;
 }
+?>

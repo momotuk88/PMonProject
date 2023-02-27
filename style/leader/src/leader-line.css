@@ -1,0 +1,60 @@
+.leader-line {
+  position: absolute;
+  overflow: visible !important;
+  pointer-events: none !important;
+  font-size: 16px;
+}
+
+#leader-line-defs {
+  width: 0;
+  height: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.leader-line-line-path {
+  fill: none;
+}
+
+.leader-line-mask-bg-rect {
+  fill: white;
+}
+
+.leader-line-caps-mask-anchor,
+.leader-line-caps-mask-marker-shape {
+  fill: black;
+}
+
+.leader-line-caps-mask-anchor {
+  stroke: black;
+}
+
+.leader-line-caps-mask-line,
+.leader-line-plugs-face {
+  stroke: rgba(0, 0, 0, 0);
+  /* `transparent` might not be supported */
+}
+
+.leader-line-line-mask-shape {
+  stroke: white;
+}
+
+.leader-line-line-outline-mask-shape {
+  stroke: black;
+}
+
+.leader-line-plug-mask-shape {
+  fill: white;
+  stroke: black;
+}
+
+.leader-line-plug-outline-mask-shape {
+  fill: black;
+  stroke: white;
+}
+
+.leader-line-areaAnchor {
+  position: absolute;
+  overflow: visible !important;
+}

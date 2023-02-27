@@ -48,9 +48,8 @@ if(is_numeric($switchid)){
 	$switchdata = $db->Fast('switch','*',['id'=>$switchid]);
 	if(!empty($switchdata['id'])){
 		$result .='<div class="card"><div class="mainblockadmin"><div class="block1">';
-		#$result .= blockStatsONU($switchdata['id']);
-		$sqlpingtoday = $db->SimpleWhile('SELECT * FROM `'.$PMonTables['pingstats'].'` WHERE system = '.$switchdata['id'].' AND datetime  >= curdate() ORDER BY datetime ASC');
-		if(count($sqlpingtoday)>3){
+		$sqlpingtoday = $db->SimpleWhile('SELECT * FROM pingstats WHERE `system` = '.$switchdata['id'].' AND datetime  >= curdate() ORDER BY datetime ASC');
+		if(count($sqlpingtoday)){
 			$result .= '<h2>Статистика пінгування SNMP</h2><img src="../?do=graphping&id='.$switchdata['id'].'">';	
 		}
 		if($switchdata['ping']=='down'){

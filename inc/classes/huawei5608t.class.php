@@ -57,6 +57,8 @@ class HUAWEI_5608t {
 	}
 	public function Load(){
 		global $db, $PMonTables;
+		$resultGpon = $resultGpon ?? null;
+		$resultEpon = $resultEpon ?? null;
 		if(!empty($this->deviceoid[$this->id]['onu']['listsn']['gpon']['oid'])){
 			$listinfaceGpon = $this->deviceoid[$this->id]['onu']['listsn']['gpon']['oid'];
 			$listGpononu = $this->snmp->walk($this->ip,$this->community,$listinfaceGpon,false);	
@@ -434,14 +436,21 @@ class HUAWEI_5608t {
 		$savehistor = false;
 		$onu = $db->Fast($PMonTables['onus'],'status,rx,idonu',['olt' => $this->id,'zte_idport' => $dataOnu['keyport'],'keyonu' => $dataOnu['keyonu']]);
 		if(!empty($onu['idonu'])){
+			$rx = $rx ?? null;
 			if(!empty($dataOnu['rx'])){
 				$rx = $this->clear_rx($dataOnu['rx']);
+				if($rx){
+					$db->SQLupdate($PMonTables['onus'],['rx' => $rx,'rating' => 1],['idonu' => $onu['idonu']]);
+				}
 			}
-			if($rx){
-				$db->SQLupdate($PMonTables['onus'],['rx' => $rx,'rating' => 1],['idonu' => $onu['idonu']]);
-				$savehistor = SignalMonitor($onu['status'], $rx, $onu['rx'], $onu['idonu']);
+			if($config['logsignal']=='on'){
+				if($rx){
+					$savehistor = SignalMonitor($onu['status'], $rx, $onu['rx'], $onu['idonu']);
+				}
+			}else{
+				$savehistor = true;
 			}
-			if(!empty($config['onugraph']) && $config['onugraph']=='on' && $savehistor){
+			if(!empty($config['onugraph']) && $config['onugraph']=='on' && $savehistor && $rx){
 				$db->SQLInsert($PMonTables['historyrx'],['device' => $this->id,'onu' => $onu['idonu'],'signal' => $rx,'datetime' => $this->now]);
 			}
 		}
