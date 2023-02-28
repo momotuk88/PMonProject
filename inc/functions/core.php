@@ -902,16 +902,20 @@ function checkAccess($class){
 	}
 }
 function tim_check($time){
-	$timecheck = '1 hour';	
+
 	if($time=='1h'){
 		$timecheck = '1 година';
 	}elseif($time=='30min'){
 		$timecheck = '30 хвилин';
+	}elseif($time=='15min'){
+		$timecheck = '15 хвилин';
 	}elseif($time=='2h'){
 		$timecheck = '2 години';
 	}elseif($time=='3h'){
 		$timecheck = '3 години';
-	}
+	}else{
+		$timecheck = '1 година';	
+	}	
 	return $timecheck;
 }
 function priority($priority){

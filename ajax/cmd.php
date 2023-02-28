@@ -57,13 +57,13 @@ switch($act){
 		$dataOnu = $db->Fast('onus','*',['idonu'=>$onu]);
 		$dataSwitch = $db->Fast('switch','*',['id'=>$dataOnu['olt']]);
 		if(!empty($dataSwitch['username']) && !empty($dataSwitch['password']) && !empty($dataOnu['type'])){			
-			$ONU = mb_strtolower($dataOnu['type'].''.$dataOnu['inface']);
+			$onus = mb_strtolower($dataOnu['type'].''.$dataOnu['inface']);
 			$phptelnet = new PHPTelnet();
 			$result = $phptelnet->Connect($dataSwitch['netip'],$dataSwitch['username'],$dataSwitch['password']);	
 			$phptelnet->DoCommand("enable\n", $result);
-			$phptelnet->DoCommand("show mac address-table in﻿terface ".$ONU." \r\n", $result);
+			$phptelnet->DoCommand("show mac address-table in﻿terface $onus \r\n", $result);
 			if($result){
-				okno_title('Список всіх MAC на ONU: '.$ONU);
+				okno_title('Список всіх MAC на ONU: '.$onus);
 				$out = explode(' -----', $result);
 				$out = end($out);
 				$arr_out = explode("\n", $out);	
@@ -98,14 +98,14 @@ switch($act){
 		$dataOnu = $db->Fast('onus','*',['idonu'=>$onu]);
 		$dataSwitch = $db->Fast('switch','*',['id'=>$dataOnu['olt']]);
 		if(!empty($dataSwitch['username']) && !empty($dataSwitch['password']) && !empty($dataOnu['type'])){			
-			$ONU = mb_strtolower($dataOnu['type'].''.$dataOnu['inface']);
+			$onus = mb_strtolower($dataOnu['type'].''.$dataOnu['inface']);
 			$phptelnet = new PHPTelnet();
 			$result = $phptelnet->Connect($dataSwitch['netip'],$dataSwitch['username'],$dataSwitch['password']);	
 			$phptelnet->DoCommand("enable\n", $result);
-			$phptelnet->DoCommand("epon reboot onu interface ".$ONU." \r\n", $result);
+			$phptelnet->DoCommand("epon reboot onu interface $onus \r\n", $result);
 			if($result){
-				okno_title('Перезавантажено ONU: '.$ONU);
-				echo'ONU <b>'.$ONU.'</b> перезавантажено i записо в журнал';
+				okno_title('Перезавантажено ONU: '.$onus);
+				echo'ONU <b>'.$onus.'</b> перезавантажено i записо в журнал';
 				okno_end();					
 			}
 		}
@@ -121,15 +121,15 @@ switch($act){
 		$dataOnu = $db->Fast('onus','*',['idonu'=>$onu]);
 		$dataSwitch = $db->Fast('switch','*',['id'=>$dataOnu['olt']]);
 		if(!empty($dataSwitch['username']) && !empty($dataSwitch['password']) && !empty($dataOnu['type'])){			
-			$ONU = mb_strtolower($dataOnu['type'].''.$dataOnu['inface']);
+			$onus = mb_strtolower($dataOnu['type'].''.$dataOnu['inface']);
 			$phptelnet = new PHPTelnet();
 			$result = $phptelnet->Connect($dataSwitch['netip'],$dataSwitch['username'],$dataSwitch['password']);	
 			$phptelnet->DoCommand("enable\n", $result);
-			$phptelnet->DoCommand("show running-config interface ".$ONU." \r\n", $result);
+			$phptelnet->DoCommand("show running-config interface $onus \r\n", $result);
 			$out = explode("Current configuration:\r\n!\r\n", $result);
 			$out = ClearTelnet(end($out));
 			if($result){
-				okno_title('Конфігурація: '.$ONU);
+				okno_title('Конфігурація: '.$onus);
 				echo "<pre>\n";
 				$arr_out = explode("\r\n", $out);
 				array_pop($arr_out);

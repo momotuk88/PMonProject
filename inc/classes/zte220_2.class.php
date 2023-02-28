@@ -334,8 +334,14 @@ class ZTE_c220_2 {
                 $infPort = explode('=', $ValuePort);
 				if(!empty($infPort[0]) && !empty($infPort[1])){
 					$portstatus = $this->snmp->get($this->ip,$this->community,'1.3.6.1.2.1.2.2.1.8.'.trim($infPort[0]));
+					if(preg_match('/INTEGER/i',trim($portstatus))) {
+						preg_match('/INTEGER(.*)/',trim($portstatus),$mat);
+						$status = trim(str_replace('"','',str_replace(':','',$mat[1])));
+					}else{
+						$status = trim(str_replace('"','',str_replace('INTEGER:','',$portstatus)));
+					}
 					$portSw = trim(str_replace('"','',str_replace('STRING:','',$infPort[1])));
-					$listport[$idPort] = array('operstatus' =>trim(str_replace('"','',str_replace('INTEGER:','',$portstatus))),'id' =>trim($infPort[0]),'typeport' => getTypePort($portSw),'name' => $portSw);
+					$listport[$idPort] = array('operstatus' =>($status==1?'up':'down'),'id' =>trim($infPort[0]),'typeport' => getTypePort($portSw),'name' => (isset($portSw)?$portSw:''));
 				}				
 			}
 			$data['port'] = $listport;

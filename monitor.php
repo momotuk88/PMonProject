@@ -1,5 +1,4 @@
 <?php
-date_default_timezone_set('Europe/Kiev');
 define('PONMONITOR',true);
 define('ROOT_DIR',dirname(__FILE__));
 define('API_DIR',ROOT_DIR.'/engine/');

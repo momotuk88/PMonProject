@@ -48,7 +48,7 @@ if($_POST['id']){
 		/// BDCOM, CDATA
 		if(!empty($switch['id'])){
 			$inf = '';
-			if($switch['oidid']==12 || $switch['oidid']==5 || $switch['oidid']==2 || $switch['oidid']==13 || $switch['oidid']==15 || $switch['oidid']==1  || $switch['oidid']==14 ){
+			if($switch['oidid']==3 || $switch['oidid']==12 || $switch['oidid']==5 || $switch['oidid']==2 || $switch['oidid']==13 || $switch['oidid']==15 || $switch['oidid']==1  || $switch['oidid']==14 ){
 				$res_snmp = get_curl_api(array('do' => 'device','id' => $id), true, 10);
 				if(is_array($res_snmp)){
 					if(is_array($res_snmp['result'])){

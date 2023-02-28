@@ -1,7 +1,32 @@
-DROP TABLE `apikey`, `baseip`, `battery_list`, `config`, `connect_port`, `equipment`, `groups`, `historysignal`, `location`, `log`, `monitor`, `monitoring`, `monitoronu`, `oid`, `onus`, `onusold`, `onus_comm`, `onus_log`, `pingstats`, `pmonstats`, `sessions`, `sfp`, `sklad_battery`, `sklad_device`, `sklad_install`, `sklad_switch`, `sklad_ups`, `swcron`, `switch`, `switch_log`, `switch_photo`, `switch_pon`, `switch_port`, `switch_port_err`, `swlogport`, `task_users`, `unit`, `unitbasket`, `unitdevice`, `unitfiber`, `unitfibermap`, `unitmafta`, `unitponbox`, `unitponboxont`, `unitpontree`, `users`;
+-- phpMyAdmin SQL Dump
+-- version 5.0.2
+-- https://www.phpmyadmin.net/
+--
+-- Хост: 127.0.0.1:3306
+-- Время создания: Фев 28 2023 г., 09:14
+-- Версия сервера: 10.3.22-MariaDB
+-- Версия PHP: 7.3.17
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- База данных: `1111`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `apikey`
+--
+
 CREATE TABLE `apikey` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime DEFAULT NULL,
@@ -10,21 +35,47 @@ CREATE TABLE `apikey` (
   `count` int(11) DEFAULT NULL,
   `types` varchar(10) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `apikey`
+--
+
 INSERT INTO `apikey` (`id`, `added`, `apikey`, `ipaccess`, `count`, `types`) VALUES
 (1, NULL, 'regthy76rtfig8lt8ug', NULL, 10, 'monitor'),
 (2, NULL, 'rt325ye6irei65e', NULL, NULL, 'ont');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `baseip`
+--
+
 CREATE TABLE `baseip` (
   `id` int(11) NOT NULL,
   `deviceid` int(11) DEFAULT NULL,
   `ip` text DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `battery_list`
+--
+
 CREATE TABLE `battery_list` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` text DEFAULT NULL,
   `descr` text DEFAULT NULL,
   `types` text DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `config`
+--
+
 CREATE TABLE `config` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` text DEFAULT NULL,
@@ -32,11 +83,16 @@ CREATE TABLE `config` (
   `types` text DEFAULT NULL,
   `update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `config`
+--
+
 INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (1, 'root', '/', 'test', '0000-00-00 00:00:00'),
 (2, 'securityipst', NULL, 'ip', '2022-07-27 16:08:49'),
-(3, 'countviewpageonu', '40', 'int', '2023-02-24 15:03:45'),
-(4, 'url', 'http://192.168.1.31', 'url', '2023-01-31 22:07:21'),
+(3, 'countviewpageonu', '40', 'int', '2023-02-27 20:49:50'),
+(4, 'url', 'http://192.168.1.31', 'url', '2023-02-26 18:06:55'),
 (5, 'skin', 'pmon', 'text', '0000-00-00 00:00:00'),
 (6, 'billingapikey', 'keyus', 'text', '0000-00-00 00:00:00'),
 (7, 'telegramtoken', 'sam_token', 'text', '2023-01-06 13:54:45'),
@@ -52,12 +108,12 @@ INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (17, 'comment', 'off', 'enum', '2023-01-03 17:15:04'),
 (18, 'lon', '', 'int', '0000-00-00 00:00:00'),
 (19, 'lan', '', 'int', '0000-00-00 00:00:00'),
-(20, 'criticsignal', '2', 'int', '2023-02-24 15:03:45'),
+(20, 'criticsignal', '2', 'int', '2023-02-27 20:49:50'),
 (21, 'countlistsitelog', '20', 'int', '0000-00-00 00:00:00'),
 (22, 'critictemp', '70', 'int', '2022-07-27 15:58:53'),
 (23, 'criticcpuolt', '20', 'int', '0000-00-00 00:00:00'),
 (24, 'root_pmon', '/', 'test', '0000-00-00 00:00:00'),
-(25, 'billingurl', 'http://192.168.1.31/api.php', 'url', '0000-00-00 00:00:00'),
+(25, 'billingurl', 'http://176.124.128.31/api.php', 'url', '0000-00-00 00:00:00'),
 (26, 'configport', 'off', 'enum', '2022-07-27 16:03:10'),
 (27, 'pathwalk', 'snmpwalk', 'text', '0000-00-00 00:00:00'),
 (28, 'pathget', 'snmpget', 'text', '0000-00-00 00:00:00'),
@@ -65,7 +121,7 @@ INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (30, 'background', 'false', 'text', '0000-00-00 00:00:00'),
 (31, 'cachetime', '60', 'int', '0000-00-00 00:00:00'),
 (32, 'debug', 'false', 'text', '0000-00-00 00:00:00'),
-(33, 'monitorapi', 'http://192.168.1.31/api.php', 'url', '2023-01-31 22:18:30'),
+(33, 'monitorapi', 'http://192.168.1.31/api.php', 'url', '2023-02-26 18:06:55'),
 (34, 'sklad', 'on', 'enum', '0000-00-00 00:00:00'),
 (35, 'pon', 'on', 'enum', '2023-01-30 12:53:09'),
 (36, 'billingtype', 'mikbill', 'enum', '0000-00-00 00:00:00'),
@@ -78,10 +134,17 @@ INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (43, 'debugmysql', 'no', 'text', '0000-00-00 00:00:00'),
 (44, 'statusport', 'on', 'enum', '0000-00-00 00:00:00'),
 (45, 'errorport', 'on', 'enum', '0000-00-00 00:00:00'),
-(46, 'viewipswitch', 'on', NULL, '0000-00-00 00:00:00'),
-(47, 'badsignalstart', '28', NULL, '2023-02-24 15:03:45'),
-(48, 'badsignalend', '40', NULL, '2023-02-24 15:03:45'),
+(46, 'viewipswitch', 'on', NULL, '2023-02-27 20:49:50'),
+(47, 'badsignalstart', '22', NULL, '2023-02-27 20:49:50'),
+(48, 'badsignalend', '40', NULL, '2023-02-27 20:49:50'),
 (49, 'logsignal', 'off', NULL, '2023-02-24 14:51:55');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `connect_port`
+--
+
 CREATE TABLE `connect_port` (
   `id` int(11) NOT NULL,
   `types` varchar(5) DEFAULT NULL,
@@ -94,6 +157,13 @@ CREATE TABLE `connect_port` (
   `note` text DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `equipment`
+--
+
 CREATE TABLE `equipment` (
   `id` int(11) UNSIGNED NOT NULL,
   `cat` int(11) DEFAULT NULL,
@@ -106,6 +176,11 @@ CREATE TABLE `equipment` (
   `work` varchar(5) NOT NULL,
   `photo` varchar(20) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `equipment`
+--
+
 INSERT INTO `equipment` (`id`, `cat`, `sort`, `oidid`, `model`, `device`, `name`, `phpclass`, `work`, `photo`) VALUES
 (1, 1, 1, 1, 'P3310B', 'olt', 'BDCOM', 'bdcomepon', 'yes', 'P3310B.png'),
 (2, 1, 2, 1, 'P3310C', 'olt', 'BDCOM', 'bdcomepon', 'yes', 'P3310C.png'),
@@ -134,11 +209,25 @@ INSERT INTO `equipment` (`id`, `cat`, `sort`, `oidid`, `model`, `device`, `name`
 (40, 10, 40, 4, 'SGSW-24240', 'switchl2', 'PLANET ', 'planet', 'no', 'SGSW-24240.png'),
 (50, 20, 1, 50, 'Ip7', 'ups', 'Equicom', 'equicomip7', 'no', 'equicomip7.png'),
 (20, 2, 20, 12, 'FD1616SN', 'olt', 'C-DATA', 'cdataf1616sn', 'yes', 'cdataf1616sn.png');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `groups`
+--
+
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL,
   `name` text DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `historysignal`
+--
+
 CREATE TABLE `historysignal` (
   `id` int(11) NOT NULL,
   `device` int(11) UNSIGNED DEFAULT NULL,
@@ -146,6 +235,13 @@ CREATE TABLE `historysignal` (
   `signal` varchar(16) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `location`
+--
+
 CREATE TABLE `location` (
   `id` int(11) NOT NULL,
   `name` text DEFAULT NULL,
@@ -155,6 +251,13 @@ CREATE TABLE `location` (
   `lon` text DEFAULT NULL,
   `added` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `log`
+--
+
 CREATE TABLE `log` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime DEFAULT NULL,
@@ -163,6 +266,13 @@ CREATE TABLE `log` (
   `deviceid` int(11) DEFAULT NULL,
   `progress` enum('user','system','switch','telegram','config','onudelet') NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `monitor`
+--
+
 CREATE TABLE `monitor` (
   `id` int(11) NOT NULL,
   `deviceid` int(11) DEFAULT NULL,
@@ -174,6 +284,13 @@ CREATE TABLE `monitor` (
   `added` datetime DEFAULT NULL,
   `checker` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `monitoring`
+--
+
 CREATE TABLE `monitoring` (
   `id` int(11) UNSIGNED NOT NULL,
   `datetime` datetime DEFAULT NULL,
@@ -181,6 +298,13 @@ CREATE TABLE `monitoring` (
   `values` text DEFAULT NULL,
   `deviceid` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `monitoronu`
+--
+
 CREATE TABLE `monitoronu` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -188,6 +312,13 @@ CREATE TABLE `monitoronu` (
   `idonu` int(11) UNSIGNED DEFAULT NULL,
   `name` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `oid`
+--
+
 CREATE TABLE `oid` (
   `id` int(11) UNSIGNED NOT NULL,
   `oidid` int(11) DEFAULT NULL,
@@ -200,6 +331,11 @@ CREATE TABLE `oid` (
   `inf` varchar(10) DEFAULT NULL,
   `result` text DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `oid`
+--
+
 INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `descr`, `inf`, `result`) VALUES
 (1, 1, 'uptime', 'bdcom', 'device', '1.3.6.1.2.1.1.3.0', 'integer', 'oid_uptime', 'health', NULL),
 (2, 1, 'cpu', 'bdcom', 'device', '1.3.6.1.4.1.3320.9.109.1.1.1.1.3.1', 'integer', 'oid_cpu', 'health', NULL),
@@ -225,7 +361,6 @@ INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `des
 (22, 3, 'temp', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.1.1.29.1.1.keyonu', 'string', 'oid_epon_volt', 'onu', NULL),
 (23, 3, 'offline', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.7.4.1.14.keyonu', 'string', 'oid_epon_time_offline', 'onu', NULL),
 (24, 3, 'config', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.7.4.1.5.keyonu', 'string', 'oid_epon_vendor', 'onu', NULL),
-(25, 3, 'status', 'zte', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'integer', 'oid_olt_port_status', 'monitor', ''),
 (26, 3, 'vlanmode', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.1.1.10.1.1.1.keyonu.1', 'string', 'oid_epon_lan_mode', 'onu', NULL),
 (29, 4, 'status', 'planet', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'integer', 'oid_olt_port_status', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
 (30, 5, 'status', 'dlink', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'integer', 'oid_olt_port_status', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
@@ -261,8 +396,8 @@ INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `des
 (60, 1, 'listport', 'bdcom', 'epon', '1.3.6.1.4.1.3320.101.107.1.1', 'string', 'oid_epon_list_port', 'global', NULL),
 (61, 1, 'status', 'bdcom', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'integer', 'oid_epon_port_satus', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
 (62, 1, 'temp', 'bdcom', 'device', '1.3.6.1.4.1.3320.9.181.1.1.7.1', 'integer', 'oid_epon_switch_temp', 'health', NULL),
-(63, 50,'status', 'equicom', 'device', '1.3.6.1.4.1.35160.1.26.0', 'integer', 'oid_status_220', 'health', 'a:2:{i:1;s:2:\"up\";i:0;s:4:\"down\";}'),
-(64, 50,'volt', 'equicom', 'device', '1.3.6.1.4.1.35160.1.16.1.13.3', 'string', 'oid_volt_battery', 'health', '=FUNCT1INT10='),
+(63, 50, 'status', 'equicom', 'device', '1.3.6.1.4.1.35160.1.26.0', 'integer', 'oid_status_220', 'health', 'a:2:{i:1;s:2:\"up\";i:0;s:4:\"down\";}'),
+(64, 50, 'volt', 'equicom', 'device', '1.3.6.1.4.1.35160.1.16.1.13.3', 'string', 'oid_volt_battery', 'health', '=FUNCT1INT10='),
 (65, 2, 'sn', 'bdcom', 'gpon', '1.3.6.1.4.1.3320.10.3.1.1.4.keyonu', 'hex', 'oid_gpon_sn', 'onu', NULL),
 (66, 2, 'listname', 'bdcom', 'gpon', '1.3.6.1.2.1.2.2.1.2', 'hex', 'oid_gpon_list_inface', 'onu', NULL),
 (67, 2, 'dist', 'bdcom', 'gpon', '1.3.6.1.4.1.3320.10.3.1.1.33.keyonu', 'integer', 'oid_gpon_onu_dist', 'onu', '=FUNCT1INT10='),
@@ -389,7 +524,17 @@ INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `des
 (188, 14, 'status', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.57.1.18.keyport.keyonu', NULL, NULL, 'onu', NULL),
 (189, 14, 'listmac', 'huawei', 'epon', '1.3.6.1.4.1.2011.6.128.1.1.2.53.1.3', NULL, NULL, 'onu', NULL),
 (190, 14, 'uptime', 'huawei', 'device', '1.3.6.1.2.1.1.3.0', NULL, 'oid_uptime', 'health', NULL),
-(191, 14, 'status', 'huawei', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', NULL, NULL, 'monitor', NULL);
+(191, 14, 'status', 'huawei', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', NULL, NULL, 'monitor', NULL),
+(192, 3, 'ifinerrors', 'zte', 'port', '1.3.6.1.2.1.2.2.1.14.keyport', 'auto', 'oid_ifinerrors', 'monitor', NULL),
+(193, 3, 'ifouterrors', 'zte', 'port', '1.3.6.1.2.1.2.2.1.20.keyport', 'auto', 'oid_ifouterrors', 'monitor', NULL),
+(194, 3, 'status', 'zte', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'auto', 'oid_epon_port_satus', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `onus`
+--
+
 CREATE TABLE `onus` (
   `idonu` int(11) NOT NULL,
   `olt` int(11) UNSIGNED DEFAULT NULL,
@@ -428,6 +573,13 @@ CREATE TABLE `onus` (
   `inspector` int(11) NOT NULL DEFAULT 1,
   `monitor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `onusold`
+--
+
 CREATE TABLE `onusold` (
   `idonu` int(11) NOT NULL,
   `inspector` int(11) DEFAULT NULL,
@@ -462,6 +614,13 @@ CREATE TABLE `onusold` (
   `tag` varchar(200) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `onus_comm`
+--
+
 CREATE TABLE `onus_comm` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -470,6 +629,13 @@ CREATE TABLE `onus_comm` (
   `comm` varchar(255) NOT NULL DEFAULT '',
   `ip` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `onus_log`
+--
+
 CREATE TABLE `onus_log` (
   `id` int(10) UNSIGNED NOT NULL,
   `added` datetime DEFAULT NULL,
@@ -478,6 +644,13 @@ CREATE TABLE `onus_log` (
   `user` int(11) DEFAULT NULL,
   `olt` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `pingstats`
+--
+
 CREATE TABLE `pingstats` (
   `id` int(11) UNSIGNED NOT NULL,
   `datetime` datetime DEFAULT NULL,
@@ -485,6 +658,13 @@ CREATE TABLE `pingstats` (
   `system` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `pmonstats`
+--
+
 CREATE TABLE `pmonstats` (
   `id` int(10) UNSIGNED NOT NULL,
   `datetime` datetime DEFAULT NULL,
@@ -493,6 +673,13 @@ CREATE TABLE `pmonstats` (
   `online` int(11) DEFAULT NULL,
   `offline` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `sessions`
+--
+
 CREATE TABLE `sessions` (
   `sid` varchar(32) NOT NULL DEFAULT '',
   `uid` int(10) NOT NULL DEFAULT 0,
@@ -996,8 +1183,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `name`, `class`, `ip`, `password`, `email`, `added`, `lastactivity`, `port`, `setip`, `onlyip`, `url`, `hideonu`, `viewlist`) VALUES
-(1, 'user', 'alex', 7, '192.168.2.30', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2022-07-24 17:01:20', '2023-02-26 17:50:21', 'a:1:i:210s:4:hide', '127.0.0.2', 'off', '/', 'no', 'yes'),
-(7, 'user1', 'alex', 1, '127.0.0.1', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2023-01-09 17:57:47', '2023-01-18 22:45:16', NULL, NULL, 'off', '/?do=exit', NULL, 'no');
+(1, 'user', 'alex', 7, '192.168.2.30', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2022-07-24 17:01:20', '2023-02-27 22:17:28', 'a:1:i:32s:4:hide', '127.0.0.2', 'off', '/ajax/device.php', 'no', 'yes'),
+(7, 'user1', 'alex', 1, '192.168.2.30', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2023-01-09 17:57:47', '2023-02-26 20:24:54', NULL, NULL, 'off', '/?doexit', 'yes', 'yes');
 
 --
 -- Индексы сохранённых таблиц
@@ -1355,7 +1542,7 @@ ALTER TABLE `monitoronu`
 -- AUTO_INCREMENT для таблицы `oid`
 --
 ALTER TABLE `oid`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=192;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=195;
 
 --
 -- AUTO_INCREMENT для таблицы `onus`
@@ -1433,7 +1620,7 @@ ALTER TABLE `sklad_ups`
 -- AUTO_INCREMENT для таблицы `swcron`
 --
 ALTER TABLE `swcron`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=191;
 
 --
 -- AUTO_INCREMENT для таблицы `switch`

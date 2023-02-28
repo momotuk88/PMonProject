@@ -14,8 +14,6 @@
 ob_start();
 ob_implicit_flush(false);
 
-date_default_timezone_set('Europe/Kiev');
-
 error_reporting ( E_ALL ^ E_WARNING ^ E_DEPRECATED ^ E_NOTICE );
 ini_set ( 'error_reporting', E_ALL ^ E_WARNING ^ E_DEPRECATED ^ E_NOTICE );
 

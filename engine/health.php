@@ -43,12 +43,12 @@ sleep(3);
 $sqlselectswitchafter = $db->Multi('switch','id,netip,snmpro,oidid',['monitor'=>'yes']);
 if(count($sqlselectswitchafter)){
 foreach($sqlselectswitchafter as $switch){
-	if($switch['oidid']==2 || $switch['oidid']==1){
+	if($switch['oidid']==2 || $switch['oidid']==3 || $switch['oidid']==1){
 		$res_snmp = get_curl_api(array('do' => 'device','id' => $switch['id']), true, 10);
 		if(is_array($res_snmp['result'])){
 			foreach($res_snmp['result'] as $type => $value) {
 				/// BDCOM TEMP+CPU
-				if($switch['oidid']==2 || $switch['oidid']==1){
+				if($switch['oidid']==2 || $switch['oidid']==1 || $switch['oidid']==3){
 					if($type=='cpu')
 						$arrhealth['cpu'] = $value;
 					if($type=='temp') 

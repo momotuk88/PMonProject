@@ -16,8 +16,8 @@ class Ont{
 			case 'huawei5608t':
 				return new HUAWEI_5608t($id,$OidDevice);				
             break;            
-			case 'zte320_2':
-				return new ZTE_c320_2($id,$OidDevice);					
+			case 'zte220_2':
+				return new ZTE_c220_2($id,$OidDevice);					
             break;				
 			case 'zte300_2':
 				return new ZTE_c300_2($id,$OidDevice);					

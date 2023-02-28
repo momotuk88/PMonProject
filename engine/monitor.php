@@ -104,8 +104,7 @@ sleep(2);
 if(is_array($resarray))
 	$getmonitor->UpdateInformationOlt();
 if(!empty($getswitch['id'])){
-	$executionTime = microtime(true) - $starttime;
+	$executionTime = (int)microtime(true) - $starttime;
 	$db->SQLupdate($PMonTables['switch'],['status'=>'no','timecheck'=>$executionTime,'timechecklast'=>(!empty($getswitch['timecheck'])?$getswitch['timecheck']:0)],['id'=>$getswitch['id']]);
-
 }
 ?>
