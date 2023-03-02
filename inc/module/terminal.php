@@ -214,7 +214,7 @@ if(count($SQLTerminal)){
 	foreach($SQLTerminal as $Terminal){
 		$tpl->load_template('terminal/list.tpl');
 		$status = statusTermianl($Terminal['status']);
-		$tpl->set('{checkadded}',(!empty($status['added']) && $Terminal['status'] == 2 ? checkWhenAdded($status['added']): ''));
+		$tpl->set('{checkadded}',checkWhenAdded($Terminal['added']));
 		$tpl->set('{status}',$status['img']);
 		$tpl->set('{statuscss}',$status['css']);
 		$tpl->set('{signal}',signalTerminal($Terminal['rx']).($Terminal['rxstatus']=='up' || $Terminal['rxstatus']=='down' ? '<span class="signaldown"><i class="fi fi-rr-angle-small-'.$Terminal['rxstatus'].'"></i></span>':''));

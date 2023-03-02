@@ -21,7 +21,7 @@ switch($act){
 			}
 			$select .= '</select>';
 		}else{
-			$select ='<a href="">Додати локацію</a>';
+			$select ='<a href="/?do=location">Додати локацію</a>';
 		}
 		echo form(['name'=>'Локаці','descr'=>'Розмещення обладання','pole'=>$select]);
 		echo'</form>';
@@ -329,7 +329,7 @@ switch($act){
 				$tochka1 .= '<option value="2">Муфта</option>';
 				$tochka1 .= '<option value="3">Понбокс</option>';
 				echo form(['name'=>'Тип підключення','descr'=>'Звідки включено оптику','pole'=>'<select class="select" name="getconnect" id="getconnect"><option value="0">Вибрати</option>'.$tochka1.='</select>']);
-				echo'<span class="js_replace_name"></span></form><div class="polebtn"><button type="submit" form="formadd" value="submit">Видалити</button></div>';
+				echo'<span class="js_replace_name"></span></form><div class="polebtn"><button type="submit" form="formadd" value="submit">Додати</button></div>';
 				?><script>
 				$('#getconnect').on('change', function() {
 					var value = $(this).val();

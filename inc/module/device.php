@@ -71,7 +71,8 @@ if(count($SQLCount)){
 			$arraynewonutoday[$Dev['id']]['count'] = count($sqlnewonutoday);
 	}
 }
-list($pagertop, $pagerbottom, $limit, $offset) = pager(20,count($SQLCount),'/?do=device'.$addparam);
+$pagecount = $config['countviewpageswitch'];
+list($pagertop, $pagerbottom, $limit, $offset) = pager($pagecount,count($SQLCount),'/?do=device'.$addparam);
 $SQLDevice = $db->Multi('switch','*',$Where,null,$offset,$limit);
 if(count($SQLDevice)){
 	foreach($SQLDevice as $Device){

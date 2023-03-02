@@ -37,6 +37,8 @@ if($USER){
 	$m_pon ='';
 if($config['pon']=='on'){
 	$m_pon .='<li class="nav-title">Мережа</li>';
+	#$m_pon .= '<li class="nav-item"><a class="nav-link" href="/?do=map"><div class="i"><i class="fi fi-rr-map"></i></div>';
+	#$m_pon .= '<span class="m">Карта мережі</span></a></li>'; 
 	$m_pon .='<li class="nav-item nav-dropdown "><a class="nav-link dropdown-toggle" href="#"><div class="i"><i class="fi fi-rr-grid"></i></div><span class="m">'.$lang['location'].'</span></a>';
 	$m_pon .='<ul class="nav-dropdown-items dropdown">';
 	$m_pon .='<li class="nav-item"><a class="nav-link" href="/?do=location"><div class="i"><i class="fi fi-rr-building"></i></div><span>'.$lang['listlocation'].'</span></a></li>';

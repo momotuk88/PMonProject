@@ -22,6 +22,7 @@ $setup ='';
 $setup .= formpage(['img'=>'addconnect.png','name'=>$lang['cfg_root'],'descr'=>$lang['cfg_root_descr'],'pole'=>'<input style="width:200px;" name="root" class="input1" type="text" value="'.$config['root'].'">']);
 $setup .= formpage(['img'=>'www.png','name'=>'URL','descr'=>$lang['cfg_url_descr'],'pole'=>'<input style="width:200px;" name="url" class="input1" type="text" value="'.$config['url'].'">']);
 $setup .= formpage(['img'=>'number-20.png','name'=>$lang['cfg_count'],'descr'=>$lang['cfg_count_descr'],'pole'=>'<input style="width:200px;" name="countviewpageonu" class="input1" type="text" value="'.$config['countviewpageonu'].'">']);
+$setup .= formpage(['img'=>'number-20.png','name'=>$lang['cfg_count_switch'],'descr'=>$lang['cfg_count_switch_descr'],'pole'=>'<input style="width:200px;" name="countviewpageswitch" class="input1" type="text" value="'.$config['countviewpageswitch'].'">']);
 $setup .= formpage(['img'=>'font.png','name'=>'Style','descr'=>$lang['cfg_style_descr'],'pole'=>'<input style="width:200px;" name="skin" class="input1" type="text" value="'.$config['skin'].'">']);
 $setup .= formpage(['img'=>'api.png','name'=>'API','descr'=>$lang['cfg_api_descr'],'pole'=>'<input style="width:200px;" name="monitorapi" class="input1" type="text" value="'.$config['monitorapi'].'">']);
 $setup .= formpage(['img'=>'map.png','name'=>$lang['cfg_geo_lan'],'descr'=>$lang['cfg_geo_lan_descr'],'pole'=>'<input style="width:400px;" name="geo_lan" class="input1" type="text" value="'.$config['geo_lan'].'">']);

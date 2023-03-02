@@ -2,39 +2,29 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
-function getONU($data){
-	global $db, $config, $PMonTables;
-	$super = $db->Simple('SELECT idonu, added FROM `'.$PMonTables['onus'].'` WHERE olt = '.$data['id'].'
-	AND type = "'.($data['pon']=='gpon'?'gpon':'epon').'"
-	AND keyonu = "'.$data['keyonu'].'" '.(!empty($data['keyport'])?'AND zte_idport = "'.$data['keyport'].'"':'').'
-	ORDER BY added ASC LIMIT 1');	
-	if(!empty($super['idonu']))
-		$db->SQLupdate($PMonTables['onus'],['cron' => 1],['idonu' => $super['idonu']]);
-}
-function getDeletOnu($data){
-	global $db, $config, $PMonTables, $lang;
-	foreach($data as $io => $eachsig) {
-		if(!empty($eachsig['idonu'])){
-			$db->query('DELETE FROM monitoronu WHERE idonu = '.$eachsig['idonu']);
-			$db->query('DELETE FROM onus WHERE idonu = '.$eachsig['idonu']);
-			$db->query('DELETE FROM onus_comm WHERE idonu = '.$eachsig['idonu']);
-			$db->query('DELETE FROM onus_log WHERE onuid = '.$eachsig['idonu']);
-			$db->query('DELETE FROM unitponboxont WHERE onuid = '.$eachsig['idonu']);
-			$db->query('DELETE FROM historysignal WHERE onu = '.$eachsig['idonu']);
-			$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$eachsig['olt'],'types' =>'deletonu','message' =>$lang['deletonu'].$eachsig['type'].$eachsig['inface'],'added' =>date('Y-m-d H:i:s')]);
-		}
-	}
-}
 function checkerONU($data,$olt){
 	global $db, $config, $PMonTables, $lang;
-	foreach($data as $io => $eachsig) {
-		getONU($eachsig);
+	foreach($data as $ios => $eachsigs) {
+		$super = $db->Simple('SELECT idonu, added FROM `'.$PMonTables['onus'].'` WHERE olt = '.$eachsigs['id'].'
+		AND type = "'.($eachsigs['pon']=='gpon'?'gpon':'epon').'"
+		AND keyonu = "'.$eachsigs['keyonu'].'" '.(!empty($eachsigs['keyport'])?'AND zte_idport = "'.$eachsigs['keyport'].'"':'').'
+		ORDER BY added ASC LIMIT 1');	
+		if(!empty($super['idonu'])){
+			$db->SQLupdate($PMonTables['onus'],['cron' => 1],['idonu' => $super['idonu']]);
+		}
 	}
-	sleep(1);
-	if(is_array($data)){
-		$getdeletonu = $db->Multi($PMonTables['onus'],'olt,idonu,status,type,inface,added',['olt' => $olt,'cron' => 2]);
-		if(count($getdeletonu)){
-			getDeletOnu($getdeletonu);
+	$getdeletonu = $db->Multi($PMonTables['onus'],'*',['olt' => $olt,'cron' => 2]);
+	if(count($getdeletonu)){
+		foreach($getdeletonu as $io => $eachsig) {
+			if(!empty($eachsig['idonu'])){
+				$db->query('DELETE FROM onus WHERE idonu = '.$eachsig['idonu']);
+				$db->query('DELETE FROM onus_comm WHERE idonu = '.$eachsig['idonu']);
+				$db->query('DELETE FROM onus_log WHERE onuid = '.$eachsig['idonu']);
+				$db->query('DELETE FROM unitponboxont WHERE onuid = '.$eachsig['idonu']);
+				$db->query('DELETE FROM historysignal WHERE onu = '.$eachsig['idonu']);
+				$db->query('DELETE FROM monitoronu WHERE idonu = '.$eachsig['idonu']);
+				$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$eachsig['olt'],'types' =>'deletonu','message' =>$lang['deletonu'].$eachsig['type'].$eachsig['inface'],'added' =>date('Y-m-d H:i:s')]);
+			}
 		}
 	}
 }
@@ -135,6 +125,18 @@ function MacHuawei($type) {
 			$onu = bin2hex($re_mac);
 		}
 		$onu = preg_replace('/(.{2})/','\1:',$onu,5);
+		return $onu;
+}
+function cdataGpon($type) {
+		if (preg_match("/Hex/i", $type)) {
+			$re_z_z = explode('Hex-STRING: ', $type);
+			$re_z = end($re_z_z);
+			$onu = str_replace('"', '',$re_z);
+		}elseif(preg_match("/STRING/i", $type)) {
+			$re_ze_mac = explode('STRING: ', $type);
+			$re_mac = end($re_ze_mac);
+			$onu = str_replace('"', '',$re_mac);
+		}
 		return $onu;
 }
 function SnHuawei($type) {

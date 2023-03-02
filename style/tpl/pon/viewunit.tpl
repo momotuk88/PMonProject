@@ -18,6 +18,7 @@
 		</td>
 	</tr>	
 </table>
+<!---
 <table class="view-unit" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td class="head-unit"><b>Обладання додаткове</b></td>
@@ -26,3 +27,4 @@
 		<td class="content-unit insert-device">{insert}</td>
 	</tr>	
 </table>
+-->

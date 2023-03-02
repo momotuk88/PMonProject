@@ -3,10 +3,10 @@ if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
 function checkWhenAdded($data) {
-	$result = false;
+	$result = '';
 	$onudata = date_parse_from_format('Y-m-d h:i:s',$data);
 	if(date("j")==$onudata['day'] && date("H")==$onudata['hour'])
-		$result = 'todayonu';			
+		$result = 'today';			
 	return $result;
 }
 function HuaweiReasonGpon($data){

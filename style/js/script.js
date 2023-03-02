@@ -1,3 +1,40 @@
+var loadingImage = 'ajax-loader-big.gif';
+var LoadingBar = '<div style="padding:20px;text-align:center;"><img src="../style/img/'+loadingImage+'" /></div>';
+function startmaster(getid,init) {
+	getid = parseInt(getid);		
+	init = parseInt(init);		
+	$('#master').html(LoadingBar);
+	$.post(root+'?do=master',{init:init,getid:getid}, 
+	function(response){ 
+		$('#master').empty();
+		$('#master').html(response);
+	}, 'html');
+}
+function ajaxont(id) {
+	$('#ont').html(LoadingBar);
+	$.post(root+"ajax/ont.php",{id:id},function(response){ 
+		$('#ont').empty();
+		$('#ont').html(response);
+	}, "html");
+	setTimeout('ajaxont('+id+');',5000000);	
+}
+function ajaxpanel(id) {
+	$('#panel-ont').html(LoadingBar);
+	$.post(root+"ajax/panel.php",{id:id},
+		function(response){ 
+			$('#panel-ont').empty();
+			$('#panel-ont').html(response);
+		}, "html");
+	setTimeout('ajaxpanel('+id+');',5000000);	
+}
+function ajaxdevicestatus(id) {
+	$('#ajaxdevice').html(LoadingBar);
+	$.post(root+"ajax/status.php",{id:id},function(response){ 
+		$('#ajaxdevice').empty();
+		$("#ajaxdevice").html(response);
+	}, "html");
+	setTimeout('ajaxdevicestatus('+id+');',50000);	
+}
 function ajaxuid(act,id) {
 	$.post(root+"ajax/comment.php",{act:act,id:id},function(response){ 
 	$("#ajax").html(response);
@@ -9,12 +46,6 @@ function copymac(copyText) {
 function Realontdata(id) {
 	$(location).attr('href');
 	location.reload(); 
-}
-function ajaxloadsnmpnoregonuzte(id) {
-	$.post(root+"ajax/olt.php",{act:'noregonuzte',id:id},function(response){ 
-	$("#load_info").hide();
-	$("#result-ont").html(response);
-	}, "html");
 }
 function convertFormToJSON(form) {
     const array = $(form).serializeArray();
@@ -42,12 +73,6 @@ function regonuzte(id) {
 	$("#nextreg-" + id).html(response);
 	}, "html");
 }
-function ajaxont(id) {
-	$.post(root+"ajax/ont.php",{id:id},function(response){ 
-	$("#ont").html(response);
-	}, "html");
-	setTimeout('ajaxont('+id+');',5000000);	
-}
 function ajaxzte320(id) {
 	$.post(root+"ajax/ontzte320.php",{id:id},function(response){ 
 	$("#ajaxzte320").html(response);
@@ -60,12 +85,6 @@ function ajaxhuawei5608(id) {
 	}, "html");
 	setTimeout('onthuawei5608('+id+');',500000);	
 }
-function ajaxpanel(id) {
-	$.post(root+"ajax/panel.php",{id:id},function(response){ 
-	$("#panel-ont").html(response);
-	}, "html");
-	setTimeout('ajaxpanel('+id+');',5000000);	
-}
 function ajaxcmdpanel(act,onu) {
 	$("#loading").show();
 	$.post(root+"ajax/cmd.php",{act:act,onu:onu},function(response){ 
@@ -77,18 +96,6 @@ function ajaxswitch(olt,act) {
 	$.post(root+"ajax/switch.php",{act:act,olt:olt},function(response){ 
 	$("#ajax").html(response);
 	}, "html");	
-}
-function ajaxdevicestatus(id) {
-	$.post(root+"ajax/status.php",{id:id},function(response){ 
-	$("#ajaxdevice").html(response);
-	}, "html");
-	setTimeout('ajaxdevicestatus('+id+');',50000);	
-}
-function ajaxchecknewonu(id) {
-	$.post(root+"ajax/checknewonu.php",{id:id},function(response){ 
-	$("#noregonu").html(response);
-	}, "html");
-	setTimeout('ajaxchecknewonu('+id+');',100000);	
 }
 function ajaxviewphoto(id) {
 	$.post(root+"ajax/photo.php",{act:'view',id:id},function(response){ 

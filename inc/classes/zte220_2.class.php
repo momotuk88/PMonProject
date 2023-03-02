@@ -11,9 +11,6 @@ class ZTE_c220_2 {
     private $configapionuepon = 'status,dist,config,reason,rx,tx,model,eth,volt,temp,offline,vendor,device,vlanmode';
     private $filter = true;
     private $filters = ['/"/','/Hex-/i','/OID: /i','/STRING: /i','/Gauge32: /','/INTEGER: /i','/Counter32: /i','/SNMPv2-SMI::enterprises\./i','/iso\.3\.6\.1\.4\.1\./i'];
-	/*
-	Що підтрмує даний свіч, модель
-	*/
 	public function Support($check){
 		switch ($check) {
 			case 'port' : 
@@ -69,57 +66,61 @@ class ZTE_c220_2 {
 		return $tempmac;
 	}
 	public function epon_convert($llid) {
-		$lx=sprintf("%08x",$llid);
-		switch ($lx[0]) {
-			case '1':
-				$sh=hexdec($lx[1])+1;
-				$sl=hexdec($lx[2].$lx[3]);
-				$ol=hexdec($lx[4].$lx[5]);
+		if(is_numeric($llid)){
+			$lx = sprintf("%08x",$llid);
+			switch ($lx[0]) {
+				case '1':
+					$sh = hexdec($lx[1])+1;
+					$sl = hexdec($lx[2].$lx[3]);
+					$ol = hexdec($lx[4].$lx[5]);
 				break;
-			case '2':
-				$sh=hexdec($lx[3]);
-				$sl=hexdec($lx[4].$lx[5]);
-				$ol=hexdec($lx[6].$lx[7]);
-				if ($cl>16) {
-					$cl-=16; $sl++;
-				}
-					$ol1=$ol;
+				case '2':
+					$sh = hexdec($lx[3]);
+					$sl = hexdec($lx[4].$lx[5]);
+					$ol = hexdec($lx[6].$lx[7]);
+					if($cl>16){
+						$cl-=16; $sl++;
+					}
+					$ol1 = $ol;
 				break;
-
-			case '3':
-				$sh=hexdec($lx[1])+1;
-				$sl=hexdec($lx[2].$lx[3]);
-				$ol=($sl&0x07)+1;
-				$sl=$sl>>3;
-				$on=hexdec($lx[4].$lx[5]);
+				case '3':
+					$sh = hexdec($lx[1])+1;
+					$sl = hexdec($lx[2].$lx[3]);
+					$ol = ($sl&0x07)+1;
+					$sl = $sl>>3;
+					$on = hexdec($lx[4].$lx[5]);
 				break;
-			case '6':
-				$sh=hexdec($lx[1])+1;
-				$sl=hexdec($lx[2].$lx[3]);
-				$ol=0;
+				case '6':
+					$sh = hexdec($lx[1])+1;
+					$sl = hexdec($lx[2].$lx[3]);
+					$ol = 0;
 				break;
+			}
+			if(is_numeric($on)){
+				return "{$sh}/{$sl}/{$ol}:{$on}";
+			}
 		}
-		return "{$sh}/{$sl}/{$ol}:{$on}";
 	}
 	public function Load(){
 		global $db, $PMonTables;		
 		$listoidinface = $this->deviceoid[$this->id]['onu']['listmac']['epon']['oid'];
 		$listepondata = $this->snmp->walk($this->ip,$this->community,$listoidinface,true);
 		if($listepondata){
-			$indexEponOnu = explodeRowsTwo(str_replace('.'.$listoidinface.'.','',$listepondata));
-			if(is_array($indexEponOnu)){
-				foreach($indexEponOnu as $io => $eachsig) {
+			$infeponlist = explodeRows(str_replace('.'.$listoidinface.'.','',$listepondata));
+			if(is_array($infeponlist)){
+				foreach($infeponlist as $io => $eachsig) {
 					$line = explode('=', $eachsig);
 					if(isset($line[0]) && isset($line[1])) {
-						$result[$io] = array('do' => 'onu','id'=>$this->id,'mac'=>$this->epon_mac($line[1]),'pon'=>'epon','inface'=>$this->epon_convert(trim($line[0])),'types'=>$this->primaryepon,'keyonu'=> trim($line[0]));
+						$mac = $this->epon_mac($line[1]);
+						if($mac){
+							$result[$io] = array('do' => 'onu','id'=>$this->id,'mac'=>$mac,'pon'=>'epon','inface'=>$this->epon_convert(trim($line[0])),'types'=>$this->primaryepon,'keyonu'=> trim($line[0]));
+						}
 					}	
 				}
 				if(is_array($result)){
 					$db->SQLupdate($PMonTables['onus'],['cron' => 2],['olt' => $this->id]);
 				}
 			}
-		}else{
-			$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'emptysnmpwalk','added' =>$this->now]);
 		}
 		if(is_array($result)){
 			checkerONU($result,$this->id);
@@ -352,6 +353,7 @@ class ZTE_c220_2 {
 					preg_match('/_0\/(\d+)\/(\d+)/',$valuePon['name'],$mat);
 					$listPon[$idPonport]['name'] = 'EPON 0/'.$mat[1].'/'.$mat[2].'';
 					$listPon[$idPonport]['sort'] = $mat[1];
+					$listPon[$idPonport]['operstatus'] = $valuePon['operstatus'];
 					$listPon[$idPonport]['sfpid'] = $valuePon['id'];
 					$listPon[$idPonport]['llid'] = $valuePon['id'];
 					$listPon[$idPonport]['typeport'] = $valuePon['typeport'];
@@ -485,37 +487,33 @@ class ZTE_c220_2 {
 			$arr = $db->Fast($PMonTables['onus'],'*',['keyonu' =>$dataOnu['keyonu'],'olt' => $dataOnu['id']]); 
 			if(!empty($arr['idonu'])){
 				if($statusONU==1 && $arr['status']==2){
-					$SQLset['rating'] = 7;
-				}else{
-					$SQLset['rating'] = 1;
-				}				
-				if($statusONU==1 && $arr['status']==2){
-					$SQLset['online'] = $this->now;
+					$sqlupdate['online'] = $this->now;
 				}elseif($statusONU==2 && $arr['status']==1){
-					$SQLset['offline'] = $this->now;
-				}else{
-					
+					$sqlupdate['offline'] = $this->now;
 				}				
-				$SQLset['sw_shelf'] = $mat[1];
-				$SQLset['sw_slot'] = $mat[2];
-				$SQLset['sw_port'] = $mat[3];
-				$SQLset['updates'] = $this->now;
-				$SQLset['cron'] = 1;
-				$SQLset['status'] = $statusONU;
-				$SQLset['type'] = $dataOnu['pon'];
+				$sqlupdate['sw_shelf'] = $mat[1];
+				$sqlupdate['sw_slot'] = $mat[2];
+				$sqlupdate['sw_port'] = $mat[3];
+				$sqlupdate['updates'] = $this->now;
+				$sqlupdate['cron'] = 1;
+				$sqlupdate['status'] = $statusONU;
+				$sqlupdate['type'] = $dataOnu['pon'];
 				if(!empty($dataOnu['dist']))
-					$SQLset['dist'] = $dataOnu['dist'];				
-				if(!empty($dataOnu['mac']))
-					$SQLset['mac'] = $dataOnu['mac'];
-				if(!empty($dataOnu['inface']))
-					$SQLset['inface'] = $dataOnu['inface'];				
-				if(!empty($dataOnu['reason']))
-					$SQLset['reason'] = $this->reason($dataOnu['reason']);	
-				if(!empty($dataOnu['keyport'])){
-					#$SQLset['portolt'] = $dataOnu['keyport'];
-					#$SQLset['zte_idport'] = $dataOnu['keyport'];
+					$sqlupdate['dist'] = $dataOnu['dist'];				
+				if(!empty($dataOnu['mac'])){
+					if(preg_match('/00:00:00/i',$arr['mac']) && !preg_match('/00:00:00/i',$dataOnu['mac'])){
+						$sqlupdate['mac'] = $dataOnu['mac'];
+					}
 				}
-				$db->SQLupdate($PMonTables['onus'],$SQLset,['idonu' => $arr['idonu']]);
+				if(!empty($dataOnu['inface']))
+					$sqlupdate['inface'] = $dataOnu['inface'];				
+				if(!empty($dataOnu['reason']))
+					$sqlupdate['reason'] = $this->reason($dataOnu['reason']);	
+				if(!empty($dataOnu['keyport'])){
+					#$sqlupdate['portolt'] = $dataOnu['keyport'];
+					$sqlupdate['zte_idport'] = $dataOnu['keyport'];
+				}
+				$db->SQLupdate($PMonTables['onus'],$sqlupdate,['idonu' => $arr['idonu']]);
 			}else{				
 				$SQLinsert = array('sw_shelf' => $mat[1],'sw_slot' => $mat[2],'sw_port' => $mat[3],'olt' => $dataOnu['id'],'updates' => $this->now,'added' => $this->now, ($statusONU==1?'online':'offline') => $this->now,'rating' => 1,'keyonu' => $dataOnu['keyonu'],'status' => $statusONU,'mac' => $dataOnu['mac'],'inface' => $dataOnu['inface'],'dist' => (!empty($dataOnu['dist']) ? $dataOnu['dist'] : 0),'reason' => (!empty($dataOnu['reason']) ? $this->reason($dataOnu['reason']) : ''),'type' => $dataOnu['pon'],'cron' => 1);
 				$db->SQLinsert($PMonTables['onus'],$SQLinsert);

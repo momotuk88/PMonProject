@@ -234,10 +234,8 @@ class DB{
     }
     private function parserRe($text) {
 		$text = str_replace('""','',$text);	
-		$text = str_replace('"','',$text);	
-		$text = str_replace("'",'',$text);	
 		$text = str_replace("''",'',$text);
-		$quotes = array("\x60", "union", "select", "SELECT", "UNION", "\t", "\n", "\r", ",", ";", "[", "]", "{", "}", "=", "*", "^", "%", "$", "<", ">" , "\n" , "script", "\'" );
+		$quotes = array("\x60", "union", "select", "script", "SELECT", "LEFT", "UNION", "\t", "\n", "\r", "=", "*", "^", "%", "$", "<", ">" , "\n" , "script", "\'" );
 		$text = str_replace($quotes,'',$text);
 		return $text;
 	}

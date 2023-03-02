@@ -53,14 +53,6 @@ if($USER['class']>=6 && strtotime($dataSwitch['updates']) < strtotime(date('Y-m-
 }
 $panel .='<div id="noregonu"></div>';
 $panel .='</div>';
-if(!empty($dataSwitch['username']) && $USER['class']>=6 && $dataSwitch['oidid']==1){
-#$panel .='<div class="telnet_device">';
-// список всіх VLAN BDCOM
-#$panel .='<span onclick="ajaxcmd(2,'.$id.')">'.$lang['listvlan'].'</span>';
-#$panel .='<span onclick="ajaxcmd(7,'.$id.')">Перезавантажити OLT</span>';
-#$panel .='<span onclick="ajaxcmd(8,'.$id.')">'.$lang['savecfg'].'</span>';
-#$panel .='</div>';
-}
 /*
 	Get list port
 */
@@ -115,12 +107,18 @@ if(!$page){
 			});
 			$tplRes .='<div class="connect-list-head"><h2>PON</h2></div><div class="list_pon">';
 			foreach($SQLPon as $PortData => $Pon){
-				$SQLbadonu = $db->SimpleWhile("SELECT idonu FROM onus WHERE rx BETWEEN '-".$config['badsignalstart']."' AND '-".$config['badsignalend']."' AND olt = ".$id." AND portolt = ".$Pon['sfpid']);
-				$SQLbadonu = count($SQLbadonu);
+				$sqlbasignal = $db->SimpleWhile("SELECT idonu FROM onus WHERE rx BETWEEN '-".$config['badsignalstart']."' AND '-".$config['badsignalend']."' AND olt = ".$id." AND portolt = ".$Pon['sfpid']);
+				$sqlbasignal = count($sqlbasignal);
+				$sqlnewonutoday = $db->SimpleWhile('SELECT idonu FROM `onus` WHERE added  >= curdate() AND olt = '.$id.' AND portolt = '.$Pon['sfpid']);
 				$tplRes .='<div class="style_pon"><a href="'.$config['url'].'/?do=terminal&id='.$id.'&port='.$Pon['id'].'" class="sc-psedN fLDHlO"></a>';			
-				$tplRes .='<div class="sc-qQWDO frpbEt"><img src="../style/img/pon.png" style="max-width: 36px;">';
-				if(!empty($Pon['count']))				
-					$tplRes .='<span class="pon_support'.$Pon['support'].'">'.$Pon['count'].'</span>'; //	'.$Pon['support'].' - щоб показувало скільки можна
+				$tplRes .='<div class="sc-qQWDO frpbEt"><img src="../style/img/pon.png" style="max-width:36px;">';
+				if(!empty($Pon['count'])){	
+					$counttoday = count($sqlnewonutoday);				
+					$tplRes .='<span class="pon_support'.$Pon['support'].'">'.$Pon['count'].'</span>';
+					if($counttoday){
+						$tplRes .='<span class="todayport">+'.$counttoday.'</span>';
+					}
+				}
 				$tplRes .='</div><div class="sc-qZtVr brvuoL">'.$Pon['pon'].'';
 				if(!empty($dataPon[$id][$Pon['sfpid']]['descr'])){
 					$tplRes .='<span class="olt-descr-pon">'.$dataPon[$id][$Pon['sfpid']]['descr'].'</span>';	
@@ -130,8 +128,10 @@ if(!$page){
 				$tplRes .='<div class="dropdown-content">';
 				$tplRes .='<div class="poptech"><span class="lang">'.$lang['dilen'].'</span><span class="types">1:'.$Pon['support'].'</span></div>';
 				$tplRes .='<div class="poptech"><span class="lang">'.$lang['sfpconn'].'</span><span class="types"> '.$Pon['count'].'</span></div>';
-				if($SQLbadonu)
-					$tplRes .='<div class="poptech"><span class="lang-red">'.$lang['portbadrx'].'</span><span class="types"> '.$SQLbadonu.'</span></div>';
+				if($counttoday)
+					$tplRes .='<div class="poptech"><span class="lang">'.$lang['newonuday'].'</span><span class="types"> '.$counttoday.'</span></div>';
+				if($sqlbasignal)
+					$tplRes .='<div class="poptech"><span class="lang-red">'.$lang['portbadrx'].'</span><span class="types"> '.$sqlbasignal.'</span></div>';
 				$tplRes .='</div></div></div>';
 			}
 			$tplRes .='</div>';
@@ -316,7 +316,7 @@ $tpl->set('{countport}',($SQLPon?'<span><img src="../style/img/port.png" style="
 $tpl->set('{sn}',($dataSwitch['sn']?'<span><img src="../style/img/code.png">'.$lang['serial'].'<b>'.$dataSwitch['sn'].'</b></span>':''));
 $tpl->set('{mac}',($dataSwitch['mac']?'<span><img src="../style/img/mac.png">MAC<b>'.$dataSwitch['mac'].'</b></span>':''));
 $tpl->set('{interval}',($dataSwitch['typecheck']?'<span><img src="../style/img/checker.png">'.$lang['timeinterval'].':<b>'.$lang[$dataSwitch['typecheck']].'</b></span>':''));
-$tpl->set('{updates}',($dataSwitch['updates']?'<span><img src="../style/img/on-time.png">'.$lang['timecheck'].':<b>'.$dataSwitch['updates'].'</b>'.(!empty($dataSwitch['timecheck'])?$dataSwitch['timecheck'].'sec':'').'</span>':''));
+$tpl->set('{updates}',($dataSwitch['updates']?'<span><img src="../style/img/on-time.png">'.$lang['timecheck'].':<b>'.$dataSwitch['updates'].'</b></span>':''));
 $tpl->set('{updates_port}',($dataSwitch['updates_port']?'<span><img src="../style/img/on-time.png">'.$lang['timecheckport'].':<b>'.$dataSwitch['updates_port'].'</b></span>':''));
 $tpl->set('{updates_rx}',($dataSwitch['updates_rx']?'<span><img src="../style/img/on-time.png">'.$lang['timecheckrx'].':<b>'.$dataSwitch['updates_rx'].'</b></span>':''));
 $tpl->set('{timecheck}',($dataSwitch['timecheck']?'<span><img src="../style/img/on-time.png">'.$lang['timework'].':<b>'.$dataSwitch['timecheck'].'</b> '.$lang['sec'].'</span>':''));

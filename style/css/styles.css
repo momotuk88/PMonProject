@@ -4,6 +4,103 @@ html {
     font-size: 14px;
     line-height: 1.6;
 }
+/*MAP*/
+.hide{
+  display:none;
+}
+.marker_panel{
+  position: fixed;
+}
+.todayport {
+    position: absolute;
+    background: #ffe21e;
+    color: #222;
+    font-size: 11px;
+    line-height: 11px;
+    font-weight: 600;
+    padding: 2px 3px;
+    z-index: 999;
+    left: 14px;
+    top: 19px;
+    border-radius: 3px;
+}
+.panelmap span:hover {
+    cursor: pointer;
+    background: #fff;
+	border: 1px solid tomato;
+}
+.panelmap span {
+    border: 1px solid #fff;
+    width: 100%;
+    margin: 0 10px 0 0;
+    padding: 3px 10px 3px 4px;
+    background: #fff;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    transition: all 0.3s cubic-bezier(0.26, 0.46, 0.45, 0.95) 0s;
+    font-size: 13px;
+    align-items: center;
+}
+.panelmap span img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    padding: 2px;
+}
+.panelmap b a{
+    font-weight: 600;
+    color: #6472ab;
+}
+.panelmap {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-width: 600px;
+    text-align: center;
+}
+.ponmap-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.ponmap-dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+.ponmap-dropdown:hover .ponmap-dropdown-content {display: block;}
+.ponmap-dropdown:hover .ponmap-dropbtn {
+    background-color: #fff;
+    cursor: pointer;
+    box-shadow: 0px 8px 7px 0px rgb(0 0 0 / 20%);
+}
+.ponmap-dropbtn {
+    background-color: #ffffff;
+    color: #6d87b7;
+    padding: 3px 15px 3px 15px;
+    border-radius: 3px;
+    min-width: 70px;
+    height: 36px;
+    line-height: 29px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 15px 5px 0px;
+}
+.panelmap .ponmap-dropdown .ponmap-dropbtn img {
+    position: relative;
+    vertical-align: middle;
+    margin-right: 5px;
+    height: 30px;
+}
+.ponmap-dropdown-content-flex {
+    display: flex;
+}
+/*MAP*/
 .purple:nth-child(even) {
     background: #9bacb605;
 }
@@ -18,6 +115,9 @@ html {
     padding: 5px 10px;
     border-radius: 3px;
     color: #8484b8;
+}
+.today{
+	
 }
 .todayonu{
     position: relative;
@@ -4880,8 +4980,21 @@ a:hover, a:focus {
     margin-left: 0px;
     top: 10px;
 }  
+#page_seacrh .onustoday {
+    border-left: 2px solid #34dc34;
+}
+#page_seacrh .onus{
+	    border-left: 2px solid #fff;
+}
+.main-user span{
+    font-size: 12px;
+    color: #7aafcc;
+    text-decoration: underline;
+    margin: 0 5px;
+}
 .main-user h2 {
     font-size: 13px;
+    margin: 0 10px 0 5px;
 }
 .bl-all {
 
@@ -6219,6 +6332,20 @@ a.olt-setup {
     background: linear-gradient(45deg,#f8fafb 10%,#eaf5ff3b 100%);
     color: #5a6698;
     border-radius: 3px;
+    margin-bottom: 5px;
+}
+.mappanel:hover{
+    opacity: 1;	
+}
+.mappanel {
+	transition: background 0.5s, border 0.5s, border-radius 0.5s, box-shadow 0.5s;
+    position: absolute;
+    z-index: 999;
+    background: #fff;
+    top: 20px;
+    padding: 8px 10px 0px 10px;
+    border-radius: 3px;
+    opacity: 0.6;
 }
 .inf_display i {
     margin-right: 10px;
@@ -6369,15 +6496,14 @@ a.olt-setup {
     align-content: flex-start;
     justify-content: flex-start;
     align-items: flex-start;
-    border: 1px solid #909ca554;
     width: auto;
-    padding: 5px;
-    margin: 5px;
+    padding: 0px;
+    margin: 0px;
     background: #fff;
     border-radius: 4px;
 }
 .pon-tree:hover{
-    border: 1px solid #b8dfe8;
+    border: 0px solid #b8dfe8;
     border-radius: 3px;	
 }
 .pon-tree {
@@ -6390,7 +6516,7 @@ a.olt-setup {
     justify-content: flex-start;
     align-items: center;
     margin: 3px 0px 3px 5px;
-    border: 1px solid #fff;
+    border: 0px solid #fff;
     border-radius: 3px;
 }
 .pon-tree .name-tree {
@@ -6413,7 +6539,7 @@ a.olt-setup {
 	width: 32px;
 }
 .pon-tree .name-tree .sub-port-tree b {
-    background: #e84e6d;
+    background: #369add;
     color: #fff;
     font-size: 11px;
     font-weight: 300;

@@ -3,6 +3,7 @@ define('AJAX',true);
 define('ROOT_DIR',substr( dirname( __FILE__),0,-5));
 define('ENGINE_DIR',ROOT_DIR.'/inc/');	
 require_once ENGINE_DIR.'ajax.php';
+$inf = '';
 if($_POST['id']){
 	$id = isset($_POST['id']) ? Clean::int($_POST['id']): null;
 	if($id){
@@ -47,8 +48,8 @@ if($_POST['id']){
 		}
 		/// BDCOM, CDATA
 		if(!empty($switch['id'])){
-			$inf = '';
-			if($switch['oidid']==3 || $switch['oidid']==12 || $switch['oidid']==5 || $switch['oidid']==2 || $switch['oidid']==13 || $switch['oidid']==15 || $switch['oidid']==1  || $switch['oidid']==14 ){
+			if($switch['oidid']==3 || $switch['oidid']==12 || $switch['oidid']==5 || $switch['oidid']==2 
+			|| $switch['oidid']==13 || $switch['oidid']==15 || $switch['oidid']==1  || $switch['oidid']==14 ){
 				$res_snmp = get_curl_api(array('do' => 'device','id' => $id), true, 10);
 				if(is_array($res_snmp)){
 					if(is_array($res_snmp['result'])){
@@ -70,10 +71,6 @@ if($_POST['id']){
 				}
 			}
 		}
-		// not registered ZTE
-		if($switch['oidid']==7 && $resNoRegOnu){
-			echo'<a class="urlnoregonu" href="/?do=regonu&id='.$switch['id'].'"><div class="not_registered"><span>Список не зареєстрованих onu</span></div></a>';
-		}		
 		// HUAWEI
 		if($switch['oidid']==14){
 			@$temp1 = snmp2_get($switch['netip'],$switch['snmpro'],'1.3.6.1.4.1.2011.6.2.1.3.1.1.1.0');
@@ -119,4 +116,5 @@ if($_POST['id']){
 		}
 	}
 }
+?>
 

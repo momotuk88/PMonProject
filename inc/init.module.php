@@ -36,9 +36,9 @@ switch($do){
 		$auth->isLoggedLogin();		
 		require MODULE.'graphping.php';	
 	break;		
-	case 'regonu':
+	case 'master':
 		$auth->isLoggedLogin();		
-		require MODULE.'regonu.php';	
+		require MODULE.'master.php';	
 	break;	
 	case 'users':
 		$auth->isLoggedLogin();		
@@ -107,10 +107,6 @@ switch($do){
 		$auth->isLoggedLogin();	
 		require MODULE.'add.php';	
 	break;		
-	case 'map':	
-		$auth->isLoggedLogin();	
-		require MODULE.'map.php';	
-	break;		
 	case 'oid':	
 		$auth->isLoggedLogin();	
 		require MODULE.'oid.php';	
@@ -125,15 +121,6 @@ switch($do){
 			require ENGINE_DIR.'functions/sklad.php';
 			require MODULE.'sklad.php';
 		}			
-	break;	
-	case 'pon':	
-		$auth->isLoggedLogin();	
-		if($config['pon']=='on'){
-			require ENGINE_DIR.'functions/pon.php';
-			require MODULE.'pon.php';
-		}else{
-			
-		}		
 	break;	
 	default:
 		$auth->isLoggedLogin();		

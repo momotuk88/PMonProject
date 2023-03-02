@@ -47,16 +47,16 @@ if($supportonu && !$tempdata){
 }
 if($supportonu && is_array($tempdata)){
 	foreach($tempdata as $idont => $getdata){
-		$resapi = get_curl_api($getdata,true);
-		if(isset($resapi)){
-			$resarray[$idont] = array_merge($getdata, $resapi);
+		$result = get_curl_api($getdata,true);
+		if(isset($result)){
+			$tempresult[$idont] = array_merge($getdata, $result);
 		}else{
-			$resarray[$idont] = $getdata;
+			$tempresult[$idont] = $getdata;
 		}
-	}	
+	}
 	sleep(2);	
-	if(is_array($resarray)){
-		foreach($resarray as $getdataont){
+	if(is_array($tempresult)){
+		foreach($tempresult as $getdataont){
 			if($getdataont['pon']=='epon'){
 				$getmonitor->tempSaveEpon($getdataont);
 			}
@@ -101,7 +101,7 @@ if($supportport){
 	}
 }
 sleep(2);
-if(is_array($resarray))
+if(is_array($tempresult))
 	$getmonitor->UpdateInformationOlt();
 if(!empty($getswitch['id'])){
 	$executionTime = (int)microtime(true) - $starttime;

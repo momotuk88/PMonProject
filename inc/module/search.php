@@ -14,6 +14,7 @@ $sqlonus = $sqlonus ?? null;
 $select_dist = $select_dist ?? null;
 $select_search = $select_search ?? null;
 $select_pon = $select_pon ?? null;
+$selectcurday = $selectcurday ?? null;
 $select_signal = $select_signal ?? null;
 $select_onlyactive = $select_onlyactive ?? null;
 if(isset($_GET['act']) && $_GET['act']=='search'){
@@ -28,6 +29,7 @@ $select_pon = (isset($_GET['selectpon']) ? checkSearch($_GET['selectpon']) : nul
 $select_dist = (isset($_GET['selectdist']) ? checkSearch($_GET['selectdist']) : null); 
 $select_signal = (isset($_GET['selectsignal']) ? checkSearch($_GET['selectsignal']) : null); 
 $select_olt = (isset($_GET['selectolt']) ? checkSearch($_GET['selectolt']) : null); 
+$selectcurday = (isset($_GET['selectcurday']) ? Clean::text(trim(strip_tags(stripcslashes($_GET['selectcurday'])))) : null);
 if($select_search){
 	$where_data[] = " sn LIKE '%".$select_search."%' 
 	OR mac LIKE '%".$select_search."%' 
@@ -39,6 +41,9 @@ if($select_search){
 }
 if($select_olt){
 	$where_data[] = 'olt = '.(int)$select_olt;
+}
+if($selectcurday=='today'){
+	$where_data[] = ' added  >= curdate()';
 }
 if($select_pon=='epon'){
 	$where_data[] = "type = 'epon'";
@@ -154,8 +159,8 @@ if($sql_zaput_v_bazy){
 		if($count_get > 0)
 			$oldlink = $oldlink . "";
 		list($pagertop, $pagerbottom, $limit, $offset) = pager(30,count($sqlonusCount),'/?'.$oldlink);
-		$SQLLIMIT = $sql_zaput_v_bazy.' LIMIT '.$limit.','.$offset;
-		$sqlonus = $db->SimpleWhile($SQLLIMIT);
+		$get_sql_search = $sql_zaput_v_bazy.' LIMIT '.$limit.','.$offset;
+		$sqlonus = $db->SimpleWhile($get_sql_search);
 		$searchform_result .= '<div id="form_result">';
 		if(count($sqlonus)){
 			$searchform_result .= '<table cellspacing="0" cellpadding="3" width="100%" id="page_seacrh">';
@@ -163,7 +168,8 @@ if($sql_zaput_v_bazy){
 				$inface = $ont['type'].' '.$ont['inface'].'<br>'.($select_search ? highlight_word($ont['mac'].$ont['sn'],$select_search):$ont['mac'].$ont['sn']);
 				$searchform_result .= '<tr id="ont-'.$ont['idonu'].'">';
 				// olt
-				$searchform_result .= '<td class="device_icon '.($ont['status']==1?'green':'red').'"><div class="site-nav-dropdown-icon-container">';
+				$todayonu = checkWhenAdded($ont['added']);
+				$searchform_result .= '<td class="device_icon '.($ont['status']==1?'green':'red').' onus'.$todayonu.'"><div class="site-nav-dropdown-icon-container">';
 				if($ont['status']==1){
 					$searchform_result .= '<img src="../style/img/online.png">';
 				}else{

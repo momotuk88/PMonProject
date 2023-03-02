@@ -2,9 +2,10 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+$pmontime = date("Y-m-d H:i:s");
 $result = '';
 $metatags = array('title'=>'Project PMon4','description'=>'Project PMon4','page'=>'main');
-$userinf = '<div class="main-user"><h2>'.$lang['class_'.(!isset($USER['class'])?1:$USER['class'])].'</h2></div>';
+$userinf = '<div class="main-user"><h2>'.$lang['class_'.(!isset($USER['class'])?1:$USER['class'])].'</h2><img src="../style/img/on-time.png"><span>'.$pmontime.'</span></div>';
 $result .='<div class="mainblocksearch"><form id="form"><input type="hidden" name="do" value="search"><input type="hidden" name="act" value="search"><input class="query" type="search" id="query" name="search" placeholder="mac,sn,tag..." autocomplete="off"><button>'.$lang['lang_search'].'</button></form>'.$userinf.'</div>';
 $countall = $db->Multi($PMonTables['onus']);
 if(count($countall)){
@@ -12,7 +13,7 @@ if(count($countall)){
 	$result .='<div id="mainstats"><div class="blockstats">';
 	$sqlnewonutoday = $db->SimpleWhile('SELECT idonu FROM `'.$PMonTables['onus'].'` WHERE added  >= curdate()');
 	if(count($sqlnewonutoday)){
-		$result .='<a href="/?do=search&search=&selectolt=0&selectpon=all&selectdist=all&selectsignal=all&act=search" class="blockminstats space-x-3 transition-transform"><span class="blmsicon"><img src="../style/img/mainnew.png"></span><span class="blmscon"><span class="textmin">'.$lang['newonu'].'</span><span class="textmax" style="color:#41e541;">'.count($sqlnewonutoday).'</span></span></a>';
+		$result .='<a href="/?do=search&search=&selectcurday=today&selectpon=all&selectdist=all&selectsignal=all&act=search" class="blockminstats space-x-3 transition-transform"><span class="blmsicon"><img src="../style/img/mainnew.png"></span><span class="blmscon"><span class="textmin">'.$lang['newonu'].'</span><span class="textmax" style="color:#41e541;">'.count($sqlnewonutoday).'</span></span></a>';
 	}
 	$result .='<a href="/?do=search&search=&selectolt=0&selectpon=all&selectdist=all&selectsignal=all&act=search" class="blockminstats space-x-3 transition-transform"><span class="blmsicon"><img src="../style/img/mainall.png"></span><span class="blmscon"><span class="textmin">'.$lang['allonus'].'</span><span class="textmax">'.count($countall).'</span></span></a>';
 	if(count($countallonu)){
@@ -41,10 +42,12 @@ $switchid  = $switchid  ?? null;
 $switchid = (isset($_GET['switchid']) ? Clean::int($_GET['switchid']) : null);
 $result .='<div class="main-stats-tab">';
 foreach($checkLicenseSwitch as $deviceoid){
-	$result .='<a href="/?switchid='.$deviceoid['id'].'" class="'.($switchid==$deviceoid['id']?'tab-active':'tab-url').'">'.($deviceoid['ping']=='down'?'<i class="fi fi-rr-info" style="color: red;"></i>':'<i class="fi fi-rr-settings"></i>').''.$deviceoid['place'].'</a>';
+	if(strtotime($deviceoid['added']) < strtotime(date('Y-m-d H:i:s').' -30min')){
+		$result .='<a href="/?switchid='.$deviceoid['id'].'" class="'.($switchid==$deviceoid['id']?'tab-active':'tab-url').'">'.($deviceoid['ping']=='down'?'<i class="fi fi-rr-info" style="color: red;"></i>':'<i class="fi fi-rr-settings"></i>').''.$deviceoid['place'].'</a>';
+	}
 }
 $result .='</div>';
-if(is_numeric($switchid)){
+if($switchid){
 	$switchdata = $db->Fast('switch','*',['id'=>$switchid]);
 	if(!empty($switchdata['id'])){
 		$result .='<div class="card"><div class="mainblockadmin"><div class="block1">';

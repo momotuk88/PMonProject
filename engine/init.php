@@ -2,6 +2,7 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+
 require ROOT_DIR.'/inc/init.monitor.php';
 // removing terminals that are not tied to switches
 $getlistswitch = $db->Multi($PMonTables['switch'],'netip,id');

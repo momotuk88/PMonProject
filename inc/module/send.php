@@ -115,7 +115,9 @@ switch($act){
 				}
 			}
 			if(isset($_POST['countviewpageonu']))
-				$getDataSql['countviewpageonu'] = Clean::int($_POST['countviewpageonu']);
+				$getDataSql['countviewpageonu'] = Clean::int($_POST['countviewpageonu']);			
+			if(isset($_POST['countviewpageswitch']))
+				$getDataSql['countviewpageswitch'] = Clean::int($_POST['countviewpageswitch']);
 			foreach($config as $val => $data_config){
 				if(!empty($getDataSql[$val]) && $getDataSql[$val]!==$config[$val]){
 					$db->SQLupdate('config',['value'=>$getDataSql[$val],'update'=>$time],['name'=>$val]);
@@ -276,7 +278,7 @@ switch($act){
 		}
 		$go->redirect('users');	
 	break;	
-	case 'markponbox':	// додамє координати понбокса
+	case 'markponbox':	// додаєм координати для понбокса
 		if(!empty($USER['class']) && $USER['class']>=4){
 			if(isset($_POST['unit'])){
 				$getWhereSql['id'] = Clean::int($_POST['unit']);

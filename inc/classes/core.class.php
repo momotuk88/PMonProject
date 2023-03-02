@@ -36,6 +36,9 @@ class Monitor{
 				break;	
 				case 'cdataf1616sn':
 					return new CDATA_1616sn($id, $oiddevice);				
+				break;				
+				case 'cdatafd1608':
+					return new CDATA_1608sn($id, $oiddevice);				
 				break;	
 				case 'cdata1208sr2dap':
 					return new CDATA_1208sr2dap($id, $oiddevice);
@@ -45,6 +48,9 @@ class Monitor{
 				break;			
 				case 'cdata1108':
 					return new CDATA_1108($id,$oiddevice);
+				break;				
+				case 'planet2424':
+					return new Planet2424($id,$oiddevice);
 				break;
 				default:
 					die('not support');

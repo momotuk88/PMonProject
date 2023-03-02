@@ -5,20 +5,20 @@ if (!defined('PONMONITOR')){
 $id = isset($_GET['id']) ? Clean::int($_GET['id']) : null;
 if(!$id)
 	$go->redirect('main');	
-$dataONT = $db->Fast('onus','*',['idonu'=>$id]);
-$metatags = array('title'=>$dataONT['type'].' '.$dataONT['inface'].' '.$lang['pt_onu'],'description'=>$lang['pd_onu'],'page'=>'onu');
-if(!$dataONT['idonu'])
+$dataonu = $db->Fast('onus','*',['idonu'=>$id]);
+$metatags = array('title'=>$dataonu['type'].' '.$dataonu['inface'].' '.$lang['pt_onu'],'description'=>$lang['pd_onu'],'page'=>'onu');
+if(!$dataonu['idonu'])
 	$go->redirect('main');	
-$dataOLT = $db->Fast('switch','*',['id'=>$dataONT['olt']]);
-if(!$dataOLT['id'])
+$dataolt = $db->Fast('switch','*',['id'=>$dataonu['olt']]);
+if(!$dataolt['id'])
 	$go->redirect('main');	
 if($config['tag']=='on'){
-	if($dataONT['tag']){
+	if($dataonu['tag']){
 		$tpl->load_template('onu/edittag.tpl');
 		$tpl->set('{id}',$id);
 		$tpl->set('{edit}',$lang['edit']);
 		$tpl->set('{marker}',$lang['marker']);
-		$tpl->set('{tag}',$dataONT['tag']);
+		$tpl->set('{tag}',$dataonu['tag']);
 		$tpl->compile('tag');
 		$tpl->clear();	
 	}else{
@@ -31,12 +31,12 @@ if($config['tag']=='on'){
 	}
 }
 if($config['billing']=='on'){
-	if($dataONT['uid']){
+	if($dataonu['uid']){
 		$tpl->load_template('onu/editbilling.tpl');
 		$tpl->set('{id}',$id);
 		$tpl->set('{dogovor}',$lang['dogovor']);
 		$tpl->set('{edit}',$lang['edit']);
-		$tpl->set('{uid}',$dataONT['uid']);
+		$tpl->set('{uid}',$dataonu['uid']);
 		$tpl->compile('billing');
 		$tpl->clear();	
 	}else{
@@ -49,7 +49,7 @@ if($config['billing']=='on'){
 	}
 }
 if($config['comment']=='on'){
-	if($dataONT['comments']){
+	if($dataonu['comments']){
 		$tpl->load_template('onu/editcomm.tpl');
 		$tpl->set('{id}',$id);
 		$tpl->set('{save}',$lang['save']);
@@ -69,13 +69,13 @@ $dataMonONT = $db->Fast('monitoronu','*',['idonu'=>$id]);
 if(!empty($dataMonONT['id'])){
 	$monitoronu = '<span class="monitoronus"><div class="blob"></div>'.$lang['m'].'</span>';
 }
-$logonu = ListOnuLog($dataONT['idonu'],$dataOLT['id']);
+$logonu = ListOnuLog($dataonu['idonu'],$dataolt['id']);
 $tpl->load_template('onu/main.tpl');
 $tpl->set('{id}',$id);
-if(!empty($dataONT['mac']))
-	$serialonu = '<span class="n">MAC</span><span class="m">'.$dataONT['mac'].'</span>';
-if(!empty($dataONT['sn']))
-	$serialonu = '<span class="n">SN</span><span class="m">'.$dataONT['sn'].'</span>';
+if(!empty($dataonu['mac']))
+	$serialonu = '<span class="n">MAC</span><span class="m">'.$dataonu['mac'].'</span>';
+if(!empty($dataonu['sn']))
+	$serialonu = '<span class="n">SN</span><span class="m">'.$dataonu['sn'].'</span>';
 $checkONU = $db->Fast($PMonTables['mononu'],'*',['idonu'=>$id]);
 if(!empty($checkONU['id'])){
 	$addmonitor = '<span class="delmonitor" onclick="ajaxcore(\'delmonitor\',\''.$id.'\');">'.$lang['mdel'].'</span>';
@@ -89,26 +89,26 @@ $tpl->set('{tag}',isset($tpl->result['tag']) ? $tpl->result['tag'] : '');
 $tpl->set('{billing}',isset($tpl->result['billing']) ? $tpl->result['billing'] : '');
 $tpl->set('{logonu}',$logonu);
 $tpl->set('{langcountonu}',$lang['langcountonu']);
-$tpl->set('{olt_id}',$dataOLT['id']);
-$tpl->set('{inface_ont}',mb_strtoupper(trim($dataONT['type']).' '.$dataONT['inface']));
-$tpl->set('{olt_place}',$dataOLT['place']);
-$tpl->set('{olt_updates}',$dataOLT['updates']);
-$tpl->set('{type_ont}',$dataONT['type']);
-$tpl->set('{inface}',$dataONT['inface']);
+$tpl->set('{olt_id}',$dataolt['id']);
+$tpl->set('{inface_ont}',mb_strtoupper(trim($dataonu['type']).' '.$dataonu['inface']));
+$tpl->set('{olt_place}',$dataolt['place']);
+$tpl->set('{olt_updates}',$dataolt['updates']);
+$tpl->set('{type_ont}',$dataonu['type']);
+$tpl->set('{inface}',$dataonu['inface']);
 $tpl->set('{subinfoolt}','');
 $tpl->set('{olt}',$lang['olt']);
-$dataONTPort = $db->Fast('switch_pon','*',['sfpid'=>$dataONT['portolt'],'oltid'=>$dataONT['olt']]);
-$tpl->set('{port_id}',$dataONTPort['id']);
-$tpl->set('{countonuport}',$dataONTPort['count']);
-$tpl->set('{supportonuport}',$dataONTPort['support']);
+$dataonuPort = $db->Fast('switch_pon','*',['sfpid'=>$dataonu['portolt'],'oltid'=>$dataonu['olt']]);
+$tpl->set('{port_id}',$dataonuPort['id']);
+$tpl->set('{countonuport}',$dataonuPort['count']);
+$tpl->set('{supportonuport}',$dataonuPort['support']);
 $tpl->set('{supportcountonu}',$lang['supportcountonu']);
 $tpl->set('{model}',$lang['model']);
 $tpl->set('{port}',$lang['port']);
 $tpl->set('{uptimeolt}',$lang['uptimeolt']);
-$tpl->set('{netip}',($USER['class']>=4?($config['viewipswitch']=='on'?'<div class="olt-data"><span class="name">IP:</span><span class="data">'.$dataOLT['netip'].'</span></div>':''):''));
-$tpl->set('{olt_model}',trim($dataOLT['inf']).' '.$dataOLT['model']);
-$tpl->set('{olt_port_ont}',mb_strtoupper($dataONT['type'].' '.cl_inface($dataONT['inface'])));
-$tpl->set('{olt_uptime}',($dataOLT['uptime']?$dataOLT['uptime']:'---'));
+$tpl->set('{netip}',($USER['class']>=4?($config['viewipswitch']=='on'?'<div class="olt-data"><span class="name">IP:</span><span class="data">'.$dataolt['netip'].'</span></div>':''):''));
+$tpl->set('{olt_model}',trim($dataolt['inf']).' '.$dataolt['model']);
+$tpl->set('{olt_port_ont}',mb_strtoupper($dataonu['type'].' '.cl_inface($dataonu['inface'])));
+$tpl->set('{olt_uptime}',($dataolt['uptime']?$dataolt['uptime']:'---'));
 $tpl->set('{telnet}',$addmonitor);
 $tpl->compile('content');
 $tpl->clear();

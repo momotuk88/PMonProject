@@ -17,7 +17,7 @@ $tpl->set('{id}',$id);
 $select = $db->SimpleWhile('SELECT * FROM `'.$PMonTables['historyrx'].'` WHERE onu = '.$id.' ORDER BY datetime ASC');
 if(count($select)){
 	foreach($select as $arr){
-		$js_array .= '['.(strtotime($arr['datetime'])*1000).','.$arr['signal'].'],';
+		$js_array .= '['.(strtotime($arr['datetime'].' + 2 hour')*1000).','.$arr['signal'].'],';
 	}
 	$js_array_full = trim($js_array, ',');
 }
