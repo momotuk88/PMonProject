@@ -27,7 +27,8 @@
 				<div class="olt-data"><span class="name">{langcountonu}:</span><span class="data">{countonuport}</span></div>					
 			</div>
 		</div>		
-		<div class="ont-base">{billing}{tag}{logonu}</div>
+		<div id="ajax-billing"></div>		
+		<div class="ont-base">{billing}{tag}{comments}{logonu}</div>
 	</div>
 </div>	
 <div id="ont-{id}"></div>
@@ -35,4 +36,5 @@
 <script type="text/javascript">
 ajaxont({id});
 ajaxpanel({id});
+{ajaxbilling}
 </script>

@@ -12,7 +12,15 @@ class PHPTelnet {
 
 	var $conn1;
 	var $conn2;
-	
+	function parse_ip_port($address) {
+		$port = 23; 
+		if (strpos($address, ":") !== false) {
+			list($ip, $port) = explode(":", $address);
+		} else {
+			$ip = $address;
+		}
+		return array('ip' => $ip, 'port' => $port);
+	}
 	/*
 	0 = success
 	1 = couldn't open network connection
@@ -33,35 +41,23 @@ class PHPTelnet {
 				$this->ConnectError(4);
 				return 4;
 			}
-		}
-		
-		$this->Disconnect();
-		
-		if (strlen($server)) {
-			if (preg_match('/[^0-9.]/',$server)) {
-				$ip=gethostbyname($server);
-				if ($ip==$server) {
-					$ip='';
-					$rv=2;
-				}
-			} else $ip=$server;
-		} else $ip='127.0.0.1';
-		
-		if (strlen($ip)) {
-			if ($this->fp=fsockopen($ip,23)) {
-				fputs($this->fp,$this->conn1);
-				$this->Sleep(1);
-				
-				fputs($this->fp,$this->conn2);
+		}		
+		$this->Disconnect();		
+		if (strlen($server)){
+			$ips = $this->parse_ip_port($server);
+		} 
+		if (!empty($ips['ip'])) {			
+			if ($this->fp=fsockopen($ips['ip'],$ips['port'])) {
+				fwrite($this->fp,$this->conn1);
+				$this->Sleep(1);				
+				fwrite($this->fp,$this->conn2);
 				$this->Sleep(1);
 				$this->GetResponse($r);
 				$r=explode("\n",$r);
 				$this->loginprompt=$r[count($r)-1];
-
-				fputs($this->fp,"$user\r");
+				fwrite($this->fp,"$user\r");
 				$this->Sleep(1);
-
-				fputs($this->fp,"$pass\r");
+				fwrite($this->fp,"$pass\r");
 				if ($this->use_usleep) usleep($this->loginsleeptime);
 				else sleep(1);
 				$this->GetResponse($r);
@@ -71,12 +67,10 @@ class PHPTelnet {
 					$this->Disconnect();
 				}
 			} else $rv=1;
-		}
-		
+		}		
 		if ($rv) $this->ConnectError($rv);
 		return $rv;
 	}
-	
 	function Disconnect($exit=1) {
 		if ($this->fp) {
 			if ($exit) $this->DoCommand('exit',$junk);
@@ -84,31 +78,26 @@ class PHPTelnet {
 			$this->fp=NULL;
 		}
 	}
-
 	function DoCommand($c,&$r) {
 		if ($this->fp) {
-			fputs($this->fp,"$c\r");
+			fwrite($this->fp,"$c\r");
 			$this->Sleep();
 			$this->GetResponse($r);
 			$r=preg_replace("/^.*?\n(.*)\n[^\n]*$/","$1",$r);
 		}
 		return $this->fp?1:0;
-	}
-	
+	}	
 	function GetResponse(&$r) {
 		$r='';
 		do { 
 			$r.=fread($this->fp,1000);
-			$s=socket_get_status($this->fp);
-		} while ($s['unread_bytes']);
-	}
-	
+			$meta = stream_get_meta_data($this->fp);
+		} while ($meta['unread_bytes']);
+	}	
 	function Sleep() {
 		if ($this->use_usleep) usleep($this->sleeptime);
 		else sleep(1);
 	}
-
-	//function PHPTelnet() {
 	function __construct() {
 		$this->conn1=chr(0xFF).chr(0xFB).chr(0x1F).chr(0xFF).chr(0xFB).
 			chr(0x20).chr(0xFF).chr(0xFB).chr(0x18).chr(0xFF).chr(0xFB).
@@ -125,7 +114,6 @@ class PHPTelnet {
 		$this->conn2=chr(0xFF).chr(0xFC).chr(0x01).chr(0xFF).chr(0xFC).
 			chr(0x22).chr(0xFF).chr(0xFE).chr(0x05).chr(0xFF).chr(0xFC).chr(0x21);
 	}
-
 	function ConnectError($num) {
 		if ($this->show_connect_error) switch ($num) {
 		case 1: echo '<br />[PHP Telnet] <a href="http://www.geckotribe.com/php-telnet/errors/fsockopen.php">Connect failed: Unable to open network connection</a><br />'; break;

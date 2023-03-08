@@ -29,8 +29,9 @@ $metatags = array('title'=>$lang['pt_detail'].' '.$dataSwitch['place'],'descript
 	Panel control
 */
 $panel ='<div class="moder-panel">';
-if(count($SQLcountONUTemp) && $dataSwitch['device']=='olt')
+if(count($SQLcountONUTemp) && $dataSwitch['device']=='olt' && $USER['class']>=4){
 	$panel .='<a href="'.$config['url'].'/?do=terminal&id='.$id.'"><img src="../style/img/m1.png">'.$lang['btn_olt_allonu'].'</a>';
+}
 if($dataSwitch['connect']=='yes' && $USER['class']>=4)
 	$panel .='<a href="'.$config['url'].'/?do=detail&act='.$dataSwitch['device'].'&page=connect&id='.$id.'"><img src="../style/img/addconnect.png">'.$lang['btn_olt_allconn'].'</a>';
 if(!empty($USER['class']) && $USER['class']>=6){
@@ -106,6 +107,9 @@ if(!$page){
 				return ($a['sort'] - $b['sort']);
 			});
 			$tplRes .='<div class="connect-list-head"><h2>PON</h2></div><div class="list_pon">';
+			if(count($SQLcountONUTemp) && $dataSwitch['device']=='olt' && $USER['class']<=4){
+				$tplRes .='<div class="style_pon"><a href="/?do=terminal&id='.$id.'" class="sc-psedN fLDHlO"></a><div class="sc-qQWDO frpbEt"><img src="../style/img/pon/onu.png" class="pon-onu"></div><div class="sc-qZtVr brvuoL">ONU <span class="olt-count">'.count($SQLcountONUTemp).'</span></div></div>';
+			}
 			foreach($SQLPon as $PortData => $Pon){
 				$sqlbasignal = $db->SimpleWhile("SELECT idonu FROM onus WHERE rx BETWEEN '-".$config['badsignalstart']."' AND '-".$config['badsignalend']."' AND olt = ".$id." AND portolt = ".$Pon['sfpid']);
 				$sqlbasignal = count($sqlbasignal);
@@ -147,21 +151,21 @@ if(!$page){
 	}
 }
 /// OLT + SWITCH
-if($page=='photo' && $dataSwitch['gallery']=='yes'){
-	$SQLSwPhoto = $db->Multi('switch_photo','*',['deviceid'=>$id]);
-	$tplRes .='<div class="gallery-btn"><div onclick="ajaxaddphoto('.$id.')"><i class="fi fi-rr-picture"></i>'.$lang['addphoto'].'</div></div>';
-	if(count($SQLSwPhoto)){
-		$tplRes .='<div class="gallery">';
-		foreach($SQLSwPhoto as $PhotoData){
-			$tplRes .='<div class="photo" onclick="ajaxviewphoto('.$PhotoData['id'].')">';			
-				$tplRes .='<div class="img"><img src="../file/photo/'.$PhotoData['photo'].'"></div>';
-				$tplRes .='<div class="name"><div class="date">'.$PhotoData['added'].'</div><h2>'.$PhotoData['name'].'</h2></div>';
-			$tplRes .='</div>';			
-		}
-		$tplRes .='</div>';
-	}else{
-		$tplRes .='<div class="empty_connect"><i class="fi fi-rr-comment-info"></i>'.$lang['empty'].'</div>';
-	}
+if ($page === 'photo' && $dataSwitch['gallery'] === 'yes') {
+    $SQLSwPhoto = $db->Multi('switch_photo', '*', ['deviceid' => $id]);
+    $tplRes .= '<div class="gallery-btn"><div onclick="ajaxaddphoto(' . $id . ')"><i class="fi fi-rr-picture"></i>' . $lang['addphoto'] . '</div></div>';
+    if (count($SQLSwPhoto)) {
+        $tplRes .= '<div class="gallery">';
+        foreach ($SQLSwPhoto as $PhotoData) {
+            $tplRes .= '<div class="photo" onclick="ajaxviewphoto(' . $PhotoData['id'] . ')">';
+            $tplRes .= '<div class="img"><img src="../file/photo/' . $PhotoData['photo'] . '"></div>';
+            $tplRes .= '<div class="name"><div class="date">' . $PhotoData['added'] . '</div><h2>' . $PhotoData['name'] . '</h2></div>';
+            $tplRes .= '</div>';
+        }
+        $tplRes .= '</div>';
+    } else {
+        $tplRes .= '<div class="empty_connect"><i class="fi fi-rr-comment-info"></i>' . $lang['empty'] . '</div>';
+    }
 }
 /// OLT + SWITCH
 if($page=='monitoring' && $dataSwitch['monitor']=='yes'){
@@ -206,21 +210,11 @@ if($page=='connect' && $dataSwitch['connect']=='yes'){
 					$tplRes .='<a href="/?do=terminal&id='.$id.'&port='.$PonInf['id'].'">';
 				}
 				$tplRes .='<h2>'.$port['name'].'';
-				#if($port['sms']=='yes')
-				#	$tplRes .='<div class="m2_inf"><i class="fi fi-rr-envelope"></i></div>';
-				#if($port['monitor']=='yes')
-				#	$tplRes .='<div class="m1_inf"><i class="fi fi-rr-exclamation"></i></div>';
-				#if($port['error']=='yes')
-				#	$tplRes .='<div class="m3_inf"><i class="fi fi-rr-bolt"></i></div>';
-				#if($port['monitor']=='yes')
-				#	$tplRes .='<div class="m4_inf"><i class="fi fi-rr-clock"></i>'.$port['updates'].'</div>';
-				$tplRes .='</h2>';
+				$tplRes .='</h2><div id="traffic-'.$port['id'].'"></div>';
 				if (preg_match("/PON/i",$port['typeport']) || preg_match("/pon/i",$port['typeport'])) {
 					$tplRes .='</a>';
 				}
 				$tplRes .='<div class="descr">';
-				#if($USER['class']>=5)				
-				#	$tplRes .='	<span class="add" onclick="port(\'setup\','.$port['id'].')">'.$lang['edit_monitor'].'</span>';			
 				if(!empty($port['descr']) && $USER['class']>=5)
 					$tplRes .='	<span class="add" onclick="port(\'edit\','.$port['id'].')">'.$lang['edit_descr'].'</span>';
 				if(!empty($port['descr'])){
@@ -308,7 +302,7 @@ if($getpage=='pon' && ($USER['class']>=4)){
 $tpl->load_template('olt/block.tpl');
 $tpl->set('{id}',$dataSwitch['id']);
 $tpl->set('{monitorstatus}',($dataSwitch['status']=='go'?'<div class="prcy-1l4rpax"></div>':''));
-$tpl->set('{script_device_ajax}','<script>ajaxdevicestatus('.$id.');ajaxchecknewonu('.$id.');</script>');
+$tpl->set('{script_device_ajax}','<script>ajaxdevicestatus('.$id.');</script>');
 $tpl->set('{blockstatsonu}',blockStatsONU($id));
 $tpl->set('{panel}',$panel);
 $tpl->set('{countonu}',($dataSwitch['allonu']?'<span><img src="../style/img/online.png" style="height: 16px;">'.$lang['count_port'].'<b>'.$dataSwitch['allonu'].'</b></span>':''));
@@ -337,8 +331,6 @@ $control = '';
 if(!empty($USER['class']) && $USER['class']>=6){
 	$control .='<span class="monitorsetup" onclick="ajaxcore(\'monitor\','.$dataSwitch['id'].');"><img src="../style/img/settings.png"></span>';
 	$control .='<span class="monitorsetup" onclick="ajaxcore(\'delete\','.$dataSwitch['id'].');"><img src="../style/img/delet.png"></span>';
-	#if($dataSwitch['monitor']=='yes' && $dataSwitch['status']=='go' && !empty($dataSwitch['jobid']))
-	#	$control .='<span class="monitorsetup"><img src="../style/img/play.png"></span>';
 }
 $tpl->set('{name}',$dataSwitch['inf'].' '.$dataSwitch['model'].''.$control);
 $tpl->set('{result}',$tpl->result['block-content']);

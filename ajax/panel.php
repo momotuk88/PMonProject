@@ -39,5 +39,15 @@ echo'<div class="sd4" onclick="zteonufunreload('.$getONU['olt'].','.$getONU['ido
 echo'<div class="sd7" onclick="zteonufunreload('.$getONU['olt'].','.$getONU['idonu'].',\'huaweidelonu\')"><i class="fi fi-rr-settings"></i>'.$lang['delet'].'</div>';		
 echo'</div><div id="block-ont-'.$getONU['idonu'].'"></div>';	
 }
+/// C-DATA 16xx
+if(!empty($getONU['idonu']) && !empty($getSwitch['username']) && !empty($getSwitch['id']) && $getSwitch['oidid']==12){
+echo'<div class="command-panel">';
+echo'<div class="sd1"><img src="../style/img/cmd.png">ONU</div>';
+echo'<div class="sd2">'.$getONU['type'].' '.$getONU['inface'].'</div>';
+echo'<div class="sd3" onclick="funcpanel(\'cdatafdb\','.$getONU['idonu'].')"><i class="fi fi-rr-data-transfer"></i>'.$lang['allmac'].'</div>';	
+echo'<div class="sd4" onclick="funcpanel(\'cdatareboot\','.$getONU['idonu'].')"><i class="fi fi-rr-power"></i>'.$lang['reboot'].'</div>';		
+echo'</div><div id="block-ont-'.$getONU['idonu'].'"></div>';
+}
+?>
 
 

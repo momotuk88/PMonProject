@@ -59,22 +59,37 @@ class HUAWEI_5608t {
 		global $db, $PMonTables;
 		$resultGpon = $resultGpon ?? null;
 		$resultEpon = $resultEpon ?? null;
-		if(!empty($this->deviceoid[$this->id]['onu']['listsn']['gpon']['oid'])){
+		if (!empty($this->deviceoid[$this->id]['onu']['listsn']['gpon']['oid'])) {
 			$listinfaceGpon = $this->deviceoid[$this->id]['onu']['listsn']['gpon']['oid'];
-			$listGpononu = $this->snmp->walk($this->ip,$this->community,$listinfaceGpon,false);	
-			if($listGpononu){
+			$listGpononu = $this->snmp->walk($this->ip, $this->community, $listinfaceGpon, false);
+			if ($listGpononu) {
 				$indexGponOnu = explodeRows(str_replace('.'.$listinfaceGpon.'.','',$listGpononu));
-				if($indexGponOnu){
-					foreach($indexGponOnu as $io => $eachsig) {
+				if ($indexGponOnu) {
+					foreach ($indexGponOnu as $io => $eachsig) {
 						$line = explode('=', $eachsig);
-						if(isset($line[0]) && isset($line[1])){
-							preg_match('/(\d+).(\d+)/',$line[0],$mat);
-							if(is_numeric($mat[1]) && is_numeric($mat[2]))
-								$resultGpon[$io] = array('inface'=>$this->huawei_ifindex(trim($mat[1])).':'.trim($mat[2]),'sn'=>SnHuawei($line[1]),'do' => 'onu','id'=>$this->id,'pon'=>'gpon','types'=>$this->primarygpon,'keyonu'=> trim($mat[2]),'keyport'=> trim($mat[1]));
-						}	
+						if (isset($line[0], $line[1])) {
+							preg_match('/(\d+)\.(\d+)/', $line[0], $mat);
+							if (is_numeric($mat[1]) && is_numeric($mat[2])) {
+								$resultGpon[$io] = [
+									'inface' => $this->huawei_ifindex(trim($mat[1])) . ':' . trim($mat[2]),
+									'sn' => SnHuawei($line[1]),
+									'do' => 'onu',
+									'id' => $this->id,
+									'pon' => 'gpon',
+									'types' => $this->primarygpon,
+									'keyonu' => trim($mat[2]),
+									'keyport' => trim($mat[1])
+								];
+							}
+						}
 					}
 					if (count($resultGpon) === 0) {
-						$db->SQLinsert($PMonTables['swlog'],['deviceid' =>$this->id,'types' =>'switch','message' =>'empty gpon data','added' =>$this->now]);
+						$db->SQLinsert($PMonTables['swlog'], [
+							'deviceid' => $this->id,
+							'types' => 'switch',
+							'message' => 'empty gpon data',
+							'added' => $this->now
+						]);
 					}
 				}
 			}
@@ -99,14 +114,10 @@ class HUAWEI_5608t {
 				}
 			}
 		}
-		if(is_array($resultGpon)&& is_array($resultEpon)){
-			$result = array_merge($resultGpon,$resultEpon);
-		}elseif(is_array($resultGpon) && (count($resultEpon) === 0)){
-			$result = $resultGpon;
-		}elseif((count($resultGpon) === 0) && is_array($resultEpon)){
-			$result = $resultEpon;
-		}else{
-			$result = null;			
+		if (empty($resultGpon) && empty($resultEpon)) {
+			$result = null;
+		} else {
+			$result = (empty($resultEpon)) ? $resultGpon : ((empty($resultGpon)) ? $resultEpon : array_merge($resultGpon, $resultEpon));
 		}
 		if(is_array($result)){
 			$db->SQLupdate($PMonTables['onus'],['cron' => 2],['olt' => $this->id]);

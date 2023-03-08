@@ -4,11 +4,11 @@
 	<input name="act" type="hidden" value="savebilling">
 		<div class="pole1">
 			<div class="form1">{status}<b>{descrstatus}</b></div>
-			<div class="form2">{select_status_billing}</div>
+			<div class="form2">{selstbill}</div>
 		</div>		
 		<div class="pole1">
 			<div class="form1">{type}<b>{typedescr}</b></div>
-			<div class="form2">{select_list_billing}</div>
+			<div class="form2">{selbill}</div>
 		</div>		
 		<div class="pole1">
 			<div class="form1">{urlapi}<b>{urlpaidescr}</b></div>

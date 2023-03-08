@@ -1,6 +1,14 @@
-<div class="comment">
-<span>{listcomment}</span>
+<div class="ont-block">
+<h1>{commentar}{historyurl}</h1>
+<div class="ont-content">
 <div id="comment">
-<div class="c_text" id="comment_text">{onu_comm}</div>
-<div class="tfr">{history_url}<a href="#" onClick="editcomments({idcommonu}); return false;"> {lang_2}</a></div></div></div>
+<div class="comment">
+<div class="c_text" id="comment_text">{comments}</div>
+<div class="tfr"><a class="editcommimg" href="#" onClick="editcomments({id}); return false;"><img src="../style/img/edit.png">{editcomm}</a>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div id="historycomment"></div>
+

@@ -168,3 +168,4 @@ switch($act){
 		}
 	break;
 }
+?>

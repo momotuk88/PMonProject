@@ -71,6 +71,38 @@ if($_POST['id']){
 				}
 			}
 		}
+		// BDCOM EPON
+		if($switch['oidid']==1){
+			@$dcvolt = snmp2_get($switch['netip'],$switch['snmpro'],'1.3.6.1.4.1.3320.9.189.1.0');
+			@$powerblock = snmp2_get($switch['netip'],$switch['snmpro'],'1.3.6.1.4.1.3320.3.6.10.1.14.1');
+			$volt = strtolower(str_replace('INTEGER:','',str_replace(' ','',str_replace('"','',trim($powerblock)))));	
+			echo'<div class="olt_zte">';
+			if($volt){
+				echo'<span class="slotplat"><img src="../style/img/hwvolt.png"><b>Вольтаж</b>'.$volt.' Вольт</span>';
+			}
+			echo'</div>';
+		}
+		// C-DATA 16xx GPON
+		if($switch['oidid']==12){
+			@$respower = snmp2_real_walk($switch['netip'],$switch['snmpro'],'1.3.6.1.4.1.17409.2.3.1.4.1.1.6.1');
+			if($respower){
+				foreach($respower as $key => $type){
+					preg_match('/3.1.4.1.1.6.1.(\d+)/',$key,$m);
+					$nameSlot = strtolower(str_replace('STRING:','',str_replace(' ','',str_replace('"','',trim($type)))));
+					@$statuspower = snmp2_get($switch['netip'],$switch['snmpro'],'1.3.6.1.4.1.17409.2.3.1.4.1.1.3.1.'.$m[1]);
+					$powercard[$m[1]]['name']= $nameSlot;	
+					$powercard[$m[1]]['status']= strtolower(str_replace('INTEGER:','',str_replace(' ','',str_replace('"','',trim($statuspower)))));	
+					$powercard[$m[1]]['id']= $m[1];	
+				}
+			}
+			if(is_array($powercard)){
+				echo'<div class="olt_zte">';
+				foreach($powercard as $type => $value) {
+					echo'<span class="slotplat"><img src="../style/img/energy'.$value['status'].'.png" style="top: 2px;"><b>'.$value['name'].'</b></span>';
+				}
+				echo'</div>';
+			}
+		}
 		// HUAWEI
 		if($switch['oidid']==14){
 			@$temp1 = snmp2_get($switch['netip'],$switch['snmpro'],'1.3.6.1.4.1.2011.6.2.1.3.1.1.1.0');

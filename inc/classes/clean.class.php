@@ -136,26 +136,27 @@ class Clean{
 	/**
 	 * Текст.
 	 */
-	public static function text($value, $default = ''){
+	public static function text(string $value, string $default = ''): string
+	{
 		$value = self::_prepare($value);
-		$value = str_ireplace(array("\t"), ' ', $value);			
-		$value = preg_replace(array(
+		$value = str_ireplace(["\t"], ' ', $value);
+		$value = preg_replace([
 			'@<\!--.*?-->@s',
 			'@\/\*(.*?)\*\/@sm',
 			'@<([\?\%]) .*? \\1>@sx',
 			'@<\!\[CDATA\[.*?\]\]>@sx',
-			'@<\!\[.*?\]>.*?<\!\[.*?\]>@sx',	
+			'@<\!\[.*?\]>.*?<\!\[.*?\]>@sx',
 			'@\s--.*@',
 			'@<script[^>]*?>.*?</script>@si',
-			'@<style[^>]*?>.*?</style>@siU', 
-			'@<[\/\!]*?[^<>]*?>@si',			
-		), ' ', $value);		
-		$value = strip_tags($value); 		
-		$value = str_replace(array('/*', '*/', ' --', '#__'), ' ', $value); 
-		$value = mb_ereg_replace('[ ]+', ' ', $value);			
+			'@<style[^>]*?>.*?</style>@siU',
+			'@<[\/\!]*?[^<>]*?>@si',
+		], ' ', $value);
+		$value = strip_tags($value);
+		$value = str_replace(['/*', '*/', ' --', '#__'], ' ', $value);
+		$value = mb_ereg_replace('[ ]+', ' ', $value);
 		$value = trim($value);
-		$value = htmlspecialchars($value, ENT_QUOTES);	
-		return (mb_strlen($value) == 0) ? $default : $value;
+		$value = htmlspecialchars($value, ENT_QUOTES);
+		return mb_strlen($value) === 0 ? $default : $value;
 	}
 	/**
 	 * Текст для массива.

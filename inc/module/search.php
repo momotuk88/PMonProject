@@ -24,12 +24,13 @@ if($select_search){
 }else{
 	$select_search = '';
 }
-$select_onlyactive = (isset($_GET['onlyactive']) ? checkSearch($_GET['onlyactive']) : null);
+$select_onlyactive = (isset($_GET['onlyactive']) ? Clean::text(trim(strip_tags(stripcslashes($_GET['onlyactive'])))) : null);
 $select_pon = (isset($_GET['selectpon']) ? checkSearch($_GET['selectpon']) : null);
 $select_dist = (isset($_GET['selectdist']) ? checkSearch($_GET['selectdist']) : null); 
 $select_signal = (isset($_GET['selectsignal']) ? checkSearch($_GET['selectsignal']) : null); 
-$select_olt = (isset($_GET['selectolt']) ? checkSearch($_GET['selectolt']) : null); 
+$selectolt = isset($_GET['selectolt']) ? Clean::int($_GET['selectolt']) : null;
 $selectcurday = (isset($_GET['selectcurday']) ? Clean::text(trim(strip_tags(stripcslashes($_GET['selectcurday'])))) : null);
+$selectbadrx = (isset($_GET['badrx']) ? Clean::text(trim(strip_tags(stripcslashes($_GET['badrx'])))) : null);
 if($select_search){
 	$where_data[] = " sn LIKE '%".$select_search."%' 
 	OR mac LIKE '%".$select_search."%' 
@@ -39,8 +40,8 @@ if($select_search){
 	OR name LIKE '%".$select_search."%' 
 	OR tag LIKE '%".$select_search."%'";
 }
-if($select_olt){
-	$where_data[] = 'olt = '.(int)$select_olt;
+if($selectolt){
+	$where_data[] = 'olt = '.$selectolt;
 }
 if($selectcurday=='today'){
 	$where_data[] = ' added  >= curdate()';
@@ -52,8 +53,15 @@ if($select_pon=='epon'){
 }else{
 	
 }
+if($selectbadrx=='bad'){
+	$where_data[] = "rx BETWEEN '-".$config['badsignalstart']."' AND '-".$config['badsignalend']."'";	
+	$select_signal = 'small';
+}
 if($select_onlyactive=='on'){
 	$where_data[] = 'status = 1';
+}elseif($select_onlyactive=='off'){
+	$where_data[] = 'status = 2';	
+	$orderby_data[] = '`offline` DESC';
 }
 if($select_signal=='big'){
 	$orderby_data[] = '`rx` ASC';
@@ -84,7 +92,7 @@ if(count($SQLDevice)){
 	$select_olt_list = '';
 	foreach($SQLDevice as $Device){
 		$select_olt_list .= '<option value="'.$Device['id'].'"';
-		if($select_olt && $Device['id']==$select_olt)
+		if($selectolt && $Device['id']==$selectolt)
 			$select_olt_list .= 'selected';
 		$select_olt_list .= '>'.$Device['place'].''.($USER['class']>=4 ? ' '.$Device['inf'].''.$Device['model'].'':'').'</option>';
 		$DATAolt[$Device['id']]['swid'] = $Device['id'];

@@ -15,6 +15,7 @@ $OnuClass = new Ont($getOLT['id'],$getOLT['class']);
 $support = $OnuClass->Support();
 if($support){
 	$resultONT = $OnuClass->getApi($getONT);
+	$db->query('UPDATE `'.$PMonTables['onus'].'` SET apiget = apiget+1 WHERE idonu = '.$getONT['idonu']);
 	// ZTE C3xx
 	if($getOLT['oidid']==7 && $resultONT['status']==1){
 		echo'<script type="text/javascript">ajaxzte320('.$id.');</script><div id="ajaxzte320"></div>';
@@ -24,18 +25,30 @@ if($support){
 		echo'<script type="text/javascript">ajaxhuawei5608('.$id.');</script><div id="onthuawei5608"></div>';
 	}
 	if(is_array($resultONT)){
+		if(!empty($resultONT['adminstatus'])){
+			$adminstatus =  str_replace('down', 'off',str_replace('up', 'on',$resultONT['adminstatus']));
+			echo ont_label('Admin Status','<div class="ajax_ont_status_'.$adminstatus.'">'.$resultONT['adminstatus'].'</div>');
+		}
+		if(!empty($resultONT['operstatus'])){
+			$operstatus =  str_replace('down', 'off',str_replace('up', 'on',$resultONT['operstatus']));
+			echo ont_label('Operation Status','<div class="ajax_ont_status_'.$operstatus.'">'.$resultONT['operstatus'].'</div>');
+		}	
+		// C-DATA 16xx
+		if($getOLT['oidid']==12){
+			echo ont_label($lang['oid_gpon_descr'],'<div id="resname">'.$resultONT['name'].'</div>');
+		}		
 		if(!empty($resultONT['status'])){
 			$status = ($resultONT['status']==1?'<div class="ajax_ont_status_on">'.$lang['online'].'</div>':'<div class="ajax_ont_status_off">'.$lang['offline'].'</div>');
-			echo ont_label('Статус',$status.$btn_update_info);
+			echo ont_label($lang['status'],$status.$btn_update_info);
 		}	
 		if(!empty($getONT['added'])){
-			echo ont_label('Зареєсстрована ',$getONT['added']);
+			echo ont_label($lang['registers'],$getONT['added']);
 		}			
-		if($resultONT['status']==1){
-			echo ont_label('Онлайн ',aftertime($getONT['online']));
+		if($resultONT['status']==1 && !empty($resultONT['online'])){
+			echo ont_label($lang['online'],aftertime($resultONT['online']));
 		}			
 		if($resultONT['status']==2){
-			echo ont_label('Оффлайн ',aftertime($getONT['offline']));
+			echo ont_label($lang['offline'],aftertime($getONT['offline']));
 		}	
 		if(!empty($resultONT['reason']))
 			echo ont_label(($resultONT['status']==1?$lang['rereason']:$lang['reason']),tplreason($lang[$resultONT['reason']],$resultONT['reason']));		
@@ -43,12 +56,12 @@ if($support){
 		if(!empty($resultONT['wan']) && $resultONT['status']==1 && $getOLT['oidid']==7){
 			echo ont_label($lang['wanport'],'<img src="../style/img/'.(!empty($resultONT['wanportzte']['txt']) ? $resultONT['wanportzte']['img'] : 'eth'.$resultONT['wan']).'.png" class="onueth">');
 			if(is_array($resultONT['wanportzte']) && !empty($resultONT['wanportzte']['txt']))
-				echo ont_label('Тип порта',$resultONT['wanportzte']['txt']);
+				echo ont_label($lang['typeport'],$resultONT['wanportzte']['txt']);
 		}
 		// HUAWEI 56xx
 		if($getOLT['oidid']==14){
 			if(!empty($resultONT['onuerror']))
-				echo ont_label('К-ть помилок на оптичному порті:','<font color=red>'.$resultONT['onuerror'].'</font>');			
+				echo ont_label($lang['coutporterr'],'<font color=red>'.$resultONT['onuerror'].'</font>');			
 			if(!empty($resultONT['linervlan']))
 				echo ont_label('inner-vlan',$resultONT['linervlan']);
 			if(!empty($resultONT['uservlan'])){
@@ -60,11 +73,11 @@ if($support){
 				}
 			}
 			if(!empty($resultONT['countmacport']) && $resultONT['status']==1)
-				echo ont_label('MAC`ів за ону','<span style="color:#1e9cd9;text-decoration:underline;">'.$resultONT['countmacport'].' (пристроїв)</span>');			
+				echo ont_label($lang['countmac'],'<span style="color:#1e9cd9;text-decoration:underline;">'.$resultONT['countmacport'].' (пристроїв)</span>');			
 			if(!empty($resultONT['name'])){
 				$editpenhuawei = ' <span class="zte_edit_name" onclick="showblockform1();"><img src="../style/img/edit.png"></span>';
-				$formpenhuawei = '<div id="form_rename"><textarea name="nameonu" id="nameonu" class="namezteonu">'.$resultONT['name'].'</textarea><input type="submit" class="saverenzte" onclick="snmpsetsave('.$id.',\'savenamehuawei\');"  value="Редагувати"></div>';
-				echo ont_label('Опис','<div id="resname">'.$resultONT['name'].'</div>'.$editpenhuawei.$formpenhuawei);
+				$formpenhuawei = '<div id="form_rename"><textarea name="nameonu" id="nameonu" class="namezteonu">'.$resultONT['name'].'</textarea><input type="submit" class="saverenzte" onclick="snmpsetsave('.$id.',\'savenamehuawei\');"  value="'.$lang['edit'].'"></div>';
+				echo ont_label($lang['opis'],'<div id="resname">'.$resultONT['name'].'</div>'.$editpenhuawei.$formpenhuawei);
 			}			
 			if(!empty($resultONT['bias'])){
 				$laser = descr_huawei_laser_bias($resultONT['bias']);
@@ -89,13 +102,13 @@ if($support){
 		if(!empty($resultONT['name']) && $getOLT['oidid']==7){
 			$editpenzte = ' <span class="zte_edit_name" onclick="showblockform1();"><img src="../style/img/edit.png"></span>';
 			$formpenzte = '<div id="form_rename"><textarea name="nameonu" id="nameonu" class="namezteonu">'.$resultONT['name'].'</textarea><input type="submit" class="saverenzte" onclick="snmpsetsave('.$id.',\'savenamezte\');" value="'.$lang['edit'].'"></div>';
-			echo ont_label('Опис','<div id="resname">'.$resultONT['name'].'</div>'.$editpenzte.$formpenzte);	
+			echo ont_label($lang['opis'],'<div id="resname">'.$resultONT['name'].'</div>'.$editpenzte.$formpenzte);	
 		}	
 		// ZTE C3xx		
 		if(!empty($resultONT['note']) && $getOLT['oidid']==7){
 			$editpenzte = '<span class="zte_edit_note" onclick="showblockform3();"><img src="../style/img/edit.png"></span>';
 			$formpenzte = '<div id="form_renote"><textarea name="noteonu" id="noteonu" class="namezteonu">'.$resultONT['note'].'</textarea><input type="submit" class="saverenzte" onclick="snmpsetsave('.$id.',\'savedescrzte\');" value="'.$lang['edit'].'"></div>';
-			echo ont_label('Нотатки','<div id="resnote">'.$resultONT['note'].'</div>'.$editpenzte.$formpenzte);	
+			echo ont_label($lang['opis'],'<div id="resnote">'.$resultONT['note'].'</div>'.$editpenzte.$formpenzte);	
 		}	
 		// BDCOM EPON
 		if($getOLT['oidid']==3){
@@ -117,7 +130,7 @@ if($support){
 		}	
 		// ZTE C3xx
 		if(!empty($resultONT['config']))
-			echo ont_label('Профіль конфігурації ONU',$resultONT['config']);		
+			echo ont_label($lang['cfgonuinf'],$resultONT['config']);		
 		if(!empty($resultONT['dist']))
 			echo ont_label($lang['dist'],$resultONT['dist'].' '.$lang['metr']);
 		// History RX
@@ -141,7 +154,7 @@ if($support){
 		// BDCOM EPON - зміна влан
 		if($getOLT['oidid']==1){
 			if(!empty($resultONT['pvid']))
-				echo ont_label($lang['bdcom_vlan'],$resultONT['pvid'].(!empty($getOLT['snmprw'])?'<span id="edit-vlan-'.$getONT['idonu'].'" ></span><span class="ont-btn" id="btn-edit-vlan-'.$getONT['idonu'].'" onclick="bdcomvlanonu_ajax('.$getONT['olt'].','.$getONT['idonu'].',\'bdcomformeditonu\')">змінити</span>':''));		
+				echo ont_label($lang['bdcom_vlan'],$resultONT['pvid'].(!empty($getOLT['snmprw'])?'<span id="edit-vlan-'.$getONT['idonu'].'" ></span><span class="ont-btn" id="btn-edit-vlan-'.$getONT['idonu'].'" onclick="bdcomvlanonu_ajax('.$getONT['olt'].','.$getONT['idonu'].',\'bdcomformeditonu\')">'.$lang['edit'].'</span>':''));		
 			if(!empty($resultONT['uptime']))
 				echo ont_label($lang['uptime'],convertuptime($resultONT['uptime']));		
 			if(!empty($resultONT['typereg']))

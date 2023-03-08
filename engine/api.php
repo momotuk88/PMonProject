@@ -36,17 +36,18 @@ if(isset($_POST['keyonu']) && is_numeric($_POST['keyonu']) && intval($_POST['key
 }else{
 	$keyonu = 0;
 }
-if(isset($_POST['keyport']) && is_numeric($_POST['keyport']) && intval($_POST['keyport']) > 0){
-	$keyport = (int)intval($_POST['keyport']);
+$keyport = $idonu = $idport = $oidid = 0;
+if(isset($_POST['keyport']) && ctype_digit($_POST['keyport'])){
+	$keyport = (int)$_POST['keyport'];
 }
-if(isset($_POST['idonu']) && is_numeric($_POST['idonu']) && intval($_POST['idonu']) > 0){
-	$idonu = (int)intval($_POST['idonu']);
+if(isset($_POST['idonu']) && ctype_digit($_POST['idonu'])){
+	$idonu = (int)$_POST['idonu'];
 }
-if(isset($_POST['idport']) && is_numeric($_POST['idport']) && intval($_POST['idport']) > 0){
-	$idport = (int)intval($_POST['idport']);
+if(isset($_POST['idport']) && ctype_digit($_POST['idport'])){
+	$idport = (int)$_POST['idport'];
 }
-if(isset($_POST['oidid']) && is_numeric($_POST['oidid']) && intval($_POST['oidid']) > 0){
-	$oidid = (int)intval($_POST['oidid']);
+if(isset($_POST['oidid']) && ctype_digit($_POST['oidid'])){
+	$oidid = (int)$_POST['oidid'];
 }
 if(isset($_POST['types'])){
 	$types = $_POST['types'];

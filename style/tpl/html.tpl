@@ -23,6 +23,7 @@
 {block-right}
 </div>
 </div>
+{lang}
 </div>
 <div id="ajax"></div>
 <div id="loading" style="display:none"><div class="loading"> LOAD... </div></div>

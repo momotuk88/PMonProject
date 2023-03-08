@@ -49,7 +49,8 @@ class Route{
 		exit;
 	}		
 	public function go($url){
-		header('location: '.$url);
-		die;
+		header_remove(); // видаляємо будь-які заголовки, які можуть бути встановлені раніше
+		header('Location: '.$url);
+		exit;
 	}	
 }

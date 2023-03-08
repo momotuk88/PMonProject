@@ -8,6 +8,70 @@ $oidid = isset($_POST['oidid']) ? Clean::int($_POST['oidid']): null;
 $idonu = isset($_POST['idonu']) ? Clean::int($_POST['idonu']): null;
 $act = isset($_POST['act']) ? Clean::text($_POST['act']): null;
 switch($act){
+	// C-DATA 16xx
+	case 'cdatafdb': 
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);
+		if(!empty($SQLonus['olt'])){
+			$dataswitch = $db->Fast('switch','*',['id'=>$SQLonus['olt']]);
+			if($USER['class']>=3 && !empty($dataswitch['id']) && !empty($dataswitch['username']) && !empty($dataswitch['password'])){ 
+				preg_match('/0\/(\d+):(\d+)/i',$SQLonus['inface'],$dataMatch);
+				if(isset($dataMatch[1]) && isset($dataMatch[2])){
+				$phptelnet = new PHPTelnet();
+				$result = $phptelnet->Connect($SQLswitch['netip'],$dataswitch['username'],$dataswitch['password']);
+				sleep(1);
+				$phptelnet->DoCommand("en\n", $result);
+				$phptelnet->DoCommand("config\n", $result);
+				$phptelnet->DoCommand("show mac-address port gpon 0/0/".$dataMatch[1]." ont ".$dataMatch[2]."\n", $result);
+				if (str_contains($result, "Total")) {
+					$out = substr($result, strrpos($result, "Type") + 4);
+					$arr_out = explode("\n", $out);
+					$arr_out = array_filter($arr_out, function($out_mac) {
+						return !str_contains($out_mac, "#") && !str_contains($out_mac, "--");
+					});
+					$listmac = '';
+					if (!empty($arr_out)) {
+						foreach ($arr_out as $out_mac) {
+							$temponu = explode("  ", trim($out_mac));
+							$temponu = array_filter($temponu);
+							if (!empty($temponu)) {
+								$listmac .= '<div class="block-for-mac">';
+								foreach ($temponu as $on) {
+									$listmac .= '<div class="block-for-mac-bl">' . trim($on) . '</div>';
+								}
+								$listmac .= '</div>';
+							}
+						}
+					} else {
+						$listmac = 'missing mac';
+					}
+				}
+				echo'<div id="ajaxablock"><div class="blockmac">'.$listmac.'</div></div>';
+				die;
+				}				
+			}
+		}
+	break;		
+	case 'cdatareboot': 	
+		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);
+		if(!empty($SQLonus['olt'])){
+			$dataswitch = $db->Fast('switch','*',['id'=>$SQLonus['olt']]);
+			if($USER['class']>=3 && !empty($dataswitch['id']) && !empty($dataswitch['username']) && !empty($dataswitch['password'])){ 
+				preg_match('/0\/(\d+):(\d+)/i',$SQLonus['inface'],$dataMatch);
+				if(isset($dataMatch[1]) && isset($dataMatch[2])){
+				$phptelnet = new PHPTelnet();
+				$result = $phptelnet->Connect($SQLswitch['netip'],$dataswitch['username'],$dataswitch['password']);
+				sleep(1);
+				$phptelnet->DoCommand("en\r\n",$result);
+				$phptelnet->DoCommand("config\r\n",$result);
+				$phptelnet->DoCommand("interface gpon 0/0\r\n",$result);
+				$phptelnet->DoCommand("ont reboot ".$dataMatch[1]." ".$dataMatch[2]."\n", $result);
+				sleep(1);
+				echo'<div id="ajaxablock"><div class="blockmac">Перезавантажено</div></div><script>location.reload();</script>';
+				die;
+				}				
+			}
+		}
+	break;		
 	case 'reboot': 
 		$SQLswitch = $db->Fast('switch','*',['id'=>$id]);
 		$SQLonus = $db->Fast('onus','*',['idonu'=>$idonu]);

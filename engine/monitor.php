@@ -14,14 +14,12 @@ $starttime = 0;
 set_time_limit(6000);
 $time = date('Y-m-d H:i:s');
 require ROOT_DIR.'/inc/init.monitor.php';
-$long_options = ["switch:","jobid:"];
-$options = getopt("s:j:", $long_options);
-if(isset($options["s"]) || isset($options["switch"]))
-    $olt = isset($options["s"]) ? $options["s"] : $options["switch"];
-if(isset($options["j"]) || isset($options["jobid"]))
-    $jobid = isset($options["j"]) ? $options["j"] : $options["jobid"];
-if(!$olt && !$jobid)
-	die('corect_system_cron');
+$options = getopt("s:j:", ["switch:", "jobid:"]);
+$olt = $options["s"] ?? $options["switch"] ?? null;
+$jobid = $options["j"] ?? $options["jobid"] ?? null;
+if(!$olt && !$jobid) {
+    die('correct_system_cron');
+}
 if(is_numeric($olt)){
 	$getswitch = $db->Fast($PMonTables['switch'],'*',['id'=>$olt]);
 	if(!$getswitch['id'])
@@ -46,47 +44,37 @@ if($supportonu && !$tempdata){
 	switchLog($getswitch['id'],'cron',$lang['emptytemponu']);
 }
 if($supportonu && is_array($tempdata)){
-	foreach($tempdata as $idont => $getdata){
-		$result = get_curl_api($getdata,true);
-		if(isset($result)){
-			$tempresult[$idont] = array_merge($getdata, $result);
-		}else{
-			$tempresult[$idont] = $getdata;
-		}
+	if($supportonu && is_array($tempdata)) {
+		$tempresult = array_map(function($getdata) {
+			$result = get_curl_api($getdata, true);
+			return isset($result) ? array_merge($getdata, $result) : $getdata;
+		}, $tempdata);
 	}
 	sleep(2);	
 	if(is_array($tempresult)){
 		foreach($tempresult as $getdataont){
-			if($getdataont['pon']=='epon'){
-				$getmonitor->tempSaveEpon($getdataont);
-			}
-			if($getdataont['pon']=='gpon'){
-				$getmonitor->tempSaveGpon($getdataont);
-			}
+			match($getdataont['pon']) {
+				'epon' => $getmonitor->tempSaveEpon($getdataont),
+				'gpon' => $getmonitor->tempSaveGpon($getdataont),
+			};
 		}
 		$goont = true;
 	}else{
 		switchLog($getswitch['id'],'cron',$lang['checkapisystem']);
 	}
 	$getlistrxcheck = $getmonitor->getListSignal();
-	if($goont && is_array($getlistrxcheck)){
-		foreach($getlistrxcheck as $key => $getrxdata){
-			if(isset($getrxdata)){
-				$resRxApi = get_curl_api($getrxdata,true);
-			}
-			if(is_array($resRxApi) && is_array($getrxdata)){
-				$resultrxarray[$key] = array_merge($getrxdata,$resRxApi);
-			}else{
-				$resultrxarray[$key] = $getrxdata;
-			}
-		}
+	if ($goont && is_array($getlistrxcheck)) {
+		$resultrxarray = array_map(function ($getrxdata) {
+			$resRxApi = get_curl_api($getrxdata, true);
+			return is_array($resRxApi) && is_array($getrxdata) ? array_merge($getrxdata, $resRxApi) : $getrxdata;
+		}, $getlistrxcheck);
 	}
 	if(is_array($resultrxarray)){
-		foreach($resultrxarray as $getrxdataont){
-			if($getrxdataont['pon']=='epon'){
+		foreach ($resultrxarray as $getrxdataont) {
+			$pon = $getrxdataont['pon'] ?? null;
+			if ($pon === 'epon') {
 				$getmonitor->tempSaveSignalEpon($getrxdataont);
-			}
-			if($getrxdataont['pon']=='gpon'){
+			} elseif ($pon === 'gpon') {
 				$getmonitor->tempSaveSignalGpon($getrxdataont);
 			}
 		}	

@@ -2,6 +2,42 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+function clearKeyonu($newonu,$olt){
+	global $db, $config, $PMonTables, $lang;
+	$oldonu = array();
+	$getonus = $db->Multi($PMonTables['onus'], 'idonu,keyonu', ['olt' => $olt]);
+	if (count($getonus)) {
+		foreach ($getonus as $io => $eachsig) {
+			if(!empty($eachsig['keyonu']) && !empty($eachsig['idonu'])){
+			$oldonu[$io]['idonu'] = $eachsig['idonu'];
+			$oldonu[$io]['keyonu'] = $eachsig['keyonu'];
+			}
+		}
+	}
+	$missingonu = array_filter($oldonu, function($old) use ($newonu) {
+		$found = false;
+		foreach ($newonu as $new) {
+			if ($old['keyonu'] == $new['keyonu']) {
+				$found = true;
+				break;
+			}
+		}
+		return !$found;
+	});
+	$missingonu = array_map(fn($old) => ['idonu' => $old['idonu']], $missingonu);
+	if(is_array($missingonu)){
+		foreach($missingonu as $each) {
+			if(!empty($each['idonu'])){
+				$db->query('DELETE FROM onus WHERE idonu = '.$each['idonu']);
+				$db->query('DELETE FROM onus_comm WHERE idonu = '.$each['idonu']);
+				$db->query('DELETE FROM onus_log WHERE onuid = '.$each['idonu']);
+				$db->query('DELETE FROM unitponboxont WHERE onuid = '.$each['idonu']);
+				$db->query('DELETE FROM historysignal WHERE onu = '.$each['idonu']);
+				$db->query('DELETE FROM monitoronu WHERE idonu = '.$each['idonu']);
+			}
+		}
+	}
+}
 function checkerONU($data,$olt){
 	global $db, $config, $PMonTables, $lang;
 	foreach($data as $ios => $eachsigs) {
@@ -128,6 +164,7 @@ function MacHuawei($type) {
 		return $onu;
 }
 function cdataGpon($type) {
+	$return = '';
 		if (preg_match("/Hex/i", $type)) {
 			$re_z_z = explode('Hex-STRING: ', $type);
 			$re_z = end($re_z_z);
@@ -137,7 +174,21 @@ function cdataGpon($type) {
 			$re_mac = end($re_ze_mac);
 			$onu = str_replace('"', '',$re_mac);
 		}
-		return $onu;
+		if (strlen($onu) === 24){
+			$onu = explode(" ", $onu);
+			foreach ($onu as $key => $value){
+				if ($key < 4) {
+					$return.=chr(hexdec($value));   // Первые 4 символа переводятся из HEX->DEC, и подставляется в ASCII таблицу
+				}else{
+					$return.=$value;                // Остальные символы неизменны
+				}
+			}
+		}else{
+			$nosn = substr($onu,4);
+			$resn = substr($onu, 0, 4);
+			$return = $resn.strtoupper(bin2hex($nosn));
+		}
+	return $return;
 }
 function SnHuawei($type) {
 		if (preg_match("/Hex/i", $type)) {

@@ -66,7 +66,7 @@ if(is_array($ap)){
 		}
 	}
 }
-$result ='<div id="onu-speedbar"><a class="brmhref" href="/?do=device"><i class="fi fi-rr-apps"></i>'.$lang['alldevice'].'</a><span class="brmspan"><i class="fi fi-rr-angle-left"></i>'.$lang['statspage'].'</span></div><div class="card" style="margin: 0;"><div class="main-stats-tab">'.$urlswitch.'</div><div class="page-error">'.$page_error.'</div>';
+$result ='<div id="onu-speedbar"><a class="brmhref" href="/?do=device"><i class="fi fi-rr-apps"></i>'.$lang['alldevice'].'</a><span class="brmspan"><i class="fi fi-rr-angle-left"></i>'.$lang['statspage'].'</span></div><div class="card" style="margin: 0;"><div class="main-gr-tab">'.$urlswitch.'</div><div class="page-error">'.$page_error.'</div>';
 $tpl->load_template('main/main.tpl');
 $tpl->set('{block-main}','<div class="mainadmin">'.$result.'</div>');
 $tpl->compile('content');

@@ -132,23 +132,19 @@ class ZTE_c220_2 {
 			$array = array('do' => 'onu','types' => $this->configapionuepon,'pon' => 'epon','keyonu' => $data['keyonu'],'id' => $this->id);
 		return $array;
 	}
-	public function Onu($dataPort,$dataOnu){
-		if(is_array($dataPort)){
-			foreach($dataPort as $type => $value) {
-				$res[$type] = $this->preparedataCDATA($value,$type);
+	public function Onu($dataPort, $dataOnu) {
+		$res = array();
+		if (is_array($dataPort)) {
+			foreach ($dataPort as $type => $value) {
+				$res[$type] = $this->preparedataCDATA($value, $type);
 			}
-		}
-		if(!$dataPort && !$res){
-			$array_separated = explode(',',$this->configapionugpon);
-			foreach($array_separated as $type) {
+		} else if (!$dataPort) {
+			$array_separated = explode(',', $this->configapionugpon);
+			foreach ($array_separated as $type) {
 				$res[$type] = $dataOnu[$type];
 			}
 		}
-		if(is_array($res)){
-			$result = $this->updateonu($dataOnu,$res);
-		}else{
-			$result = false;
-		}
+		$result = is_array($res) ? $this->updateonu($dataOnu, $res) : false;
 		return $result;
 	}
 	public function updateonu($ont,$getData){

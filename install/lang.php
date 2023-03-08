@@ -3,6 +3,7 @@ header('Content-Type: text/html; charset=utf-8');
 $noinstall = [];
 $total = 0;
 $query = '';
+if(!function_exists('openssl_decrypt')) $noinstall[] = 'openssl_decrypt';
 if(!function_exists('exec')) $noinstall[] = 'exec';
 if(!function_exists('curl_init')) $noinstall[] = 'curl';
 if(!extension_loaded('mbstring')) $noinstall[] = 'mbstring';

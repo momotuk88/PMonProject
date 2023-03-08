@@ -34,32 +34,34 @@ class TemplateMonitor{
 			$var = str_replace(array("{", "["),array("_&#123;_", "_&#91;_"), $var);			
 			$this->block_data[$name] = $var;
 	}	
-	function load_template($tpl_name) {
-		$time_before = $this->get_real_time();		
-		$tpl_name = str_replace(chr(0), '', $tpl_name);
-		$url = @parse_url ( $tpl_name );
-		$file_path = dirname ($this->clear_url_dir($url['path']));
+	function load_template(string $tpl_name): bool {
+		$time_before = $this->get_real_time();
+		$tpl_name = str_replace("\0", '', $tpl_name);
+		$url = parse_url($tpl_name);
+		$file_path = dirname($this->clear_url_dir($url['path']));
 		$tpl_name = pathinfo($url['path']);
 		$tpl_name = totranslit($tpl_name['basename']);
-		$type = explode( ".", $tpl_name );
-		$type = strtolower( end( $type ) );
+		$type = explode(".", $tpl_name);
+		$type = strtolower(end($type));
 		if ($type != "tpl") {
-			$this->template = "Not Allowed Template Name: " .str_replace(ROOT_DIR, '', $this->folder)."/".$tpl_name ;
+			$this->template = "Not Allowed Template Name: " . str_replace(ROOT_DIR, '', $this->folder) . "/" . $tpl_name;
 			$this->copy_template = $this->template;
-			return "";
+			return false;
 		}
-		if ($file_path AND $file_path != ".") $tpl_name = $file_path."/".$tpl_name;
-		if( stripos ( $tpl_name, ".php" ) !== false ) {
-			$this->template = "Not Allowed Template Name: " .str_replace(ROOT_DIR, '', $this->folder)."/".$tpl_name ;
+		if ($file_path && $file_path != ".") {
+			$tpl_name = $file_path . "/" . $tpl_name;
+		}
+		if (stripos($tpl_name, ".php") !== false) {
+			$this->template = "Not Allowed Template Name: " . str_replace(ROOT_DIR, '', $this->folder) . "/" . $tpl_name;
 			$this->copy_template = $this->template;
-			return "";
+			return false;
 		}
-		if( $tpl_name == '' || !file_exists( $this->folder . "/" . $tpl_name ) ) {
-			$this->template = "Template not found: " .str_replace(ROOT_DIR, '', $this->folder)."/".$tpl_name ;
+		if ($tpl_name == '' || !file_exists($this->folder . "/" . $tpl_name)) {
+			$this->template = "Template not found: " . str_replace(ROOT_DIR, '', $this->folder) . "/" . $tpl_name;
 			$this->copy_template = $this->template;
-			return "";
+			return false;
 		}
-		$this->template = file_get_contents( $this->folder . "/" . $tpl_name );
+		$this->template = file_get_contents($this->folder . "/" . $tpl_name);
 		$this->template = $this->check_module($this->template);
 		$this->copy_template = $this->template;
 		$this->template_parse_time += $this->get_real_time() - $time_before;

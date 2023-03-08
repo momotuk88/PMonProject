@@ -5,8 +5,8 @@ if(!defined('PONMONITOR')){
 class CDATA_1608sn { 
     private $indexdevice = array();
     private $now = null;
-    private $primary = 'dist,name';
-    private $configapionugpon = 'dist,status,name,rx,tx,model,vendor,eth';
+    private $primary = 'dist,name,reason';
+    private $configapionugpon = 'adminstatus,operstatus,dist,reason,regtime,temp,rx,tx,model,vendor,eth,name';
     private $filter = true;
     private $filters = [
 		'/"/','/Hex-/i','/OID: /i','/STRING: /i',
@@ -67,7 +67,7 @@ class CDATA_1608sn {
 			}
 		}
 		if(is_array($result)){
-			checkerONU($result,$this->id);
+			clearKeyonu($result,$this->id);
 		}
 		return (is_array($result) ? $result : null);
 	}
@@ -106,14 +106,25 @@ class CDATA_1608sn {
 				$result['rx'] = $getData['rx'];
 			}
 			if(!empty($getData['name'])) 
-				$SQLset['name'] = $getData['name'];			
+				$SQLset['name'] = $getData['name'];				
+			if(!empty($getData['vendor'])) 
+				$SQLset['vendor'] = $getData['vendor'];			
 			if(!empty($getData['sn'])) 
-				$SQLset['sn'] = $getData['sn'];			
-			if(!empty($getData['dist'])) 
+				$SQLset['sn'] = $getData['sn'];				
+			if(!empty($getData['reason'])) 
+				$SQLset['reason'] = $getData['reason'];			
+			if(!empty($getData['dist'])){ 
 				$SQLset['dist'] = $getData['dist'];
+				$getData['status'] = 1;
+			}else{
+				$getData['status'] = 2;
+			}
 			if($ont['status']==2 && $getData['status']==1){
-				if(!empty($getData['timeaut']))
+				if(!empty($getData['regtime'])){
+					$SQLset['online'] = $getData['regtime'];
+				}else{
 					$SQLset['online'] = $this->now;
+				}
 				if($getData['offline'])
 					$SQLset['online'] = $getData['offline'];
 				$SQLset['status'] = 1;
@@ -141,7 +152,15 @@ class CDATA_1608sn {
 			if(!empty($getData['tx'])) 
 				$result['tx'] = $getData['tx'];			
 			if(!empty($getData['eth'])) 
-				$result['eth'] = $getData['eth'];
+				$result['eth'] = $getData['eth'];			
+			if(!empty($getData['adminstatus'])) 
+				$result['adminstatus'] = $getData['adminstatus'];			
+			if(!empty($getData['operstatus'])) 
+				$result['operstatus'] = $getData['operstatus'];			
+			if(!empty($getData['temp'])) 
+				$result['temp'] = $getData['temp'];			
+			if(!empty($getData['reason'])) 
+				$result['reason'] = $getData['reason'];			
 			return $result;
 		}
 	}	
@@ -182,11 +201,27 @@ class CDATA_1608sn {
 			case 'name':
 				$result = $data;
 			break;				
+			case 'adminstatus':
+				$result = $data;
+			break;				
+			case 'operstatus':
+				$result = $data;
+			break;				
 			case 'model':
 				$result = $data;
 			break;			
+			case 'regtime':
+				preg_match('/(\d+)-(\d+)-(\d+):(\d+):(\d+)/',$data,$timeZTE);
+				$result = $timeZTE[1].'-'.$timeZTE[2].'-'.mb_substr($timeZTE[3],0,2).' '.mb_substr($timeZTE[3],2,4).':'.$timeZTE[4].':'.$timeZTE[5];
+			break;			
 			case 'vendor':
 				$result = $data;
+			break;				
+			case 'temp':
+				$result = $data;
+			break;				
+			case 'reason':
+				$result = $this->reason($data);
 			break;				
 			case 'eth':
 				$result = ($data==1?'up':'down');				
@@ -222,9 +257,6 @@ class CDATA_1608sn {
 			}
 		}
 	} 
-	/*
-	Отримуємо всю інформацію по портах комутатора і формуємо масив
-	*/
 	public function Port(){
 		$OIdPortPon = $this->deviceoid[$this->id]['global']['listport']['port']['oid'];
 		if(isset($OIdPortPon)){
@@ -267,8 +299,18 @@ class CDATA_1608sn {
 				$data['pon'] = $listPon;
 			}
 		}
-		print_R($data);
 		return $data;
+	}
+	public function reason($value){
+		if (preg_match('/los/i',$value)){
+			return 'err6';
+		} elseif(preg_match('/dying/i',$value)) {
+			return 'err1';
+		}  elseif(preg_match('/--/i',$value)) {
+			return 'err5';
+		} else{
+			return 'err0';			
+		}
 	}
     protected function savePonSwitch($dataPort) {
 		global $db, $PMonTables;
@@ -381,7 +423,7 @@ class CDATA_1608sn {
 				if(!empty($dataOnu['inface']))
 					$SQLset['inface'] = $dataOnu['inface'];				
 				if(!empty($dataOnu['reason']))
-					$SQLset['reason'] = $dataOnu['reason'];	
+					$SQLset['reason'] = $this->reason($dataOnu['reason']);	
 				if(!empty($dataOnu['rx']))
 					$SQLset['rx'] = $dataOnu['rx'];	
 				if($indexPortOlt){
@@ -390,7 +432,7 @@ class CDATA_1608sn {
 				}
 				$db->SQLupdate($PMonTables['onus'],$SQLset,['idonu' => $arr['idonu']]);
 			}else{				
-				$SQLinsert = array('olt' => $dataOnu['id'],'updates' => $this->now,'added' => $this->now,($statusONU==1?'online':'offline') => $this->now,'rating' => 1,'keyonu' => $dataOnu['keyonu'],'status' => $statusONU,'sn' => $dataOnu['sn'],'inface' => $dataOnu['inface'],'dist' => (!empty($dataOnu['dist']) ? $dataOnu['dist'] : 0),'name' => (!empty($dataOnu['name']) ? $dataOnu['name'] : ''),'reason' => (!empty($dataOnu['reason']) ? $dataOnu['reason'] : ''),'type' => $dataOnu['pon'],'cron' => 1,'zte_idport' => $indexPortOlt,'portolt' => $indexPortOlt);
+				$SQLinsert = array('olt' => $dataOnu['id'],'updates' => $this->now,'added' => $this->now,($statusONU==1?'online':'offline') => $this->now,'rating' => 1,'keyonu' => $dataOnu['keyonu'],'status' => $statusONU,'sn' => $dataOnu['sn'],'inface' => $dataOnu['inface'],'dist' => (!empty($dataOnu['dist']) ? $dataOnu['dist'] : 0),'name' => (!empty($dataOnu['name']) ? $dataOnu['name'] : ''),'reason' => (!empty($dataOnu['reason']) ? $this->reason($dataOnu['reason']) : ''),'type' => $dataOnu['pon'],'cron' => 1,'zte_idport' => $indexPortOlt,'portolt' => $indexPortOlt);
 				$db->SQLinsert($PMonTables['onus'],$SQLinsert);
 			}
 		}

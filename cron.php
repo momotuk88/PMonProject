@@ -19,6 +19,11 @@ ini_set ( 'error_reporting', E_ALL ^ E_WARNING ^ E_DEPRECATED ^ E_NOTICE );
 
 define('PONMONITOR',true);
 define('ROOT_DIR',dirname(__FILE__));
+
+if (!@fopen(ROOT_DIR.'/inc/database.php','r')){
+	die('Check config.mysql');
+}
+
 define('API_DIR',ROOT_DIR.'/engine/');
 define('ENGINE_DIR',ROOT_DIR.'/inc/');
 

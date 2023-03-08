@@ -10,7 +10,7 @@
  This code is protected by copyright
 =====================================================
 */
-
+$this_version='4';
 ob_start();
 ob_implicit_flush(false);
 date_default_timezone_set('Europe/Kiev');

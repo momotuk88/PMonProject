@@ -10,6 +10,51 @@ function startmaster(getid,init) {
 		$('#master').html(response);
 	}, 'html');
 }
+function sendcomments(id){
+	id = parseInt(id);
+	var name = $('#commentonu').val();	
+	$('#comment').html(LoadingBar);
+    $.post(root+'ajax/commentonu.php',{'act':'save',id:id,name:name},function(response){
+	$('#comment').empty();
+	$('#comment').html(response);},'html');
+}
+function ajaxbilling(id){
+	id = parseInt(id);
+	$('#ajax-billing').html(LoadingBar);
+    $.post(root+'ajax/billing.php',{id:id},function(response){
+	$('#ajax-billing').empty();
+	$('#ajax-billing').html(response);},'html');
+}
+function editcomments(id){
+	id = parseInt(id);    
+	$('#comment').html(LoadingBar);
+	$.post(root+'ajax/commentonu.php',{'act':'edit',id:id},function(response){
+	$('#comment').empty();
+	$('#comment').html(response);},'html');
+}
+function historycomment(id){
+	id = parseInt(id);   
+	$('#btnhistorycomm').html(LoadingBar);	
+	$.post(root+'ajax/commentonu.php',{'act':'list',id:id},function(response) { 
+	$('#historycomment').html(response);},'html');
+}
+function ajaxmain(act,id) {
+	$("#main-" + act).html(LoadingBar);
+	$.post(root+"ajax/main.php",{act:act,id:id},function(response){ 
+		$("#main-" + act).empty();
+		$("#main-" + act).html(response);
+	}, "html");
+	setTimeout('ajaxmain('+act+','+id+');',10000);	
+}
+function funcpanel(act,idonu,id) {
+	$("#block-ont-"+ idonu).html(LoadingBar);
+	$.post(root+"ajax/function.php",{act:act,idonu:idonu,id:id}, 
+	function(response){ 
+		$("#block-ont-"+ idonu).empty();
+		$("#block-ont-"+ idonu).html(response);
+	}, 'html');
+}
+
 function ajaxont(id) {
 	$('#ont').html(LoadingBar);
 	$.post(root+"ajax/ont.php",{id:id},function(response){ 

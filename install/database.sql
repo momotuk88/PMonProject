@@ -1,31 +1,7 @@
--- phpMyAdmin SQL Dump
--- version 5.0.2
--- https://www.phpmyadmin.net/
---
--- Хост: 127.0.0.1:3306
--- Время создания: Мар 02 2023 г., 13:04
--- Версия сервера: 10.3.22-MariaDB
--- Версия PHP: 7.3.17
-
+DROP TABLE `apikey`, `baseip`, `battery_list`, `config`, `connect_port`, `equipment`, `groups`, `historysignal`, `location`, `log`, `monitor`, `monitoring`, `monitoronu`, `oid`, `onus`, `onusold`, `onus_comm`, `onus_log`, `pingstats`, `pmonstats`, `sessions`, `sfp`, `sklad_battery`, `sklad_device`, `sklad_install`, `sklad_switch`, `sklad_ups`, `swcron`, `switch`, `switch_log`, `switch_photo`, `switch_pon`, `switch_port`, `switch_port_err`, `swlogport`, `task_users`, `unit`, `unitbasket`, `unitdevice`, `unitfiber`, `unitfibermap`, `unitmafta`, `unitponbox`, `unitponboxont`, `unitpontree`, `users`;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- База данных: `1111`
---
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `apikey`
---
 
 CREATE TABLE `apikey` (
   `id` int(10) UNSIGNED NOT NULL,
@@ -91,8 +67,8 @@ CREATE TABLE `config` (
 INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (1, 'root', '/', 'test', '0000-00-00 00:00:00'),
 (2, 'securityipst', NULL, 'ip', '2022-07-27 16:08:49'),
-(3, 'countviewpageonu', '40', 'int', '2023-03-02 12:27:22'),
-(4, 'url', 'http://192.168.1.31', 'url', '2023-02-26 18:06:55'),
+(3, 'countviewpageonu', '40', 'int', '2023-03-07 17:28:12'),
+(4, 'url', 'http://192.168.1.31', 'url', '2023-03-07 12:03:18'),
 (5, 'skin', 'pmon', 'text', '0000-00-00 00:00:00'),
 (6, 'billingapikey', 'keyus', 'text', '0000-00-00 00:00:00'),
 (7, 'telegramtoken', 'sam_token', 'text', '2023-01-06 13:54:45'),
@@ -105,10 +81,10 @@ INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (14, 'telegram', 'on', 'enum', '2023-01-06 13:54:45'),
 (15, 'billing', 'off', 'enum', '0000-00-00 00:00:00'),
 (16, 'unit', 'off', 'enum', '2023-01-03 17:14:52'),
-(17, 'comment', 'off', 'enum', '2023-01-03 17:15:04'),
+(17, 'comment', 'on', 'enum', '2023-03-06 16:51:46'),
 (18, 'lon', '', 'int', '0000-00-00 00:00:00'),
 (19, 'lan', '', 'int', '0000-00-00 00:00:00'),
-(20, 'criticsignal', '2', 'int', '2023-03-02 12:27:22'),
+(20, 'criticsignal', '2', 'int', '2023-03-07 17:28:12'),
 (21, 'countlistsitelog', '20', 'int', '0000-00-00 00:00:00'),
 (22, 'critictemp', '70', 'int', '2022-07-27 15:58:53'),
 (23, 'criticcpuolt', '20', 'int', '0000-00-00 00:00:00'),
@@ -121,12 +97,12 @@ INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (30, 'background', 'false', 'text', '0000-00-00 00:00:00'),
 (31, 'cachetime', '60', 'int', '0000-00-00 00:00:00'),
 (32, 'debug', 'false', 'text', '0000-00-00 00:00:00'),
-(33, 'monitorapi', 'http://192.168.1.31/api.php', 'url', '2023-02-26 18:06:55'),
+(33, 'monitorapi', 'http://192.168.1.31/api.php', 'url', '2023-03-07 12:03:18'),
 (34, 'sklad', 'on', 'enum', '0000-00-00 00:00:00'),
 (35, 'pon', 'on', 'enum', '2023-01-30 12:53:09'),
-(36, 'billingtype', 'mikbill', 'enum', '0000-00-00 00:00:00'),
-(37, 'tag', 'off', 'enum', '2023-01-28 16:44:30'),
-(38, 'comment', 'off', 'enum', '2023-01-03 17:15:04'),
+(36, 'billingtype', 'userside', 'enum', '0000-00-00 00:00:00'),
+(37, 'tag', 'on', 'enum', '2023-03-07 11:25:17'),
+(38, 'comment', 'on', 'enum', '2023-03-06 16:51:46'),
 (39, 'currentdevice', '3', 'int', '0000-00-00 00:00:00'),
 (40, 'geo_lan', '48.309652', 'text', '0000-00-00 00:00:00'),
 (41, 'geo_lon', '25.918261', 'text', '0000-00-00 00:00:00'),
@@ -134,11 +110,12 @@ INSERT INTO `config` (`id`, `name`, `value`, `types`, `update`) VALUES
 (43, 'debugmysql', 'no', 'text', '0000-00-00 00:00:00'),
 (44, 'statusport', 'on', 'enum', '0000-00-00 00:00:00'),
 (45, 'errorport', 'on', 'enum', '0000-00-00 00:00:00'),
-(46, 'viewipswitch', 'on', NULL, '2023-02-27 20:49:50'),
-(47, 'badsignalstart', '22', NULL, '2023-03-02 12:27:22'),
-(48, 'badsignalend', '40', NULL, '2023-03-02 12:27:22'),
+(46, 'viewipswitch', 'off', NULL, '2023-03-05 20:39:41'),
+(47, 'badsignalstart', '22', NULL, '2023-03-07 17:28:12'),
+(48, 'badsignalend', '40', NULL, '2023-03-07 17:28:12'),
 (49, 'logsignal', 'off', NULL, '2023-02-24 14:51:55'),
-(50, 'countviewpageswitch', '5', NULL, '2023-03-02 12:27:22');
+(50, 'countviewpageswitch', '10', NULL, '2023-03-07 17:28:12'),
+(51, 'backup', '2023-03-03 09:46:05', NULL, '2023-03-03 09:46:05');
 
 -- --------------------------------------------------------
 
@@ -362,6 +339,7 @@ INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `des
 (22, 3, 'temp', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.1.1.29.1.1.keyonu', 'string', 'oid_epon_volt', 'onu', NULL),
 (23, 3, 'offline', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.7.4.1.14.keyonu', 'string', 'oid_epon_time_offline', 'onu', NULL),
 (24, 3, 'config', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.7.4.1.5.keyonu', 'string', 'oid_epon_vendor', 'onu', NULL),
+(195, 12, 'adminstatus', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.5.1.1.4.keyonu.0.1', NULL, '', 'onu', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
 (26, 3, 'vlanmode', 'zte', 'epon', '1.3.6.1.4.1.3902.1015.1010.1.1.1.10.1.1.1.keyonu.1', 'string', 'oid_epon_lan_mode', 'onu', NULL),
 (29, 4, 'status', 'planet', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'integer', 'oid_olt_port_status', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
 (30, 5, 'status', 'dlink', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'integer', 'oid_olt_port_status', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
@@ -528,7 +506,11 @@ INSERT INTO `oid` (`id`, `oidid`, `types`, `model`, `pon`, `oid`, `format`, `des
 (191, 14, 'status', 'huawei', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', NULL, NULL, 'monitor', NULL),
 (192, 3, 'ifinerrors', 'zte', 'port', '1.3.6.1.2.1.2.2.1.14.keyport', 'auto', 'oid_ifinerrors', 'monitor', NULL),
 (193, 3, 'ifouterrors', 'zte', 'port', '1.3.6.1.2.1.2.2.1.20.keyport', 'auto', 'oid_ifouterrors', 'monitor', NULL),
-(194, 3, 'status', 'zte', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'auto', 'oid_epon_port_satus', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}');
+(194, 3, 'status', 'zte', 'port', '1.3.6.1.2.1.2.2.1.8.keyport', 'auto', 'oid_epon_port_satus', 'monitor', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
+(196, 12, 'operstatus', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.5.1.1.4.keyonu.0.1', NULL, '', 'onu', 'a:2:{i:1;s:2:\"up\";i:2;s:4:\"down\";}'),
+(197, 12, 'temp', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.4.1.8.keyonu.0.0', NULL, NULL, 'onu', '=FUNCT1INT100='),
+(198, 12, 'regtime', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.103.keyonu', NULL, NULL, 'onu', 'a:2:{s:4:\"losi\";s:4:\"err6\";s:10:\"dying-gasp\";s:4:\"err1\";}'),
+(199, 12, 'time', 'cdata', 'gpon', '1.3.6.1.4.1.17409.2.8.4.1.1.102.keyonu', NULL, NULL, 'onu', NULL);
 
 -- --------------------------------------------------------
 
@@ -572,7 +554,9 @@ CREATE TABLE `onus` (
   `uid` int(11) DEFAULT NULL,
   `model` varchar(50) DEFAULT NULL,
   `inspector` int(11) NOT NULL DEFAULT 1,
-  `monitor` int(11) DEFAULT NULL
+  `monitor` int(11) DEFAULT NULL,
+  `comments` text DEFAULT NULL,
+  `apiget` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1184,8 +1168,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `name`, `class`, `ip`, `password`, `email`, `added`, `lastactivity`, `port`, `setip`, `onlyip`, `url`, `hideonu`, `viewlist`) VALUES
-(1, 'user', 'alex', 7, '192.168.2.30', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2022-07-24 17:01:20', '2023-03-02 12:56:14', 'a:3:{i:52;s:4:\"show\";i:510;s:4:\"hide\";i:57;s:4:\"hide\";}', '127.0.0.2', 'off', '/', 'yes', 'yes'),
-(7, 'user1', 'alex', 1, '192.168.2.30', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2023-01-09 17:57:47', '2023-02-28 14:25:03', NULL, NULL, 'off', '/?doexit', 'yes', 'yes');
+(1, 'user', 'alex', 7, '192.168.2.30', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2022-07-24 17:01:20', '2023-03-08 11:57:38', 'a:3:{i:52;s:4:\"show\";i:510;s:4:\"show\";i:57;s:4:\"show\";}', '127.0.0.2', 'off', '/?dographhealth&amp;id4', 'no', 'yes'),
+(7, 'user1', 'alex', 1, '194.71.227.32', '20ccbe71c69cb25e4e0095483cb63bd394a12b23', 'user@email.com', '2023-01-09 17:57:47', '2023-03-08 04:20:11', NULL, NULL, 'off', '/ajax/status.php', 'yes', 'yes');
 
 --
 -- Индексы сохранённых таблиц
@@ -1489,7 +1473,7 @@ ALTER TABLE `battery_list`
 -- AUTO_INCREMENT для таблицы `config`
 --
 ALTER TABLE `config`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT для таблицы `connect_port`
@@ -1543,7 +1527,7 @@ ALTER TABLE `monitoronu`
 -- AUTO_INCREMENT для таблицы `oid`
 --
 ALTER TABLE `oid`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=195;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- AUTO_INCREMENT для таблицы `onus`
@@ -1621,7 +1605,7 @@ ALTER TABLE `sklad_ups`
 -- AUTO_INCREMENT для таблицы `swcron`
 --
 ALTER TABLE `swcron`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=227;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=735;
 
 --
 -- AUTO_INCREMENT для таблицы `switch`
@@ -1735,4 +1719,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-DROP TABLE `unit`, `unitbasket`, `unitdevice`, `unitfiber`, `unitfibermap`, `unitmafta`, `unitponbox`, `unitponboxont`, `unitpontree`;

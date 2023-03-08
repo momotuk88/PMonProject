@@ -30,8 +30,10 @@ if($config['tag']=='on'){
 		$tpl->clear();	
 	}
 }
+$ajaxbilling = '';
 if($config['billing']=='on'){
-	if($dataonu['uid']){
+	if(!empty($dataonu['uid'])){
+		$ajaxbilling = 'ajaxbilling('.$dataonu['uid'].');';
 		$tpl->load_template('onu/editbilling.tpl');
 		$tpl->set('{id}',$id);
 		$tpl->set('{dogovor}',$lang['dogovor']);
@@ -52,7 +54,11 @@ if($config['comment']=='on'){
 	if($dataonu['comments']){
 		$tpl->load_template('onu/editcomm.tpl');
 		$tpl->set('{id}',$id);
+		$tpl->set('{commentar}',$lang['commentar']);
+		$tpl->set('{comments}',$dataonu['comments']);
 		$tpl->set('{save}',$lang['save']);
+		$tpl->set('{historyurl}','<a class="historycomm" href="#" onClick="historycomment('.$id.'); return false;"><img src="../style/img/history.png">Архів</a>');
+		$tpl->set('{editcomm}',$lang['edit']);
 		$tpl->compile('comments');
 		$tpl->clear();
 	}else{
@@ -84,6 +90,7 @@ if(!empty($checkONU['id'])){
 }
 $tpl->set('{number_ont}',$serialonu);
 $tpl->set('{monitoronu}',$monitoronu);
+$tpl->set('{ajaxbilling}',$ajaxbilling);
 $tpl->set('{comments}',isset($tpl->result['comments']) ? $tpl->result['comments'] : '');
 $tpl->set('{tag}',isset($tpl->result['tag']) ? $tpl->result['tag'] : '');
 $tpl->set('{billing}',isset($tpl->result['billing']) ? $tpl->result['billing'] : '');

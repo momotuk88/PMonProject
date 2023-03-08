@@ -2,6 +2,15 @@
 if (!defined('PONMONITOR')){
 	die('Hacking attempt!');
 }
+function parse_ip_port($address) {
+		$port = 22; 
+		if (strpos($address, ":") !== false) {
+			list($ip, $port) = explode(":", $address);
+		} else {
+			$ip = $address;
+		}
+		return array('ip' => $ip, 'port' => $port);
+	}
 function checkWhenAdded($data) {
 	$result = '';
 	$onudata = date_parse_from_format('Y-m-d h:i:s',$data);
@@ -1450,11 +1459,7 @@ function grpahPon($count,$support){
 	}else{
 		$color='pon6';
 	}
-	$html ='<div class="percent_box '.$color.'">';
-	$html .='<span class="percent"><span class="count">'.$count.'</span><span class="support">'.$support.'</span></span>';
-	$html .='<div class="scale_box"><span class="scale" style="width:'.ceil($width).'%;"></span></div>';
-	$html .='</div>';
-	return $html;
+	return '<div class="percent_box '.$color.'"><span class="percent"><span class="count">'.$count.'</span><span class="support">'.$support.'</span></span><div class="scale_box"><span class="scale" style="width:'.ceil($width).'%;"></span></div></div>';
 }
 function pager($rpp, $count, $href, $opts = array()) {
 	$bregs = '';
@@ -1576,34 +1581,50 @@ function SQLclear($result) {
 	$result = str_replace('<',"",$result);
 	return $result;
 }
-function totranslit($var, $lower = true, $punkt = true) {
-	global $langtranslit;	
-	if ( is_array($var) ) return "";
-	$var = str_replace(chr(0), '', $var);
-	if (!is_array ( $langtranslit ) OR !count( $langtranslit ) ) {
-		$var = trim( strip_tags( $var ) );
-		if ( $punkt ) $var = preg_replace( "/[^a-z0-9\_\-.]+/mi", "", $var );
-		else $var = preg_replace( "/[^a-z0-9\_\-]+/mi", "", $var );
-		$var = preg_replace( '#[.]+#i', '.', $var );
-		$var = str_ireplace( ".php", ".ppp", $var );
-		if ( $lower ) $var = strtolower( $var );
-		return $var;
-	}	
-	$var = trim( strip_tags( $var ) );
-	$var = preg_replace( "/\s+/ms", "-", $var );
-	$var = str_replace( "/", "-", $var );
-	$var = strtr($var, $langtranslit);	
-	if ( $punkt ) $var = preg_replace( "/[^a-z0-9\_\-.]+/mi", "", $var );
-	else $var = preg_replace( "/[^a-z0-9\_\-]+/mi", "", $var );
-	$var = preg_replace( '#[\-]+#i', '-', $var );
-	$var = preg_replace( '#[.]+#i', '.', $var );
-	if ( $lower ) $var = strtolower( $var );
-	$var = str_ireplace( ".php", "", $var );
-	$var = str_ireplace( ".php", ".ppp", $var );	
-	if( strlen( $var ) > 200 ) {		
-		$var = substr( $var, 0, 200 );		
-		if( ($temp_max = strrpos( $var, '-' )) ) $var = substr( $var, 0, $temp_max );	
-	}	
-	return $var;
+function totranslit($var, $lower = true, $punkt = true, $langtranslit = []) {
+    if ( is_array($var) ) {
+        return "";
+    }
+    
+    $var = str_replace(chr(0), '', $var);
+    
+    if ( !is_array($langtranslit) || !count($langtranslit) ) {
+        $var = trim( strip_tags( $var ) );
+        $var = $punkt ? preg_replace( "/[^a-z0-9\_\-.]+/mi", "", $var ) : preg_replace( "/[^a-z0-9\_\-]+/mi", "", $var );
+        $var = preg_replace( '#[.]+#i', '.', $var );
+        $var = str_ireplace( ".php", ".ppp", $var );
+        
+        if ( $lower ) {
+            $var = strtolower( $var );
+        }
+        
+        return $var;
+    }
+    
+    $var = trim( strip_tags( $var ) );
+    $var = preg_replace( "/\s+/ms", "-", $var );
+    $var = str_replace( "/", "-", $var );
+    $var = strtr($var, $langtranslit);
+    $var = $punkt ? preg_replace_callback( "/[^a-z0-9\_\-.]+/mi", fn($match) => '', $var ) : preg_replace_callback( "/[^a-z0-9\_\-]+/mi", fn($match) => '', $var );
+    $var = preg_replace( '#[\-]+#i', '-', $var );
+    $var = preg_replace( '#[.]+#i', '.', $var );
+    
+    if ( $lower ) {
+        $var = strtolower( $var );
+    }
+    
+    $var = str_ireplace( ".php", "", $var );
+    $var = str_ireplace( ".php", ".ppp", $var );
+    
+    if ( strlen( $var ) > 200 ) {        
+        $var = substr( $var, 0, 200 );
+        
+        if ( ($temp_max = strrpos( $var, '-' )) ) {
+            $var = substr( $var, 0, $temp_max );
+        }   
+    }   
+    
+    return $var;
 }
+
 ?>

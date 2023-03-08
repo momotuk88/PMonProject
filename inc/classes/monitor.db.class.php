@@ -41,30 +41,28 @@ class DB{
             $this->connect();
         }
     }
-    private function prepareQuery($sql, $params){
-        if (is_array($params)) {
-            foreach ($params as &$param) {
-                $param = $this->escapeSimple($param);
-            }
-        } else {
-            $params = $this->escapeSimple($params);
-        }
-        $query = vsprintf($sql, $params);
-        return $query;
-    }
-    private function processQuery($sql){
-        $this->_result = null;
-        $this->checkConnect();
-        $timeStart = microtime(true);
-        $this->_result = $this->_mysqli->query($sql);
-		if($this->debug){
-			$this->query_list[] = array('time'  => (microtime(true) - $timeStart),'query' => $sql);		
-			$this->query_num ++;	
-		}		
-        if (!$this->_result) {
-            $this->error("invalid sql query: {$sql}. Mysql error [{$this->_mysqli->errno}]: {$this->_mysqli->error}");
-        }
-    }
+	private function prepareQuery($sql, $params){
+		if (is_array($params)) {
+			$params = array_map([$this, 'escapeSimple'], $params);
+		} else {
+			$params = $this->escapeSimple($params);
+		}
+		$query = vsprintf($sql, $params);
+		return $query;
+	}
+	private function processQuery($sql){
+		$this->_result = null;
+		$this->checkConnect();
+		$timeStart = microtime(true);
+		$this->_result = $this->_mysqli->query($sql);
+		if ($this->debug){
+			$this->query_list[] = ['time' => microtime(true) - $timeStart, 'query' => $sql];
+			$this->query_num++;
+		}
+		if (!$this->_result) {
+			$this->error("invalid sql query: {$sql}. Mysql error [{$this->_mysqli->errno}]: {$this->_mysqli->error}");
+		}
+	}
     public function queryListdebug($query_list){
 		$data = [];
 		if($this->debug){
@@ -111,16 +109,15 @@ class DB{
 		return $this->getWhile();
 	}
 	// завантажуємо конфіг !
-    public function config(){
+	public function config(){
 		$data = $this->Multi('config');
-		if(is_array($data)){
-			$result = array();	
-			foreach($data as $name => $row){
-				if(!empty($row['name']))
-					$result[$row['name']] = $row['value'];		
+		$result = [];
+		foreach($data as $row){
+			if(isset($row['name'], $row['value']) && !empty($row['name'])){
+				$result[$row['name']] = $row['value'];
 			}
 		}
-		return (is_array($result) ? $result : null);
+		return $result ?: null;
 	}
 	// запит в базу з табл. даних
     public function getWhile(){
@@ -215,23 +212,18 @@ class DB{
         $table = "`{$this->escapeSimple($table)}`";
         return $table;
     }
-    private function prepareColumns($columns){
-        if ($columns == '*') return $columns;
-        if (empty($columns)) {
-            $this->error('Empty columns');
-        }
-        if (!is_array($columns)) {
-            $columns = explode(',', $columns);
-        }
-        $columnsStr = '';
-        $comma = '';
-        foreach ($columns as $column) {
-            $column = trim($column);
-            $columnsStr .= "{$comma}`{$this->escapeSimple($column)}`";
-            $comma = ', ';
-        }
-        return $columnsStr;
-    }
+	private function prepareColumns($columns){
+		if ($columns == '*') return $columns;
+		if (empty($columns)) {
+			$this->error('Empty columns');
+		}
+		if (!is_array($columns)) {
+			$columns = explode(',', $columns);
+		}
+		$columns = array_map('trim', $columns);
+		$columns = array_map([$this, 'escapeSimple'], $columns);
+		return '`' . implode('`, `', $columns) . '`';
+	}
     private function parserRe($text) {
 		$text = str_replace('""','',$text);	
 		$text = str_replace("''",'',$text);
@@ -239,23 +231,23 @@ class DB{
 		$text = str_replace($quotes,'',$text);
 		return $text;
 	}
-    private function prepareData($data){
-        if (empty($data)) {
-            $this->error('Empty data');
-        }
-        $dataStr = '';
-        if (is_array($data)) {
-            $comma = '';
-            foreach ($data as $param => $value) {
+	private function prepareData($data){
+		if (empty($data)) {
+			$this->error('Empty data');
+		}
+		$dataStr = '';
+		if (is_array($data)) {
+			$comma = '';
+			foreach ($data as $param => $value) {
 				$value = $this->parserRe($value);
-                $dataStr .= "{$comma}`{$this->escapeSimple($param)}` = '{$this->escapeSimple($value)}'";
-                $comma = ', ';
-            }
-        } else {
-            $this->error('Data must be array');
-        }
-        return $dataStr;
-    }
+				$dataStr .= "{$comma}`{$this->escapeSimple($param)}` = '{$this->escapeSimple($value)}'";
+				$comma = ', ';
+			}
+		} else {
+			throw new Exception('Data must be array');
+		}
+		return $dataStr;
+	}
     private function prepareConditions($conditions){
         $where = '';
         if (!isset($conditions)) return $where;

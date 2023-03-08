@@ -30,7 +30,7 @@ class Cron{
 		}
 		return $timecheck;
 	}
-    public function start(){
+	public function start(){
 		global $db, $config;
 		$check = null;
 		$first = false;
@@ -62,8 +62,8 @@ class Cron{
 		}else{
 
 		}
-		return (isset($check) ? $check : null);
-	}	
+		return $check ?? null;
+	}
     public function check_switch(){
 		global $db, $PMonTables;
 		$SQLSelectSwitch = $db->Multi('switch','monitor,id,typecheck,updates,updates_rx,status',['monitor'=>'yes']);
