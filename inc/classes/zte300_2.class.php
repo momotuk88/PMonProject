@@ -325,7 +325,8 @@ class ZTE_c300_2 {
 			break;				
 			case 'eth':
 				$result = $data;
-			break;			
+			break;	
+			default:$result = null; break;	
 		}		
 		return $result;
 	}
@@ -350,6 +351,8 @@ class ZTE_c300_2 {
 			$res = "regModeLoid";
 		} elseif ($type == 10){
 			$res = "regModeLoidPlusPw";
+		}else{
+			$res = null;
 		}  
 		return $res;
 	}
