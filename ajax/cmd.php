@@ -73,15 +73,19 @@ switch($act){
 					$arr_tmp = explode("\r\n", fread($con, 16536));
 					$arr_out = array_merge($arr_out,$arr_tmp);
 				}
+				$listmac = "";
 				foreach ($arr_out as $out_mac){
 					$out_mac = str_word_count($out_mac,1,'0123456789.');
-					if (is_null($out_mac[1])){
+					if (!isset($out_mac[1])){
 						continue;
 					}
 					$vlan = $out_mac[0];
 					$mac = $out_mac[1];
 					$mac = strtoupper($mac);
 					$mac = str_split($mac);
+					if (!isset($mac[13])){
+						continue;
+					}
 					$mac = mb_strtolower($mac[0].$mac[1].':'.$mac[2].$mac[3].':'.$mac[5].$mac[6].':'.$mac[7].$mac[8].':'.$mac[10].$mac[11].':'.$mac[12].$mac[13]);
 					if ($mac == mb_strtolower($dataOnu['mac'])){
 						continue;

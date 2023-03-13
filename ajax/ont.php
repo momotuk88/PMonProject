@@ -149,7 +149,7 @@ if($support){
 		if(!empty($resultONT['rxolt']) && $resultONT['status']==1)
 			echo ont_label('RX OLT ',signalTerminal($resultONT['rxolt']));
 		if(!empty($resultONT['model']) || !empty($resultONT['vendor']))
-			echo ont_label($lang['model'],$resultONT['vendor'].' '.$resultONT['model']);
+			echo ont_label($lang['model'],$resultONT['vendor'].' '.(isset($resultONT['model']) ? $resultONT['model'] : ""));
 	
 		// BDCOM EPON - зміна влан
 		if($getOLT['oidid']==1){
