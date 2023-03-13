@@ -83,33 +83,40 @@ if($getType){
 	$pole_ip = '<input required name="ip" class="input1" id="ip" type="text" value="">';
 	echo form(['name'=>$lang['ip'],'descr'=>$lang['ipdescr'],'pole'=>$pole_ip]);
 }
-if($getTypeForm=='switch'){
-	echo'<input name="act" type="hidden" value="saveswitch">';
-	$pole_port = '<input required id="w80px" name="port" class="input1" placeholder="8" type="text" value="">';
-	echo form(['name'=>$lang['port'],'descr'=>$lang['countport'],'pole'=>$pole_port]);
-	$nomac = true;
-}elseif($getTypeForm=='battery'){
-	echo'<input name="act" type="hidden" value="savebattery">';
-	$pole_amper = '<inputrequired  id="w80px" name="amper" class="input1" placeholder="72" type="text" value="">';
-	echo form(['name'=>'Amer','descr'=>'','pole'=>$pole_amper]);		
-	$pole_volt = '<inputrequired  id="w80px" name="volt" class="input1" placeholder="14" type="text" value="">';
-	echo form(['name'=>'Volt','descr'=>'','pole'=>$pole_volt]);		
-	$listBattery = $db->Multi('battery_list');
-	if(count($listBattery)){
-		$pole_battery = '<select class="select" name="types" id="types">';
-		foreach($listBattery as $battery)
-			$pole_battery .= '<option value="'.$battery['id'].'">'.$battery['descr'].' ('.$battery['types'].')</option>';
-		$pole_battery .='</select>';
-	}else{
-		$pole_battery = '';
+if(isset($getTypeForm)){
+	switch($getTypeForm){
+		case 'switch':
+			echo'<input name="act" type="hidden" value="saveswitch">';
+			$pole_port = '<input required id="w80px" name="port" class="input1" placeholder="8" type="text" value="">';
+			echo form(['name'=>$lang['port'],'descr'=>$lang['countport'],'pole'=>$pole_port]);
+			$nomac = true;
+		break;
+		case 'battery':
+			echo'<input name="act" type="hidden" value="savebattery">';
+			$pole_amper = '<inputrequired  id="w80px" name="amper" class="input1" placeholder="72" type="text" value="">';
+			echo form(['name'=>'Amer','descr'=>'','pole'=>$pole_amper]);		
+			$pole_volt = '<inputrequired  id="w80px" name="volt" class="input1" placeholder="14" type="text" value="">';
+			echo form(['name'=>'Volt','descr'=>'','pole'=>$pole_volt]);		
+			$listBattery = $db->Multi('battery_list');
+			if(count($listBattery)){
+				$pole_battery = '<select class="select" name="types" id="types">';
+				foreach($listBattery as $battery)
+					$pole_battery .= '<option value="'.$battery['id'].'">'.$battery['descr'].' ('.$battery['types'].')</option>';
+				$pole_battery .='</select>';
+			}else{
+				$pole_battery = '';
+			}
+			echo form(['name'=>$lang['typeakb'],'descr'=>'','pole'=>$pole_battery]);	
+			$nomac = true;
+		break;
+		case 'ups':
+			echo'<input name="act" type="hidden" value="saveups">';
+			$pole_power = '<inputrequired  id="w80px" name="power" class="input1" placeholder="800" type="text" value="">';
+			echo form(['name'=>$lang['powerakb'],'descr'=>$lang['powerakbw'],'pole'=>$pole_power]);			
+			$nomac = true;
+		break;
+		default:break;
 	}
-	echo form(['name'=>$lang['typeakb'],'descr'=>'','pole'=>$pole_battery]);	
-	$nomac = true;
-}elseif($getTypeForm=='ups'){
-	echo'<input name="act" type="hidden" value="saveups">';
-	$pole_power = '<inputrequired  id="w80px" name="power" class="input1" placeholder="800" type="text" value="">';
-	echo form(['name'=>$lang['powerakb'],'descr'=>$lang['powerakbw'],'pole'=>$pole_power]);			
-	$nomac = true;
 }
 if(!$nomac){
 	$pole_mac = '<input name="mac" class="input1" id="ip" type="text" value="">';
