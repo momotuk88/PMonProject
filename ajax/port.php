@@ -10,7 +10,7 @@ switch($act){
 		okno_title('Нотатка для порта');
 		echo'<form action="/?do=send" method="post" id="formadd">';
 		echo'<input name="act" type="hidden" value="saveportdescr"><input name="id" type="hidden" value="'.$id.'">';
-		$textresult = '<textarea class="textarea1" rows="7" name="descrport">'.$result.'</textarea>';
+		$textresult = '<textarea class="textarea1" rows="7" name="descrport">'.(isset($result) ? $result : "").'</textarea>';
 		echo form(['name'=>'Нотатка','descr'=>'','pole'=>$textresult]);
 		echo'<span class="js_replace"></span>';
 		echo'</form>';
