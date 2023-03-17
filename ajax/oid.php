@@ -60,7 +60,7 @@ switch($act){
 		$oid_format .='<option value="hex">HEX-STRING</option>';
 		$oid_format .='</select>';
 		echo form(['name'=>$lang['oid_filter'],'descr'=>$lang['oid_filter_descr'],'pole'=>$oid_format]);
-		echo form(['name'=>$lang['oid_opis'],'descr'=>$lang['oid_opis_descr'],'pole'=>'<input types name="descr" class="input1" type="text" value="'.$SQLOID['descr'].'">']);
+		echo form(['name'=>$lang['oid_opis'],'descr'=>$lang['oid_opis_descr'],'pole'=>'<input types name="descr" class="input1" type="text" value="'.(isset($SQLOID['descr']) ? $SQLOID['descr'] : null).'">']);
 		echo'</form><div class="polebtn"><button type="submit" form="formadd" value="submit">'.$lang['save'].'</button></div>';
 		okno_end();
 	break;		
