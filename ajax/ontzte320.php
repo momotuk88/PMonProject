@@ -64,27 +64,27 @@ if(is_array($eth1)){
 		$control .='<div class="control_eth"><b>Eth1</b><div class="ctrl enable" onclick="ajaxzteonuport(\'on\','.$id.',\'1\')">enable</div></div>';
 }
 // eth2
-if(is_array($eth2)){
+if(isset($eth2) and is_array($eth2)){
 	if($eth2['st']=='enable')
 		$control .='<div class="control_eth"><b>Eth2</b><div class="ctrl disable" onclick="ajaxzteonuport(\'off\','.$id.',\'2\')">disable</div></div>';
 	if($eth2['st']=='disable')
 		$control .='<div class="control_eth"><b>Eth2</b><div class="ctrl enable" onclick="ajaxzteonuport(\'on\','.$id.',\'2\')">enable</div></div>';
 }
 // eth3
-if(is_array($eth3)){
+if(isset($eth3) and is_array($eth3)){
 	if($eth3['st']=='enable')
 		$control .='<div class="control_eth"><b>Eth3</b><div class="ctrl disable" onclick="ajaxzteonu(\'port\','.$id.',\'3\',\'2\',\'popup\')">disable</div></div>';
 	if($eth3['st']=='disable')
 		$control .='<div class="control_eth"><b>Eth3</b><div class="ctrl enable" onclick="ajaxzteonu(\'port\','.$id.',\'3\',\'1\',\'popup\')">enable</div></div>';
 }// eth4
-if(is_array($eth4)){
+if(isset($eth4) and is_array($eth4)){
 	if($eth4['st']=='enable')
 		$control .='<div class="control_eth"><b>Eth4</b><div class="ctrl disable" onclick="ajaxzteonu(\'port\','.$id.',\'4\',\'2\',\'popup\')">disable</div></div>';
 	if($eth4['st']=='disable')
 		$control .='<div class="control_eth"><b>Eth4</b><div class="ctrl enable" onclick="ajaxzteonu(\'port\','.$id.',\'4\',\'1\',\'popup\')">enable</div></div>';
 }
 // tv	
-if(is_array($tv)){
+if(isset($tv) and is_array($tv)){
 	if($tv['st']=='up'){
 		$control .='<div class="control_eth"><b>TV</b><div class="ctrl disable" onclick="ztetvport(\'ontvzteport1\',\''.$id.'\');">disable</div></div>';
 	}else{
