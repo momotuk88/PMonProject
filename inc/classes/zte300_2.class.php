@@ -325,7 +325,8 @@ class ZTE_c300_2 {
 			break;				
 			case 'eth':
 				$result = $data;
-			break;			
+			break;	
+			default:$result = null; break;	
 		}		
 		return $result;
 	}
@@ -350,6 +351,8 @@ class ZTE_c300_2 {
 			$res = "regModeLoid";
 		} elseif ($type == 10){
 			$res = "regModeLoidPlusPw";
+		}else{
+			$res = null;
 		}  
 		return $res;
 	}
@@ -435,7 +438,7 @@ class ZTE_c300_2 {
 		global $db, $PMonTables;
 		if(!empty($data['id'])){	
 			$row = $db->Fast($PMonTables['switchport'],'*',['deviceid' => $this->id, 'llid' => $data['id']]);
-			if(!$row['id']){
+			if(!isset($row['id'])){
 				$db->SQLinsert($PMonTables['switchport'],['deviceid' => $this->id,'llid' => $data['id'],'descrport' => (!empty($data['descrport']) ? $data['descrport'] : ''),'nameport' => $data['name'],'typeport' => $data['typeport'],'operstatus' => 'none','added' => $this->now]);
 			}else{
 				#$db->SQLupdate($PMonTables['switchport'],['descrport' => (!empty($data['descrport']) ? $data['descrport'] : '')],['id' => $row['id']]);
@@ -531,7 +534,8 @@ class ZTE_c300_2 {
 			case 3 : $type = 'err6';    break;	
 			case 7 : $type = 'err25';   break;	
 			case 9 : $type = 'err1';    break;	
-			case 12: $type = 'err0';    break;				
+			case 12: $type = 'err0';    break;
+			default: $type = 'null';    break;
 		}
 		return $type;
 	}

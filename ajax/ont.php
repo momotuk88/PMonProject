@@ -148,8 +148,8 @@ if($support){
 			echo ont_label('Temp ',$resultONT['temp'].' °C');
 		if(isset($resultONT['rxolt']) && $resultONT['status']==1)
 			echo ont_label('RX OLT ',signalTerminal($resultONT['rxolt']));
-		if(isset($resultONT['model']) || isset($resultONT['vendor']))
-			echo ont_label($lang['model'],$resultONT['vendor'].' '.$resultONT['model']);
+		if(!empty($resultONT['model']) || !empty($resultONT['vendor']))
+			echo ont_label($lang['model'],$resultONT['vendor'].' '.(isset($resultONT['model']) ? $resultONT['model'] : ""));
 	
 		// BDCOM EPON - зміна влан
 		if($getOLT['oidid']==1){
