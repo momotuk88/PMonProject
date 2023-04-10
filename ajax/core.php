@@ -273,7 +273,7 @@ HTML;
 				echo form(['name'=>$lang['username'],'descr'=>'','pole'=>'<input autocomplete="off" name="username" class="input1" type="text" value="'.$getUsers['username'].'">']);	
 				echo form(['name'=>$lang['usname'],'descr'=>'','pole'=>'<input autocomplete="off" name="name" class="input1" type="text" value="'.$getUsers['name'].'">']);	
 				echo form(['name'=>$lang['class'],'descr'=>'','pole'=>$selectclass]);	
-				echo form(['name'=>$lang['edit_password'],'descr'=>'','pole'=>'<input style="position:relative;top:2px;margin-right:5px;" type="checkbox" id="editpass" name="editpass"><label for="onlyip">змінити пароль</label>']);	
+				echo form(['name'=>$lang['edit_password'],'descr'=>'','pole'=>'<input style="position:relative;top:2px;margin-right:5px;" type="checkbox" id="editpass" name="editpass"><label for="editpass">змінити пароль</label>']);	
 				echo form(['name'=>$lang['newpassword'],'descr'=>'','pole'=>'<input autocomplete="off" name="newpassword" class="input1" type="text">']);	
 				echo form(['name'=>$lang['mail'],'descr'=>'','pole'=>'<input autocomplete="off" name="mail" class="input1" type="text" value="'.$getUsers['email'].'">']);	
 				echo form(['name'=>'Прив`язка до IP','descr'=>'','pole'=>'<input style="position:relative;top:2px;margin-right:5px;" type="checkbox" id="onlyip" name="onlyip" '.($getUsers['onlyip']=='on'?'checked':'').'><label for="onlyip">'.($getUsers['onlyip']=='on'?'включена прив`язка':'включити прив`язку').'</label>']);	

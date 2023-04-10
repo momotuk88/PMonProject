@@ -8,11 +8,11 @@ $id = isset($_POST['id']) ? Clean::int($_POST['id']): null;
 if($id && $act=='listport'){
 	$listPort = $db->Multi('switch_port','*',['deviceid' => $id]);
 	if(isset($listPort)){
-		$select .= '<select class="select" name="connp" id="connp">';
+		$select = '<select class="select" name="connp" id="connp">';
 		#$select .= '<option value="0"></option>';
 		foreach($listPort as $row){
 			$dataPort = $db->Fast('connect_port','*',['curp'=>$row['id'],'curd'=>$id]);
-			if(!$dataPort['id'] && preg_match('/sfp/i',$row['typeport']))
+			if(!isset($dataPort['id']) && preg_match('/sfp/i',$row['typeport']))
 				$select .= '<option value="'.$row['id'].'">'.$row['nameport'].' '.$row['descrport'].'</option>';
 		}
 		$select .= '</select>';
